@@ -5,7 +5,7 @@ const config = {
 	singleQuote: true,
 	trailingComma: 'none',
 	bracketSpacing: true,
-	jsxBracketSameLine: false,
+	bracketSameLine: false,
 	arrowParens: 'avoid',
 	tabWidth: 2,
 	quoteProps: 'as-needed',
