@@ -12,27 +12,14 @@ const fontSans = FontSans({
 
 const fontSerif = FontSerif({
 	subsets: ['latin'],
-	variable: '--font-serif',
-
+	variable: '--font-serif'
 })
 
 export const metadata = {
 	title: 'Tracky',
 	description: 'Track fitness metrics like body fat, calories, and protein.',
 	icons: [
-		{ rel: 'icon', url: '/favicon.png', type: 'image/png', sizes: '16x16' },
-		{
-			rel: 'icon',
-			url: '/assets/icon32.png',
-			type: 'image/png',
-			sizes: '32x32'
-		},
-		{
-			rel: 'apple-touch-icon',
-			url: '/assets/icon96.png',
-			type: 'image/png',
-			sizes: '96x96'
-		}
+		{ rel: 'icon', url: '/favicon.png', type: 'image/png', sizes: '32x32' }
 	]
 }
 
@@ -46,7 +33,7 @@ export default function RootLayout({
 			<html lang='en' suppressHydrationWarning>
 				<body
 					className={cn(
-						'bg-background min-h-screen font-sans antialiased',
+						'min-h-screen bg-background font-sans antialiased',
 						fontSans.variable,
 						fontSerif.variable
 					)}
