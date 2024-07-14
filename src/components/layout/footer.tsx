@@ -15,7 +15,7 @@ const Footer = ({
 		<footer
 			className={cn(
 				'w-fit text-sm text-neutral-600 animate-in fade-in-25 dark:text-neutral-300',
-				'bg-background backdrop-blur-md',
+				'bg-transparent backdrop-blur-md',
 				className
 			)}
 		>
