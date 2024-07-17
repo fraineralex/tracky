@@ -3,6 +3,7 @@ import { cn } from '~/lib/utils'
 import React from 'react'
 import { T3Logo, XLogo } from '~/components/ui/logos'
 import { ArrowUpRight, Heart } from 'lucide-react'
+import { Button } from '../ui/button'
 
 const Footer = ({
 	className,
@@ -14,7 +15,7 @@ const Footer = ({
 	return (
 		<footer
 			className={cn(
-				'w-fit text-sm text-neutral-600 animate-in fade-in-25 dark:text-neutral-300',
+				'w-fit text-sm text-neutral-700 animate-in fade-in-25 dark:text-neutral-300',
 				'bg-transparent backdrop-blur-md',
 				className
 			)}
@@ -29,12 +30,19 @@ const Footer = ({
 						href='https://create.t3.gg/'
 						className='flex items-center space-x-1'
 					>
-						<p>Made by Frainer using</p>
+						<p>
+							Made by{' '}
+							<Button variant='link' className='m-0 p-0'>
+								<ExternalLink href='https://fraineralex.dev'>
+									Frainer
+								</ExternalLink>
+							</Button>{' '}
+							using
+						</p>
 						<T3Logo className='h-4 w-4' />
 						<ArrowUpRight size={14} className='group-hover:scale-125' />
 					</ExternalLink>
 				</div>
-
 				<div
 					className={`${showTwitter ? 'flex' : 'hidden'} group items-center space-x-2`}
 				>

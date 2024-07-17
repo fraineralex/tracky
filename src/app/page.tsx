@@ -1,15 +1,17 @@
 import { SignInButton } from '@clerk/nextjs'
+import { Play } from 'lucide-react'
 import Image from 'next/image'
 import { CaloriesChart } from '~/components/landing/calories-chart'
 import Footer from '~/components/layout/footer'
 import { Button } from '~/components/ui/button'
+import { Github } from '~/components/ui/logos'
 
 export default function HomePage() {
 	return (
 		<section className='h-full px-16'>
-			<div className='h-full place-items-center grid grid-cols-3'>
-				<article className='w-ful flex flex-col place-items-center pb-10 col-span-3 lg:col-span-2'>
-					<h2 className='text-center font-serif text-[6rem] font-bold lg:text-8xl 2xl:text-[7rem]'>
+			<div className='grid h-full grid-cols-3 place-items-center'>
+				<article className='w-ful col-span-3 flex flex-col place-items-center pb-10 lg:col-span-2'>
+					<h2 className='text-center font-serif text-[5.5rem] font-bold lg:text-8xl 2xl:text-[7rem]'>
 						<span
 							className='mb-2 block text-nowrap text-[6rem] tracking-wide text-wood-950 dark:text-wood-100 lg:mb-6 lg:text-8xl 2xl:text-9xl'
 							style={{ lineHeight: 1 }}
@@ -24,29 +26,38 @@ export default function HomePage() {
 							Fitness Tracking
 						</span>
 					</h2>
-					<h3 className='mt-8 hidden text-pretty pe-5 text-center text-2xl font-normal text-rose-950 dark:text-rose-50 md:block lg:text-3xl'>
+					<h3 className='mt-8 hidden text-pretty pe-5 text-center text-2xl font-normal text-neutral-950 dark:text-neutral-50 md:block lg:text-3xl'>
 						Follow your fitness journey, every step of the way
 					</h3>
-					<div className='mt-20 flex h-full place-content-center items-center space-x-5 lg:space-x-10'>
+					<div className='mt-10 flex h-full place-content-center items-center space-x-3 pb-10 lg:mt-20 lg:space-x-10'>
 						<Button
 							variant='default'
 							size='lg'
-							className='h-12 text-lg font-semibold hover:bg-white/70'
+							className='group h-12 px-4 hover:opacity-90 dark:hover:opacity-70'
 							asChild
 						>
-							<SignInButton>Get started</SignInButton>
+							<span className='flex space-x-2'>
+								<Play className='h-5 w-5 duration-100 ease-in-out group-hover:scale-110' />
+								<SignInButton forceRedirectUrl='/dashboard'>
+									<i className='not-italic text-base font-medium'>Get started</i>
+								</SignInButton>
+							</span>
 						</Button>
 						<Button
+							asChild
 							variant='outline'
 							size='lg'
-							className='h-12 border-gray-500 text-lg font-semibold'
+							className='group h-12 border-slate-600 px-4 hover:bg-slate-300/80 dark:border-neutral-500 dark:hover:bg-neutral-600'
 						>
-							Watch a demo
+							<span className='flex items-center space-x-2'>
+								<Github className='h-5 w-5 duration-100 ease-in-out group-hover:scale-110' />
+								<i className='not-italic text-base font-medium'>Star on GitHub</i>
+							</span>
 						</Button>
 					</div>
 				</article>
 				<div className='hidden flex-col place-content-center lg:flex'>
-					<figure className='z-10 max-w-96 items-center p-3 md:p-0 lg:-mt-5 lg:max-w-128'>
+					<figure className='z-10 max-w-96 items-center p-3 md:p-0 lg:max-w-128'>
 						<Image
 							src='/home/banner.png'
 							alt='banner image'
@@ -55,7 +66,7 @@ export default function HomePage() {
 							className='h-auto w-full'
 						/>
 					</figure>
-					<article className='mt-3 flex place-content-center ps-16 z-10'>
+					<article className='z-10 mt-3 flex place-content-center ps-16'>
 						<CaloriesChart />
 					</article>
 				</div>

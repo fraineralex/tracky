@@ -44,9 +44,9 @@ export default function RootLayout({
 						enableSystem
 						disableTransitionOnChange
 					>
-						<div className='grid h-screen grid-rows-[auto,1fr]'>
+						<div className='grid h-screen grid-rows-[auto,1fr] overflow-y-auto'>
 							<Header />
-							<main className='overflow-y-auto'>{children}</main>
+							<main className=''>{children}</main>
 						</div>
 					</ThemeProvider>
 				</body>
