@@ -19,7 +19,7 @@ export const metadata = {
 	title: 'Tracky',
 	description: 'Track fitness metrics like body fat, calories, and protein.',
 	icons: [
-		{ rel: 'icon', url: '/favicon.png', type: 'image/png', sizes: '32x32' }
+		{ rel: 'icon', url: '/favicon.svg', type: 'image/svg+xml', sizes: 'any' }
 	]
 }
 
