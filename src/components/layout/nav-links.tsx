@@ -9,7 +9,7 @@ export default function NavLinks() {
 	if (pathname !== '/') return null
 
 	return (
-		<article className='flex space-x-4 pt-3 text-sm text-foreground'>
+		<article className='hidden sm:flex space-x-4 pt-3 text-sm text-foreground'>
 			<Button variant='link' asChild title='Home page' aria-label='Home page'>
 				<Link
 					href='/'
