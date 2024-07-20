@@ -1,10 +1,11 @@
-import { SignInButton } from '@clerk/nextjs'
+import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs'
 import { Play } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { CaloriesChart } from '~/components/landing/calories-chart'
 import Footer from '~/components/layout/footer'
 import { Button } from '~/components/ui/button'
-import { Github } from '~/components/ui/logos'
+import { Github, HouseIcon } from '~/components/ui/logos'
 
 export default function HomePage() {
 	return (
@@ -30,21 +31,36 @@ export default function HomePage() {
 						Follow your fitness journey, every step of the way
 					</h3>
 					<div className='mt-10 flex h-full place-content-center items-center space-x-3 pb-10 lg:mt-20 lg:space-x-10'>
-						<Button
-							variant='default'
-							size='lg'
-							className='group h-12 cursor-pointer px-6 hover:opacity-90 dark:hover:opacity-70'
-							asChild
-						>
-							<span className='flex space-x-2'>
-								<Play className='h-5 w-5 duration-100 ease-in-out group-hover:scale-110' />
-								<SignInButton forceRedirectUrl='/dashboard'>
-									<i className='text-base font-medium not-italic'>
-										Get started
-									</i>
-								</SignInButton>
-							</span>
-						</Button>
+						<SignedOut>
+							<Button
+								variant='default'
+								size='lg'
+								className='group h-12 cursor-pointer px-6 hover:opacity-90 dark:hover:opacity-70'
+								asChild
+							>
+								<span className='flex space-x-2'>
+									<Play className='h-5 w-5 duration-100 ease-in-out group-hover:scale-110' />
+									<SignInButton forceRedirectUrl='/dashboard'>
+										<i className='text-base font-medium not-italic'>
+											Get started
+										</i>
+									</SignInButton>
+								</span>
+							</Button>
+						</SignedOut>
+						<SignedIn>
+							<Button
+								variant='default'
+								size='lg'
+								className='group h-12 cursor-pointer px-6 hover:opacity-90 dark:hover:opacity-70'
+								asChild
+							>
+								<Link className='flex space-x-2' href='/dashboard'>
+									<HouseIcon className='h-4 w-4 duration-100 ease-in-out group-hover:scale-110' />
+									<i className='text-base font-medium not-italic'>Dashboard</i>
+								</Link>
+							</Button>
+						</SignedIn>
 						<Button
 							asChild
 							variant='outline'
@@ -61,7 +77,7 @@ export default function HomePage() {
 					</div>
 				</article>
 				<div className='hidden flex-col place-content-center lg:flex'>
-					<figure className='z-10 max-w-96 items-center p-3 md:p-0 lg:max-w-128'>
+					<figure className='z-10 max-w-96 items-center p-3 pb-0 md:p-0 lg:max-w-128'>
 						<Image
 							src='/home/banner.png'
 							alt='banner image'
@@ -70,7 +86,7 @@ export default function HomePage() {
 							className='h-auto w-full'
 						/>
 					</figure>
-					<article className='z-10 mt-3 flex place-content-center ps-16'>
+					<article className='z-10 mt-1 flex place-content-center ps-16'>
 						<CaloriesChart />
 					</article>
 				</div>

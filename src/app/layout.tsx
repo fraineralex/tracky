@@ -45,9 +45,9 @@ export default function RootLayout({
 						enableSystem
 						disableTransitionOnChange
 					>
-						<div className='grid h-screen grid-rows-[auto,1fr] overflow-y-auto'>
+						<div className='grid min-h-screen grid-rows-[auto,1fr] overflow-y-auto'>
 							<Header />
-							<main className='flex min-h-full px-10'>
+							<main className='flex px-10'>
 								<SideNav />
 								{children}
 							</main>
