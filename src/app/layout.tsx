@@ -4,6 +4,7 @@ import { cn } from '~/lib/utils'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Header } from '~/components/layout/header'
 import { ThemeProvider } from '~/components/providers/theme-provider'
+import SideNav from '~/components/layout/sidenav'
 
 const fontSans = FontSans({
 	subsets: ['latin'],
@@ -46,7 +47,10 @@ export default function RootLayout({
 					>
 						<div className='grid h-screen grid-rows-[auto,1fr] overflow-y-auto'>
 							<Header />
-							<main className=''>{children}</main>
+							<main className='flex min-h-full px-10'>
+								<SideNav />
+								{children}
+							</main>
 						</div>
 					</ThemeProvider>
 				</body>

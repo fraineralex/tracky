@@ -8,9 +8,9 @@ import { Github } from '~/components/ui/logos'
 
 export default function HomePage() {
 	return (
-		<section className='h-full px-16'>
-			<div className='grid h-full grid-cols-3 place-items-center'>
-				<article className='w-ful col-span-3 flex flex-col place-items-center pb-10 lg:col-span-2'>
+		<section className='grid h-full grid-cols-3 place-items-center'>
+			<>
+				<article className='col-span-3 flex flex-col pb-10 lg:col-span-2'>
 					<h2 className='text-center font-serif text-[5.5rem] font-bold lg:text-8xl 2xl:text-[7rem]'>
 						<span
 							className='mb-2 block text-nowrap text-[6rem] tracking-wide text-wood-950 dark:text-wood-100 lg:mb-6 lg:text-8xl 2xl:text-9xl'
@@ -33,13 +33,15 @@ export default function HomePage() {
 						<Button
 							variant='default'
 							size='lg'
-							className='group h-12 px-4 hover:opacity-90 dark:hover:opacity-70'
+							className='group h-12 cursor-pointer px-6 hover:opacity-90 dark:hover:opacity-70'
 							asChild
 						>
 							<span className='flex space-x-2'>
 								<Play className='h-5 w-5 duration-100 ease-in-out group-hover:scale-110' />
 								<SignInButton forceRedirectUrl='/dashboard'>
-									<i className='not-italic text-base font-medium'>Get started</i>
+									<i className='text-base font-medium not-italic'>
+										Get started
+									</i>
 								</SignInButton>
 							</span>
 						</Button>
@@ -47,11 +49,13 @@ export default function HomePage() {
 							asChild
 							variant='outline'
 							size='lg'
-							className='group h-12 border-slate-600 px-4 hover:bg-slate-300/80 dark:border-neutral-500 dark:hover:bg-neutral-600'
+							className='group h-12 cursor-pointer border-slate-600 px-4 hover:bg-slate-300/80 dark:border-neutral-500 dark:hover:bg-neutral-600'
 						>
 							<span className='flex items-center space-x-2'>
 								<Github className='h-5 w-5 duration-100 ease-in-out group-hover:scale-110' />
-								<i className='not-italic text-base font-medium'>Star on GitHub</i>
+								<i className='text-base font-medium not-italic'>
+									Star on GitHub
+								</i>
 							</span>
 						</Button>
 					</div>
@@ -70,7 +74,7 @@ export default function HomePage() {
 						<CaloriesChart />
 					</article>
 				</div>
-			</div>
+			</>
 			<Footer className='fixed bottom-0 left-0 py-6 lg:p-6' />
 		</section>
 	)
