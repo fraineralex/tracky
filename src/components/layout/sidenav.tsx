@@ -1,6 +1,6 @@
 'use client'
 
-import { HouseIcon } from '../ui/logos'
+import { HouseIcon } from '../ui/icons'
 import { Dumbbell, Ham, NotepadText, Settings } from 'lucide-react'
 import SidenavButton from './sidenav-button'
 import { usePathname } from 'next/navigation'
@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation'
 export default function SideNav() {
 	const pathname = usePathname()
 
-	if (pathname === '/') return null
+	if (pathname === '/' || pathname === '/onboarding') return null
 
 	return (
 		<nav className='flex shrink-0 flex-col pt-16 sm:w-[215px]'>

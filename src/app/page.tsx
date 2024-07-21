@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { CaloriesChart } from '~/components/landing/calories-chart'
 import Footer from '~/components/layout/footer'
 import { Button } from '~/components/ui/button'
-import { Github, HouseIcon } from '~/components/ui/logos'
+import { Github, HouseIcon } from '~/components/ui/icons'
 
 export default function HomePage() {
 	return (
@@ -40,7 +40,7 @@ export default function HomePage() {
 							>
 								<span className='flex space-x-2'>
 									<Play className='h-5 w-5 duration-100 ease-in-out group-hover:scale-110' />
-									<SignInButton forceRedirectUrl='/dashboard'>
+									<SignInButton>
 										<i className='text-base font-medium not-italic'>
 											Get started
 										</i>
@@ -86,7 +86,7 @@ export default function HomePage() {
 							className='h-auto w-full'
 						/>
 					</figure>
-					<article className='z-10 mt-1 flex place-content-center ps-16'>
+					<article className='z-10 mt-1 flex min-h-40 place-content-center ps-16'>
 						<CaloriesChart />
 					</article>
 				</div>
