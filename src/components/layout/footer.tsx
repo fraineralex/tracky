@@ -1,9 +1,8 @@
 import ExternalLink from '~/components/ui/external-link'
 import { cn } from '~/lib/utils'
 import React from 'react'
-import { T3Logo, XLogo } from '~/components/ui/logos'
+import { T3Logo, XLogo } from '~/components/ui/icons'
 import { ArrowUpRight, Heart } from 'lucide-react'
-import { Button } from '../ui/button'
 
 const Footer = ({
 	className,
