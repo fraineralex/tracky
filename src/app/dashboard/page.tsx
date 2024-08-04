@@ -1,7 +1,7 @@
 export default function DashboardPage() {
-  return (
-    <main>
-      <h1>Dashboard</h1>
-    </main>
-  )
+	return (
+		<section className='w-full pt-16'>
+			<h1>Dashboard</h1>
+		</section>
+	)
 }
