@@ -1,3 +1,5 @@
+'use client'
+
 import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { ModeToggle } from '~/components/theme/mode-toggle'
 import { Button, buttonVariants } from '../ui/button'
@@ -6,8 +8,12 @@ import Link from 'next/link'
 import { Badge } from '../ui/badge'
 import ExternalLink from '../ui/external-link'
 import NavLinks from './nav-links'
+import { usePathname } from 'next/navigation'
 
 export function Header() {
+	const pathname = usePathname()
+
+	if (pathname === '/onboarding') return null
 	return (
 		<nav className='flex w-full items-center justify-between px-6 pb-2 pt-8 text-xl font-semibold lg:px-16'>
 			<div className='flex space-x-28'>
