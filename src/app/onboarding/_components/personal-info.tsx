@@ -2,7 +2,7 @@
 
 import { FemaleIcon, MaleIcon } from '~/components/ui/icons'
 import { State } from '../_actions'
-import { DatePicker } from '~/components/ui/date-picker'
+import { BornDatePicker } from '~/app/onboarding/_components/ui/born-date-picker'
 import { useRef, useState } from 'react'
 import { ONBOARDING_SECTIONS } from '../page'
 
@@ -79,7 +79,7 @@ export default function PersonalInfo({
 					What is your date of birth?
 				</h2>
 				<div className='flex flex-col place-content-center items-center text-start'>
-					<DatePicker
+					<BornDatePicker
 						formState={formState}
 						date={bornDate}
 						setDate={handleChangeDate}

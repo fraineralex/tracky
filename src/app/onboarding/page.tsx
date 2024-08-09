@@ -24,7 +24,7 @@ export default function OnboardingPage() {
 		completeOnboarding,
 		initialState
 	)
-	const [showSection, setShowSection] = useState(ONBOARDING_SECTIONS.personal)
+	const [showSection, setShowSection] = useState(ONBOARDING_SECTIONS.metrics)
 
 	async function redirectToDashboard() {
 		toast.success('Onboarding complete')
@@ -37,14 +37,14 @@ export default function OnboardingPage() {
 	if (!formState?.errors && formState?.message) toast.error(formState.message)
 
 	return (
-		<section className='flex w-full flex-col place-content-center place-items-center h-screen'>
+		<section className='flex h-screen w-full flex-col place-content-center place-items-center'>
 			<form action={dispatch}>
 				{showSection === ONBOARDING_SECTIONS.personal && (
 					<PersonalInfo formState={formState} setShowSection={setShowSection} />
 				)}
 
 				{showSection === ONBOARDING_SECTIONS.metrics && (
-					<BodyMetrics formState={formState} />
+					<BodyMetrics formState={formState} setShowSection={setShowSection} />
 				)}
 
 				{showSection === ONBOARDING_SECTIONS.goals && (
