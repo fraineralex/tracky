@@ -10,7 +10,7 @@ import BodyMetrics from './_components/body-metrics'
 import FitnessGoals from './_components/fitness-goals'
 import { useState } from 'react'
 
-const ONBOARDING_SECTIONS = {
+export const ONBOARDING_SECTIONS = {
 	personal: 'personal-info',
 	metrics: 'body-metrics',
 	goals: 'fitness-goals'
@@ -40,7 +40,7 @@ export default function OnboardingPage() {
 		<section className='flex w-full flex-col place-content-center place-items-center h-screen'>
 			<form action={dispatch}>
 				{showSection === ONBOARDING_SECTIONS.personal && (
-					<PersonalInfo formState={formState} />
+					<PersonalInfo formState={formState} setShowSection={setShowSection} />
 				)}
 
 				{showSection === ONBOARDING_SECTIONS.metrics && (
