@@ -12,10 +12,10 @@ import {
 	PopoverContent,
 	PopoverTrigger
 } from '~/components/ui/popover'
-import { Label } from './label'
+import { Label } from '../../../../components/ui/label'
 import { State } from '~/app/onboarding/_actions'
 
-export function DatePicker({
+export function BornDatePicker({
 	formState,
 	date,
 	setDate
@@ -45,16 +45,16 @@ export function DatePicker({
 						selected={date}
 						onSelect={setDate}
 						initialFocus
-            disabled={{ before: new Date('1900-01-01'), after: new Date() }}
+						disabled={{ before: new Date('1900-01-01'), after: new Date() }}
 					/>
 				</PopoverContent>
 			</Popover>
-			<Label className='ms-10 mt-2 text-sm text-gray-600'>
+			<Label className='mt-2 text-xs text-gray-600'>
 				{formState.errors?.born ? (
 					<div
 						id='born-error'
 						aria-live='polite'
-						className='text-sm text-red-500'
+						className='text-xs text-red-500'
 					>
 						{formState.errors.born.map((error: string) => (
 							<p key={error}>{error}</p>
