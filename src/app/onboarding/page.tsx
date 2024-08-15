@@ -9,12 +9,8 @@ import PersonalInfo from './_components/personal-info'
 import BodyMetrics from './_components/body-metrics'
 import FitnessGoals from './_components/fitness-goals'
 import { useState } from 'react'
+import { ONBOARDING_SECTIONS } from '~/constants'
 
-export const ONBOARDING_SECTIONS = {
-	personal: 'personal-info',
-	metrics: 'body-metrics',
-	goals: 'fitness-goals'
-}
 
 export default function OnboardingPage() {
 	const { user } = useUser()
@@ -24,7 +20,7 @@ export default function OnboardingPage() {
 		completeOnboarding,
 		initialState
 	)
-	const [showSection, setShowSection] = useState(ONBOARDING_SECTIONS.metrics)
+	const [showSection, setShowSection] = useState(ONBOARDING_SECTIONS.goals)
 
 	async function redirectToDashboard() {
 		toast.success('Onboarding complete')

@@ -11,7 +11,7 @@ import {
 } from '~/components/ui/select'
 import { useState } from 'react'
 import { Button } from '~/components/ui/button'
-import { ONBOARDING_SECTIONS } from '../page'
+import { ONBOARDING_SECTIONS } from '~/constants'
 
 export default function BodyMetrics({
 	formState,

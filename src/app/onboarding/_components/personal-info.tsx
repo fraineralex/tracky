@@ -4,7 +4,7 @@ import { FemaleIcon, MaleIcon } from '~/components/ui/icons'
 import { State } from '../_actions'
 import { BornDatePicker } from '~/app/onboarding/_components/ui/born-date-picker'
 import { useRef, useState } from 'react'
-import { ONBOARDING_SECTIONS } from '../page'
+import { ONBOARDING_SECTIONS } from '~/constants'
 
 type sex = 'male' | 'female'
 
