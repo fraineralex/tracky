@@ -9,3 +9,9 @@ export const GOALS_OPTIONS = {
 	maintain: 'maintain-weight',
 	gain: 'gain-weight'
 }
+
+export const ACTIVITY_LEVELS = {
+	sedentary: 'sedentary',
+	moderate: 'moderate',
+	active: 'active'
+}

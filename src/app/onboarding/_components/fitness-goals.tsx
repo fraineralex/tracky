@@ -2,12 +2,22 @@
 
 import { Button } from '~/components/ui/button'
 import { State } from '../_actions'
-import { Cat, Dumbbell, Scale, Snail, Squirrel, TrendingDown } from 'lucide-react'
-import { GOALS_OPTIONS } from '~/constants'
+import {
+	Dumbbell,
+	Scale,
+	Snail,
+	Squirrel,
+	TrendingDown,
+	Turtle
+} from 'lucide-react'
+import { ACTIVITY_LEVELS, GOALS_OPTIONS } from '~/constants'
 import { useState } from 'react'
+import OptionItem from './ui/option-item'
 
 export default function FitnessGoals({ formState }: { formState: State }) {
 	const [goal, setGoal] = useState<string | null>(null)
+	const [activity, setActivity] = useState<string | null>(null)
+
 	return (
 		<section className='z-10 mx-5 flex flex-col items-center space-y-10 text-center sm:mx-auto'>
 			<h1 className='font-serif text-3xl font-bold text-green-600 dark:text-green-500'>
@@ -19,42 +29,27 @@ export default function FitnessGoals({ formState }: { formState: State }) {
 						What is your goal?
 					</h2>
 					<div className='flex flex-col space-y-5 py-5'>
-						<button
-							className={`flex min-w-[320px] items-center justify-start space-x-5 overflow-hidden rounded-lg border border-gray-500 p-5 transition-colors hover:dark:bg-gray-800 ${goal === GOALS_OPTIONS.loss ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
-							type='button'
-						>
-							<TrendingDown className='pointer-events-none h-auto w-5' />
-							<span className='space-y-2 text-left'>
-								<p className='text-base font-medium'>Lose Weight</p>
-								<small className='text-sm font-light text-gray-400'>
-									Goal of lossing weight
-								</small>
-							</span>
-						</button>
-						<button
-							className={`flex min-w-[320px] items-center justify-start space-x-5 overflow-hidden rounded-lg border border-gray-500 p-5 transition-colors hover:dark:bg-gray-800 ${goal === GOALS_OPTIONS.loss ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
-							type='button'
-						>
-							<Scale className='pointer-events-none h-auto w-5' />
-							<span className='space-y-2 text-left'>
-								<p className='text-base font-medium'>Maintain Weight</p>
-								<small className='text-sm font-light text-gray-400'>
-									Goal of maintenig weight
-								</small>
-							</span>
-						</button>
-						<button
-							className={`flex min-w-[320px] items-center justify-start space-x-5 overflow-hidden rounded-lg border border-gray-500 p-5 transition-colors hover:dark:bg-gray-800 ${goal === GOALS_OPTIONS.loss ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
-							type='button'
-						>
-							<Dumbbell className='pointer-events-none h-auto w-5' />
-							<span className='space-y-2 text-left'>
-								<p className='text-base font-medium'>Gain Weight</p>
-								<small className='text-sm font-light text-gray-400'>
-									Goal of gainig weight
-								</small>
-							</span>
-						</button>
+						<OptionItem
+							active={goal === GOALS_OPTIONS.loss}
+							Icon={TrendingDown}
+							title='Lose Weight'
+							description='Goal of lossing weight'
+							selectItem={() => setGoal(GOALS_OPTIONS.loss)}
+						/>
+						<OptionItem
+							active={goal === GOALS_OPTIONS.maintain}
+							Icon={Scale}
+							title='Maintain Weight'
+							description='Goal of maintenig weight'
+							selectItem={() => setGoal(GOALS_OPTIONS.maintain)}
+						/>
+						<OptionItem
+							active={goal === GOALS_OPTIONS.gain}
+							Icon={Dumbbell}
+							title='Gain Weight'
+							description='Goal of gaining weight'
+							selectItem={() => setGoal(GOALS_OPTIONS.gain)}
+						/>
 					</div>
 					<input type='hidden' name='goal' required />
 					{formState.errors?.goal ? (
@@ -74,42 +69,27 @@ export default function FitnessGoals({ formState }: { formState: State }) {
 						How active are you?
 					</h2>
 					<div className='flex flex-col space-y-5 py-5'>
-						<button
-							className={`flex w-[320px] items-center justify-start space-x-5 overflow-hidden rounded-lg border border-gray-500 p-5 transition-colors hover:dark:bg-gray-800 ${goal === GOALS_OPTIONS.loss ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
-							type='button'
-						>
-							<Snail className='pointer-events-none h-auto w-5' />
-							<span className='space-y-2 text-left'>
-								<p className='text-base font-medium'>Mostly Sedentary</p>
-								<small className='text-sm font-light text-gray-400'>
-									Less than 5,000 steps a day
-								</small>
-							</span>
-						</button>
-						<button
-							className={`flex min-w-[320px] items-center justify-start space-x-5 overflow-hidden rounded-lg border border-gray-500 p-5 transition-colors hover:dark:bg-gray-800 ${goal === GOALS_OPTIONS.loss ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
-							type='button'
-						>
-							<Cat className='pointer-events-none h-auto w-5' />
-							<span className='space-y-2 text-left'>
-								<p className='text-base font-medium'>Moderately Active</p>
-								<small className='text-sm font-light text-gray-400'>
-									5,000 to 10,000 steps a day
-								</small>
-							</span>
-						</button>
-						<button
-							className={`flex min-w-[320px] items-center justify-start space-x-5 overflow-hidden rounded-lg border border-gray-500 p-5 transition-colors hover:dark:bg-gray-800 ${goal === GOALS_OPTIONS.loss ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
-							type='button'
-						>
-							<Squirrel className='pointer-events-none h-auto w-5' />
-							<span className='space-y-2 text-left'>
-								<p className='text-base font-medium'>Very Active</p>
-								<small className='text-sm font-light text-gray-400'>
-									More than 10,000 steps a day
-								</small>
-							</span>
-						</button>
+						<OptionItem
+							active={activity === ACTIVITY_LEVELS.sedentary}
+							Icon={Snail}
+							title='Mostly Sedentary'
+							description='Less than 5,000 steps a day'
+							selectItem={() => setActivity(ACTIVITY_LEVELS.sedentary)}
+						/>
+						<OptionItem
+							active={activity === ACTIVITY_LEVELS.moderate}
+							Icon={Turtle}
+							title='Mostly Active'
+							description='5,000 to 10,000 steps a day'
+							selectItem={() => setActivity(ACTIVITY_LEVELS.moderate)}
+						/>
+						<OptionItem
+							active={activity === ACTIVITY_LEVELS.active}
+							Icon={Squirrel}
+							title='Very Active'
+							description='More than 10,000 steps a day'
+							selectItem={() => setActivity(ACTIVITY_LEVELS.active)}
+						/>
 					</div>
 					<input type='hidden' name='activity' required />
 					{formState.errors?.activity ? (
