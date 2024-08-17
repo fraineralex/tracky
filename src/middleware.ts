@@ -1,5 +1,5 @@
 import { createRouteMatcher, clerkMiddleware } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
 const isPublicRoute = createRouteMatcher(['/', '/sign-in(.*)', '/sign-up(.*)'])
 const isOnboardingRoute = createRouteMatcher(['/onboarding'])

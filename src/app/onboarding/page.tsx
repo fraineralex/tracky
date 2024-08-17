@@ -1,144 +1,89 @@
 'use client'
 
-import { completeOnboarding, State } from './_actions'
+import { completeOnboarding } from './_actions'
 import { useFormState } from 'react-dom'
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import PersonalInfo from './_components/personal-info'
+import BodyMetrics from './_components/body-metrics'
+import FitnessGoals from './_components/fitness-goals'
+import { useRef, useState } from 'react'
+import { ONBOARDING_SECTIONS } from '~/constants'
+import { sex } from '~/types'
+import confetti from 'canvas-confetti'
 
 export default function OnboardingPage() {
 	const { user } = useUser()
 	const router = useRouter()
-	const initialState = { message: null, errors: {} }
-	const [state, dispatch] = useFormState<State, FormData>(
-		completeOnboarding,
-		initialState
-	)
+	const [showSection, setShowSection] = useState(ONBOARDING_SECTIONS.personal)
+	const [sex, setSex] = useState<sex | undefined>()
+	const [bornDate, setBornDate] = useState<Date | undefined>()
+	const [heightUnit, setHeightUnit] = useState('ft')
+	const [heightDecimal, setHeightDecimal] = useState(5)
+	const [weightUnit, setWeightUnit] = useState('lb')
+	const [height, setHeight] = useState(1)
+	const [weight, setWeight] = useState(0)
+	const [goal, setGoal] = useState<string | undefined>()
+	const [activity, setActivity] = useState<string | undefined>()
+	const formRef = useRef<HTMLFormElement>(null)
+	const [bodyMetricsEntry, setBodyMetricsEntry] = useState(false)
+	const [fitnessGoalsEntry, setFitnessGoalsEntry] = useState(false)
 
-	async function redirectToDashboard() {
+	async function sendForm() {
+		confetti()
 		toast.success('Onboarding complete')
+		formRef.current?.requestSubmit()
+	}
+
+	const handleSubmit = async (formData: FormData) => {
+		await completeOnboarding(formData)
 		await user?.reload()
 		router.push('/dashboard')
 	}
 
-	if (state?.onboardingComplete) redirectToDashboard()
-
-	if (!state?.errors && state?.message) toast.error(state.message)
-
 	return (
-		<section>
-			<h1>Welcome</h1>
-			<form action={dispatch}>
-				<div>
-					<label>Sex</label>
-					<p>Select your sex.</p>
-					<input type='text' name='sex' required />
-					{state.errors?.sex ? (
-						<div
-							id='sex-error'
-							aria-live='polite'
-							className='mt-2 text-sm text-red-500'
-						>
-							{state.errors.sex.map((error: string) => (
-								<p key={error}>{error}</p>
-							))}
-						</div>
-					) : null}
-				</div>
-				<div>
-					<label>Born</label>
-					<p>Enter your born date.</p>
-					<input type='date' name='born' required />
-					{state.errors?.born ? (
-						<div
-							id='born-error'
-							aria-live='polite'
-							className='mt-2 text-sm text-red-500'
-						>
-							{state.errors.born.map((error: string) => (
-								<p key={error}>{error}</p>
-							))}
-						</div>
-					) : null}
-				</div>
-				<div>
-					<label>Height</label>
-					<p>Enter your height.</p>
-					<input type='number' name='height' required />
-					{state.errors?.height ? (
-						<div
-							id='height-error'
-							aria-live='polite'
-							className='mt-2 text-sm text-red-500'
-						>
-							{state.errors.height.map((error: string) => (
-								<p key={error}>{error}</p>
-							))}
-						</div>
-					) : null}
-				</div>
-				<div>
-					<label>Weight</label>
-					<p>Enter your weight.</p>
-					<input type='number' name='weight' required />
-					{state.errors?.weight ? (
-						<div
-							id='weight-error'
-							aria-live='polite'
-							className='mt-2 text-sm text-red-500'
-						>
-							{state.errors.weight.map((error: string) => (
-								<p key={error}>{error}</p>
-							))}
-						</div>
-					) : null}
-				</div>
-				<div>
-					<label>Goal</label>
-					<p>Enter your goal.</p>
-					<input type='text' name='goal' required />
-					{state.errors?.goal ? (
-						<div
-							id='goal-error'
-							aria-live='polite'
-							className='mt-2 text-sm text-red-500'
-						>
-							{state.errors.goal.map((error: string) => (
-								<p key={error}>{error}</p>
-							))}
-						</div>
-					) : null}
-				</div>
-				<div>
-					<label>Activity</label>
-					<p>Enter your activity level.</p>
-					<input type='text' name='activity' required />
-					{state.errors?.activity ? (
-						<div
-							id='activity-error'
-							aria-live='polite'
-							className='mt-2 text-sm text-red-500'
-						>
-							{state.errors.activity.map((error: string) => (
-								<p key={error}>{error}</p>
-							))}
-						</div>
-					) : null}
-				</div>
+		<section className='flex h-screen w-full flex-col place-content-center place-items-center'>
+			<form ref={formRef} action={handleSubmit}>
+				<PersonalInfo
+					setShowSection={setShowSection}
+					sex={{ value: sex, setValue: setSex }}
+					bornDate={{ value: bornDate, setValue: setBornDate }}
+					showSection={showSection === ONBOARDING_SECTIONS.personal}
+					setBodyMetricsEntry={setBodyMetricsEntry}
+				/>
 
-				<input type='hidden' name='heightUnit' value='cm' />
-				<input type='hidden' name='weightUnit' value='lb' />
-
-				{state.errors && state.message && (
-					<div
-						id='amount-error'
-						aria-live='polite'
-						className='mt-2 text-sm text-red-500'
-					>
-						<p>{state.message}</p>
-					</div>
+				{bodyMetricsEntry && (
+					<BodyMetrics
+						setShowSection={setShowSection}
+						height={{
+							value: height,
+							setValue: setHeight,
+							unit: heightUnit,
+							setUnit: setHeightUnit,
+							decimal: heightDecimal,
+							setDecimal: setHeightDecimal
+						}}
+						weight={{
+							value: weight,
+							setValue: setWeight,
+							unit: weightUnit,
+							setUnit: setWeightUnit
+						}}
+						showSection={showSection === ONBOARDING_SECTIONS.metrics}
+						setFitnessGoalsEntry={setFitnessGoalsEntry}
+					/>
 				)}
-				<button type='submit'>Submit</button>
+
+				{fitnessGoalsEntry && (
+					<FitnessGoals
+						setShowSection={setShowSection}
+						goal={{ value: goal, setValue: setGoal }}
+						activity={{ value: activity, setValue: setActivity }}
+						sendForm={sendForm}
+						showSection={showSection === ONBOARDING_SECTIONS.goals}
+					/>
+				)}
 			</form>
 		</section>
 	)
