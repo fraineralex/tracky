@@ -9,36 +9,74 @@ import {
 	SelectTrigger,
 	SelectValue
 } from '~/components/ui/select'
-import { useState } from 'react'
 import { Button } from '~/components/ui/button'
 import { ONBOARDING_SECTIONS } from '~/constants'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useRef } from 'react'
 
 export default function BodyMetrics({
 	formState,
-	setShowSection
+	setShowSection,
+	height,
+	weight
 }: {
 	formState: State
 	setShowSection: (section: string) => void
+	height: {
+		value: number
+		setValue: (height: number) => void
+		unit: string
+		setUnit: (unit: string) => void
+		decimal: number
+		setDecimal: (decimal: number) => void
+	}
+	weight: {
+		value: number
+		setValue: (weight: number) => void
+		unit: string
+		setUnit: (unit: string) => void
+	}
 }) {
-	const [heightUnit, setHeightUnit] = useState('ft')
-	const [heightDecimal, setHeightDecimal] = useState(5)
-	const [weightUnit, setWeightUnit] = useState('lb')
-	const [height, setHeight] = useState(1)
-	const [weight, setWeight] = useState(0)
+	const heightRef = useRef<HTMLInputElement | null>(null)
+	const heightUnitRef = useRef<HTMLInputElement | null>(null)
+	const weightUnitRef = useRef<HTMLInputElement | null>(null)
 
-	let heightLength = heightUnit === 'ft' ? 8 : 250
-	if (heightUnit === 'm') heightLength = 2
+	let heightLength = height.unit === 'ft' ? 8 : 250
+	if (height.unit === 'm') heightLength = 2
 
-	const decimalLength = heightUnit === 'ft' ? 11 : 99
+	const decimalLength = height.unit === 'ft' ? 11 : 99
 
 	const handleClickNext = () => {
-		if (height && weight) {
+		if (height.value && weight.value) {
 			setShowSection(ONBOARDING_SECTIONS.goals)
 		}
 	}
 
+	const handleSelectHeight = (value: number) => {
+		const newHeight =
+			height.unit !== 'cm' ? parseFloat(`${value}.${height.decimal}`) : value
+		height.setValue(newHeight)
+		if (heightRef.current) heightRef.current.value = value.toString()
+	}
+
+	const handleSelectHeightDecimal = (value: number) => {
+		const newHeight = parseFloat(`${height.value}.${value}`)
+		height.setDecimal(value)
+		if (heightRef.current) heightRef.current.value = newHeight.toString()
+	}
+
+	const handleSelectHeightUnit = (value: string) => {
+		height.setUnit(value)
+		if (heightUnitRef.current) heightUnitRef.current.value = value
+	}
+
+	const handleSelectWeightUnit = (value: string) => {
+		weight.setUnit(value)
+		if (weightUnitRef.current) weightUnitRef.current.value = value
+	}
+
 	return (
-		<section className='z-10 mx-5 flex flex-col items-center space-y-10 text-center sm:mx-auto'>
+		<section className='z-10 mx-5 flex flex-col items-center space-y-16 text-center sm:mx-auto'>
 			<h1 className='font-serif text-3xl font-bold text-green-600 dark:text-green-500'>
 				trac<span className='text-wood-950 dark:text-wood-100'>ky</span>
 			</h1>
@@ -48,17 +86,17 @@ export default function BodyMetrics({
 						What is your height?
 					</h2>
 					<div
-						className={`flex items-center ${heightUnit === 'cm' ? 'space-x-2' : 'space-x-3'}`}
+						className={`flex items-center ${height.unit === 'cm' ? 'space-x-2' : 'space-x-3'}`}
 					>
 						<span className='flex items-center space-x-1'>
+							<input name='height' type='hidden' ref={heightRef} value={height.value} />
 							<Select
-								name='height'
-								defaultValue={height.toString()}
+								defaultValue={height.value.toString()}
 								required
-								onValueChange={value => setHeight(Number(value))}
+								onValueChange={value => handleSelectHeight(Number(value))}
 							>
 								<SelectTrigger
-									className={`${heightUnit === 'cm' ? 'w-[180px]' : 'w-[80px]'} border-gray-400`}
+									className={`${height.unit === 'cm' ? 'w-[180px]' : 'w-[80px]'} border-gray-400`}
 								>
 									<SelectValue placeholder={height.toString()} />
 								</SelectTrigger>
@@ -73,21 +111,21 @@ export default function BodyMetrics({
 									</SelectGroup>
 								</SelectContent>
 							</Select>
-							{heightUnit !== 'cm' && (
+							{height.unit !== 'cm' && (
 								<>
 									<p
-										className={`${heightUnit === 'ft' ? '-mt-5' : 'mt-5'} font-semibold`}
+										className={`${height.unit === 'ft' ? '-mt-5' : 'mt-5'} font-semibold`}
 									>
-										{heightUnit === 'ft' ? '″' : '.'}
+										{height.unit === 'ft' ? '″' : '.'}
 									</p>
 									<Select
 										name='heightDecimal'
-										defaultValue={heightDecimal.toString()}
+										defaultValue={height.decimal.toString()}
 										required
-										onValueChange={value => setHeightDecimal(Number(value))}
+										onValueChange={value => handleSelectHeightDecimal(Number(value))}
 									>
 										<SelectTrigger className='w-[80px] border-gray-400'>
-											<SelectValue placeholder={heightDecimal.toString()} />
+											<SelectValue placeholder={height.decimal.toString()} />
 										</SelectTrigger>
 										<SelectContent>
 											<SelectGroup>
@@ -105,11 +143,11 @@ export default function BodyMetrics({
 						</span>
 						<Select
 							name='heightUnit'
-							defaultValue='ft'
-							onValueChange={value => setHeightUnit(value)}
+							defaultValue={height.unit}
+							onValueChange={value => handleSelectHeightUnit(value)}
 						>
 							<SelectTrigger className='w-[80px] border-gray-400'>
-								<SelectValue placeholder='ft' />
+								<SelectValue placeholder={height.unit} />
 							</SelectTrigger>
 							<SelectContent>
 								<SelectGroup>
@@ -144,15 +182,16 @@ export default function BodyMetrics({
 							placeholder='weight'
 							className='w-[180px] border-gray-400 focus:border-gray-300'
 							required
-							onChange={e => setWeight(Number(e.target.value))}
+							onChange={e => weight.setValue(Number(e.target.value))}
+							value={weight.value}
 						/>
 						<Select
 							name='weightUnit'
-							defaultValue='lb'
-							onValueChange={value => setWeightUnit(value)}
+							defaultValue={weight.unit}
+							onValueChange={value => handleSelectWeightUnit(value)}
 						>
 							<SelectTrigger className='w-[80px] border-gray-400'>
-								<SelectValue placeholder='lb' />
+								<SelectValue placeholder={weight.unit} />
 							</SelectTrigger>
 							<SelectContent>
 								<SelectGroup>
@@ -175,17 +214,28 @@ export default function BodyMetrics({
 						</div>
 					) : null}
 				</article>
-				<input type='hidden' name='heightUnit' value='cm' />
-				<input type='hidden' name='weightUnit' value='lb' />
+				<input type='hidden' name='heightUnit' value={height.unit} ref={heightUnitRef} />
+				<input type='hidden' name='weightUnit' value={weight.unit} ref={weightUnitRef} />
 			</div>
-			<Button
-				type='button'
-				variant='default'
-				className='px-10 text-base font-medium'
-				onClick={handleClickNext}
-			>
-				Next
-			</Button>
+			<footer className='flex w-full justify-between'>
+				<Button
+					type='button'
+					variant='secondary'
+					className='text-base font-medium'
+					onClick={() => setShowSection(ONBOARDING_SECTIONS.personal)}
+				>
+					<ChevronLeft />
+				</Button>
+				<Button
+					type='button'
+					variant={`${height.value && weight.value ? 'default' : 'secondary'}`}
+					className='text-base font-medium'
+					onClick={handleClickNext}
+					disabled={!height.value || !weight.value}
+				>
+					<ChevronRight />
+				</Button>
+			</footer>
 		</section>
 	)
 }

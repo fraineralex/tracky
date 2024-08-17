@@ -1,8 +1,8 @@
-'use client'
+'use strict'
 
-import { Button } from '~/components/ui/button'
 import { State } from '../_actions'
 import {
+	ChevronLeft,
 	Dumbbell,
 	Scale,
 	Snail,
@@ -10,16 +10,52 @@ import {
 	TrendingDown,
 	Turtle
 } from 'lucide-react'
-import { ACTIVITY_LEVELS, GOALS_OPTIONS } from '~/constants'
-import { useState } from 'react'
+import {
+	ACTIVITY_LEVELS,
+	GOALS_OPTIONS,
+	ONBOARDING_SECTIONS
+} from '~/constants'
 import OptionItem from './ui/option-item'
+import { Button } from '~/components/ui/button'
+import { useRef } from 'react'
 
-export default function FitnessGoals({ formState }: { formState: State }) {
-	const [goal, setGoal] = useState<string | null>(null)
-	const [activity, setActivity] = useState<string | null>(null)
+export default function FitnessGoals({
+	formState,
+	setShowSection,
+	goal,
+	activity,
+	sendForm
+}: {
+	formState: State
+	setShowSection: (section: string) => void
+	goal: {
+		value: string | undefined
+		setValue: (value: string | undefined) => void
+	}
+	activity: {
+		value: string | undefined
+		setValue: (value: string | undefined) => void
+	}
+	sendForm: () => void
+}) {
+	const goalInputRef = useRef<HTMLInputElement | null>(null)
+	const activityInputRef = useRef<HTMLInputElement | null>(null)
+
+	const handleSelectGoal = (value: string) => () => {
+		goal.setValue(value)
+		if (activityInputRef.current) activityInputRef.current.value = value
+		if (value && activity.value) sendForm()
+	}
+
+	const handleSelectActivity = (value: string) => () => {
+		activity.setValue(value)
+		if (activityInputRef.current) activityInputRef.current.value = value
+
+		if (value && goal.value) sendForm()
+	}
 
 	return (
-		<section className='z-10 mx-5 flex flex-col items-center space-y-10 text-center sm:mx-auto'>
+		<section className='z-10 mx-5 flex flex-col items-center space-y-16 text-center sm:mx-auto'>
 			<h1 className='font-serif text-3xl font-bold text-green-600 dark:text-green-500'>
 				trac<span className='text-wood-950 dark:text-wood-100'>ky</span>
 			</h1>
@@ -30,28 +66,34 @@ export default function FitnessGoals({ formState }: { formState: State }) {
 					</h2>
 					<div className='flex flex-col space-y-5 py-5'>
 						<OptionItem
-							active={goal === GOALS_OPTIONS.loss}
+							active={goal.value === GOALS_OPTIONS.loss}
 							Icon={TrendingDown}
 							title='Lose Weight'
 							description='Goal of lossing weight'
-							selectItem={() => setGoal(GOALS_OPTIONS.loss)}
+							selectItem={handleSelectGoal(GOALS_OPTIONS.loss)}
 						/>
 						<OptionItem
-							active={goal === GOALS_OPTIONS.maintain}
+							active={goal.value === GOALS_OPTIONS.maintain}
 							Icon={Scale}
 							title='Maintain Weight'
 							description='Goal of maintenig weight'
-							selectItem={() => setGoal(GOALS_OPTIONS.maintain)}
+							selectItem={handleSelectGoal(GOALS_OPTIONS.maintain)}
 						/>
 						<OptionItem
-							active={goal === GOALS_OPTIONS.gain}
+							active={goal.value === GOALS_OPTIONS.gain}
 							Icon={Dumbbell}
 							title='Gain Weight'
 							description='Goal of gaining weight'
-							selectItem={() => setGoal(GOALS_OPTIONS.gain)}
+							selectItem={handleSelectGoal(GOALS_OPTIONS.gain)}
 						/>
 					</div>
-					<input type='hidden' name='goal' required />
+					<input
+						type='hidden'
+						name='goal'
+						required
+						value={goal.value}
+						ref={goalInputRef}
+					/>
 					{formState.errors?.goal ? (
 						<div
 							id='goal-error'
@@ -70,28 +112,34 @@ export default function FitnessGoals({ formState }: { formState: State }) {
 					</h2>
 					<div className='flex flex-col space-y-5 py-5'>
 						<OptionItem
-							active={activity === ACTIVITY_LEVELS.sedentary}
+							active={activity.value === ACTIVITY_LEVELS.sedentary}
 							Icon={Snail}
 							title='Mostly Sedentary'
 							description='Less than 5,000 steps a day'
-							selectItem={() => setActivity(ACTIVITY_LEVELS.sedentary)}
+							selectItem={handleSelectActivity(ACTIVITY_LEVELS.sedentary)}
 						/>
 						<OptionItem
-							active={activity === ACTIVITY_LEVELS.moderate}
+							active={activity.value === ACTIVITY_LEVELS.moderate}
 							Icon={Turtle}
 							title='Mostly Active'
 							description='5,000 to 10,000 steps a day'
-							selectItem={() => setActivity(ACTIVITY_LEVELS.moderate)}
+							selectItem={handleSelectActivity(ACTIVITY_LEVELS.moderate)}
 						/>
 						<OptionItem
-							active={activity === ACTIVITY_LEVELS.active}
+							active={activity.value === ACTIVITY_LEVELS.active}
 							Icon={Squirrel}
 							title='Very Active'
 							description='More than 10,000 steps a day'
-							selectItem={() => setActivity(ACTIVITY_LEVELS.active)}
+							selectItem={handleSelectActivity(ACTIVITY_LEVELS.active)}
 						/>
 					</div>
-					<input type='hidden' name='activity' required />
+					<input
+						type='hidden'
+						name='activity'
+						value={activity.value}
+						ref={activityInputRef}
+						required
+					/>
 					{formState.errors?.activity ? (
 						<div
 							id='activity-error'
@@ -105,7 +153,16 @@ export default function FitnessGoals({ formState }: { formState: State }) {
 					) : null}
 				</article>
 			</aside>
-			<Button type='submit'>Submit</Button>
+			<footer className='flex w-full justify-start'>
+				<Button
+					type='button'
+					variant='secondary'
+					className='text-base font-medium'
+					onClick={() => setShowSection(ONBOARDING_SECTIONS.metrics)}
+				>
+					<ChevronLeft />
+				</Button>
+			</footer>
 		</section>
 	)
 }
