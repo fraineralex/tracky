@@ -11,12 +11,15 @@ import {
 import { Button } from '~/components/ui/button'
 import { ONBOARDING_SECTIONS } from '~/constants'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { STAGGER_CHILD_VARIANTS } from '~/constants'
 
 export default function BodyMetrics({
 	setShowSection,
 	height,
 	weight,
-	showSection
+	showSection,
+	setFitnessGoalsEntry
 }: {
 	setShowSection: (section: string) => void
 	height: {
@@ -34,6 +37,7 @@ export default function BodyMetrics({
 		setUnit: (unit: string) => void
 	}
 	showSection: boolean
+	setFitnessGoalsEntry: (entry: boolean) => void
 }) {
 	let heightLength = height.unit === 'ft' ? 8 : 250
 	if (height.unit === 'm') heightLength = 2
@@ -43,19 +47,30 @@ export default function BodyMetrics({
 	const handleClickNext = () => {
 		if (height.value && weight.value) {
 			setShowSection(ONBOARDING_SECTIONS.goals)
+			setFitnessGoalsEntry(true)
 		}
 	}
 
 	return (
-		<section
+		<motion.section
 			className={`z-10 mx-5  ${showSection ? 'flex' : 'hidden'} flex-col items-center space-y-16 text-center sm:mx-auto`}
-			hidden={!showSection}
+			variants={{
+				hidden: { opacity: 0, scale: 0.95 },
+				show: { opacity: 1, scale: 1, transition: { staggerChildren: 0.2 } }
+			}}
+			initial='hidden'
+			animate='show'
+			exit='hidden'
+			transition={{ duration: 0.3, type: 'spring' }}
 		>
-			<h1 className='font-serif text-3xl font-bold text-green-600 dark:text-green-500'>
+			<motion.h1
+				variants={STAGGER_CHILD_VARIANTS}
+				className='font-serif text-3xl font-bold text-green-600 dark:text-green-500'
+			>
 				trac<span className='text-wood-950 dark:text-wood-100'>ky</span>
-			</h1>
+			</motion.h1>
 			<div className='space-y-10'>
-				<article className='space-y-1'>
+				<motion.article className='space-y-1' variants={STAGGER_CHILD_VARIANTS}>
 					<h2 className='font-display max-w-md text-start text-sm font-semibold transition-colors'>
 						What is your height?
 					</h2>
@@ -133,8 +148,8 @@ export default function BodyMetrics({
 							</SelectContent>
 						</Select>
 					</div>
-				</article>
-				<article className='space-y-1'>
+				</motion.article>
+				<motion.article className='space-y-1' variants={STAGGER_CHILD_VARIANTS}>
 					<h2 className='font-display max-w-md text-start text-sm font-semibold transition-colors'>
 						What is your weight?
 					</h2>
@@ -165,9 +180,12 @@ export default function BodyMetrics({
 							</SelectContent>
 						</Select>
 					</div>
-				</article>
+				</motion.article>
 			</div>
-			<footer className='flex w-full justify-between'>
+			<motion.footer
+				className='flex w-full justify-between'
+				variants={STAGGER_CHILD_VARIANTS}
+			>
 				<Button
 					type='button'
 					variant='secondary'
@@ -185,7 +203,7 @@ export default function BodyMetrics({
 				>
 					<ChevronRight />
 				</Button>
-			</footer>
-		</section>
+			</motion.footer>
+		</motion.section>
 	)
 }

@@ -27,6 +27,8 @@ export default function OnboardingPage() {
 	const [goal, setGoal] = useState<string | undefined>()
 	const [activity, setActivity] = useState<string | undefined>()
 	const formRef = useRef<HTMLFormElement>(null)
+	const [bodyMetricsEntry, setBodyMetricsEntry] = useState(false)
+	const [fitnessGoalsEntry, setFitnessGoalsEntry] = useState(false)
 
 	async function sendForm() {
 		confetti()
@@ -48,34 +50,40 @@ export default function OnboardingPage() {
 					sex={{ value: sex, setValue: setSex }}
 					bornDate={{ value: bornDate, setValue: setBornDate }}
 					showSection={showSection === ONBOARDING_SECTIONS.personal}
+					setBodyMetricsEntry={setBodyMetricsEntry}
 				/>
 
-				<BodyMetrics
-					setShowSection={setShowSection}
-					height={{
-						value: height,
-						setValue: setHeight,
-						unit: heightUnit,
-						setUnit: setHeightUnit,
-						decimal: heightDecimal,
-						setDecimal: setHeightDecimal
-					}}
-					weight={{
-						value: weight,
-						setValue: setWeight,
-						unit: weightUnit,
-						setUnit: setWeightUnit
-					}}
-					showSection={showSection === ONBOARDING_SECTIONS.metrics}
-				/>
+				{bodyMetricsEntry && (
+					<BodyMetrics
+						setShowSection={setShowSection}
+						height={{
+							value: height,
+							setValue: setHeight,
+							unit: heightUnit,
+							setUnit: setHeightUnit,
+							decimal: heightDecimal,
+							setDecimal: setHeightDecimal
+						}}
+						weight={{
+							value: weight,
+							setValue: setWeight,
+							unit: weightUnit,
+							setUnit: setWeightUnit
+						}}
+						showSection={showSection === ONBOARDING_SECTIONS.metrics}
+						setFitnessGoalsEntry={setFitnessGoalsEntry}
+					/>
+				)}
 
-				<FitnessGoals
-					setShowSection={setShowSection}
-					goal={{ value: goal, setValue: setGoal }}
-					activity={{ value: activity, setValue: setActivity }}
-					sendForm={sendForm}
-					showSection={showSection === ONBOARDING_SECTIONS.goals}
-				/>
+				{fitnessGoalsEntry && (
+					<FitnessGoals
+						setShowSection={setShowSection}
+						goal={{ value: goal, setValue: setGoal }}
+						activity={{ value: activity, setValue: setActivity }}
+						sendForm={sendForm}
+						showSection={showSection === ONBOARDING_SECTIONS.goals}
+					/>
+				)}
 			</form>
 		</section>
 	)

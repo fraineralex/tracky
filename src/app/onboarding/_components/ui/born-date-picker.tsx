@@ -40,13 +40,18 @@ export function BornDatePicker({
 				</PopoverTrigger>
 				<PopoverContent
 					className={`w-auto p-0  ${showSection ? 'visible' : 'invisible'}`}
+					align='center'
 				>
 					<Calendar
 						mode='single'
 						selected={date}
 						onSelect={setDate}
 						initialFocus
-						disabled={{ before: new Date('1900-01-01'), after: new Date() }}
+						disabled={{
+							before: new Date('1924-01-01'),
+							after: new Date('2016-01-01')
+						}}
+						defaultMonth={date || new Date('2000-01-31')}
 					/>
 				</PopoverContent>
 			</Popover>

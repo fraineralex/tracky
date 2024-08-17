@@ -17,6 +17,8 @@ import {
 import OptionItem from './ui/option-item'
 import { Button } from '~/components/ui/button'
 import { useRef } from 'react'
+import { motion } from 'framer-motion'
+import { STAGGER_CHILD_VARIANTS } from '~/constants'
 
 export default function FitnessGoals({
 	setShowSection,
@@ -54,18 +56,35 @@ export default function FitnessGoals({
 	}
 
 	return (
-		<section
+		<motion.section
 			className={`z-10 mx-5 ${showSection ? 'flex' : 'hidden'} flex-col items-center space-y-16 text-center sm:mx-auto`}
+			variants={{
+				hidden: { opacity: 0, scale: 0.95 },
+				show: { opacity: 1, scale: 1, transition: { staggerChildren: 0.2 } }
+			}}
+			initial='hidden'
+			animate='show'
+			exit='hidden'
+			transition={{ duration: 0.3, type: 'spring' }}
 		>
-			<h1 className='font-serif text-3xl font-bold text-green-600 dark:text-green-500'>
+			<motion.h1
+				variants={STAGGER_CHILD_VARIANTS}
+				className='font-serif text-3xl font-bold text-green-600 dark:text-green-500'
+			>
 				trac<span className='text-wood-950 dark:text-wood-100'>ky</span>
-			</h1>
+			</motion.h1>
 			<aside className='flex flex-col space-x-20 sm:mx-auto md:flex-row'>
 				<article className='space-y-1'>
-					<h2 className='font-display max-w-md text-start text-sm font-semibold transition-colors'>
+					<motion.h2
+						variants={STAGGER_CHILD_VARIANTS}
+						className='font-display max-w-md text-start text-sm font-semibold transition-colors'
+					>
 						What is your goal?
-					</h2>
-					<div className='flex flex-col space-y-5 py-5'>
+					</motion.h2>
+					<motion.div
+						className='flex flex-col space-y-5 py-5'
+						variants={STAGGER_CHILD_VARIANTS}
+					>
 						<OptionItem
 							active={goal.value === GOALS_OPTIONS.loss}
 							Icon={TrendingDown}
@@ -87,7 +106,7 @@ export default function FitnessGoals({
 							description='Goal of gaining weight'
 							selectItem={handleSelectGoal(GOALS_OPTIONS.gain)}
 						/>
-					</div>
+					</motion.div>
 					<input
 						type='hidden'
 						name='goal'
@@ -97,10 +116,16 @@ export default function FitnessGoals({
 					/>
 				</article>
 				<article className='space-y-1'>
-					<h2 className='font-display max-w-md text-start text-sm font-semibold transition-colors'>
+					<motion.h2
+						variants={STAGGER_CHILD_VARIANTS}
+						className='font-display max-w-md text-start text-sm font-semibold transition-colors'
+					>
 						How active are you?
-					</h2>
-					<div className='flex flex-col space-y-5 py-5'>
+					</motion.h2>
+					<motion.div
+						className='flex flex-col space-y-5 py-5'
+						variants={STAGGER_CHILD_VARIANTS}
+					>
 						<OptionItem
 							active={activity.value === ACTIVITY_LEVELS.sedentary}
 							Icon={Snail}
@@ -122,7 +147,7 @@ export default function FitnessGoals({
 							description='More than 10,000 steps a day'
 							selectItem={handleSelectActivity(ACTIVITY_LEVELS.active)}
 						/>
-					</div>
+					</motion.div>
 					<input
 						type='hidden'
 						name='activity'
@@ -132,7 +157,10 @@ export default function FitnessGoals({
 					/>
 				</article>
 			</aside>
-			<footer className='flex w-full justify-start'>
+			<motion.footer
+				className='flex w-full justify-start'
+				variants={STAGGER_CHILD_VARIANTS}
+			>
 				<Button
 					type='button'
 					variant='secondary'
@@ -141,7 +169,7 @@ export default function FitnessGoals({
 				>
 					<ChevronLeft />
 				</Button>
-			</footer>
-		</section>
+			</motion.footer>
+		</motion.section>
 	)
 }
