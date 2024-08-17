@@ -11,7 +11,8 @@ const OnboardingSchema = z.object({
 				return new Date(arg)
 			}
 		},
-		z.date({
+		z
+			.date({
 				required_error: 'Please enter your birth date'
 			})
 			.min(new Date('1900-01-01'), 'Date must be after 01-01-1900')
@@ -25,36 +26,17 @@ const OnboardingSchema = z.object({
 		.number({ required_error: 'Please enter your weight' })
 		.positive()
 		.max(600),
-	goal: z.enum(['lose', 'maintain', 'gain'], {
+	goal: z.enum(['loss', 'maintain', 'gain'], {
 		required_error: 'Please select a goal'
 	}),
-	activity: z.enum(
-		['sedentary', 'light', 'moderate', 'active', 'very active'],
-		{ required_error: 'Please select an activity level' }
-	),
+	activity: z.enum(['sedentary', 'moderate', 'active'], {
+		required_error: 'Please select an activity level'
+	}),
 	weightUnit: z.enum(['lb', 'kg']).optional().default('lb'),
-	heightUnit: z.enum(['cm', 'ft']).optional().default('cm')
+	heightUnit: z.enum(['cm', 'ft', 'm']).optional().default('ft')
 })
 
-export type State = {
-	errors?: {
-		sex?: string[]
-		born?: string[]
-		height?: string[]
-		weight?: string[]
-		goal?: string[]
-		activity?: string[]
-		weightUnit?: string[]
-		heightUnit?: string[]
-	}
-	message?: string | null
-	onboardingComplete?: boolean
-}
-
-export const completeOnboarding = async (
-	prevState: State,
-	formData: FormData
-) => {
+export const completeOnboarding = async (formData: FormData) => {
 	const { userId } = auth()
 
 	if (!userId) return { message: 'No Logged In User' }
@@ -62,8 +44,8 @@ export const completeOnboarding = async (
 	const validatedFields = OnboardingSchema.safeParse({
 		sex: formData.get('sex'),
 		born: formData.get('born'),
-		height: Number(formData.get('height')),
-		weight: Number(formData.get('weight')),
+		height: formData.get('height'),
+		weight: formData.get('weight'),
 		goal: formData.get('goal'),
 		activity: formData.get('activity'),
 		weightUnit: formData.get('weightUnit'),
@@ -72,20 +54,21 @@ export const completeOnboarding = async (
 
 	if (!validatedFields.success) {
 		return {
-			errors: validatedFields.error.flatten().fieldErrors,
-			message: 'Please correct the errors below.'
+			message: 'Onboarding failed. Please try again later.'
 		}
 	}
 
-	if (validatedFields.data.heightUnit === 'ft') {
-		validatedFields.data.height *= 30.48
-		validatedFields.data.heightUnit = 'cm'
+	if (validatedFields.data.heightUnit != 'cm') {
+		const decimal =
+			Number(formData.get('heightDecimal')) > 0
+				? Number(formData.get('heightDecimal'))
+				: 0
+		validatedFields.data.height = parseFloat(
+			`${validatedFields.data.height}.${decimal}`
+		)
 	}
 
-	if (validatedFields.data.weightUnit === 'kg') {
-		validatedFields.data.weight *= 2.20462
-		validatedFields.data.weightUnit = 'lb'
-	}
+	console.log(validatedFields.data)
 
 	try {
 		await clerkClient().users.updateUser(userId, {
@@ -95,10 +78,10 @@ export const completeOnboarding = async (
 			}
 		})
 
-		return { message: 'Onboarding failed. Please try again later.' }
-
-		return { onboardingComplete: true }
+		return { message: 'Onboarding complete' }
 	} catch (err) {
-		return { message: 'Onboarding failed. Please try again later.' }
+		return {
+			message: 'Onboarding failed. Please try again later.'
+		}
 	}
 }

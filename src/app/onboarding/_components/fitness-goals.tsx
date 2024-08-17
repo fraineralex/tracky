@@ -1,6 +1,5 @@
 'use strict'
 
-import { State } from '../_actions'
 import {
 	ChevronLeft,
 	Dumbbell,
@@ -20,13 +19,12 @@ import { Button } from '~/components/ui/button'
 import { useRef } from 'react'
 
 export default function FitnessGoals({
-	formState,
 	setShowSection,
 	goal,
 	activity,
-	sendForm
+	sendForm,
+	showSection
 }: {
-	formState: State
 	setShowSection: (section: string) => void
 	goal: {
 		value: string | undefined
@@ -37,6 +35,7 @@ export default function FitnessGoals({
 		setValue: (value: string | undefined) => void
 	}
 	sendForm: () => void
+	showSection: boolean
 }) {
 	const goalInputRef = useRef<HTMLInputElement | null>(null)
 	const activityInputRef = useRef<HTMLInputElement | null>(null)
@@ -55,7 +54,9 @@ export default function FitnessGoals({
 	}
 
 	return (
-		<section className='z-10 mx-5 flex flex-col items-center space-y-16 text-center sm:mx-auto'>
+		<section
+			className={`z-10 mx-5 ${showSection ? 'flex' : 'hidden'} flex-col items-center space-y-16 text-center sm:mx-auto`}
+		>
 			<h1 className='font-serif text-3xl font-bold text-green-600 dark:text-green-500'>
 				trac<span className='text-wood-950 dark:text-wood-100'>ky</span>
 			</h1>
@@ -94,17 +95,6 @@ export default function FitnessGoals({
 						value={goal.value}
 						ref={goalInputRef}
 					/>
-					{formState.errors?.goal ? (
-						<div
-							id='goal-error'
-							aria-live='polite'
-							className='mt-2 text-sm text-red-500'
-						>
-							{formState.errors.goal.map((error: string) => (
-								<p key={error}>{error}</p>
-							))}
-						</div>
-					) : null}
 				</article>
 				<article className='space-y-1'>
 					<h2 className='font-display max-w-md text-start text-sm font-semibold transition-colors'>
@@ -140,17 +130,6 @@ export default function FitnessGoals({
 						ref={activityInputRef}
 						required
 					/>
-					{formState.errors?.activity ? (
-						<div
-							id='activity-error'
-							aria-live='polite'
-							className='mt-2 text-sm text-red-500'
-						>
-							{formState.errors.activity.map((error: string) => (
-								<p key={error}>{error}</p>
-							))}
-						</div>
-					) : null}
 				</article>
 			</aside>
 			<footer className='flex w-full justify-start'>

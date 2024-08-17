@@ -1,6 +1,6 @@
 'use client'
 
-import { completeOnboarding, State } from './_actions'
+import { completeOnboarding } from './_actions'
 import { useFormState } from 'react-dom'
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
@@ -11,16 +11,12 @@ import FitnessGoals from './_components/fitness-goals'
 import { useRef, useState } from 'react'
 import { ONBOARDING_SECTIONS } from '~/constants'
 import { sex } from '~/types'
+import confetti from 'canvas-confetti'
 
 export default function OnboardingPage() {
 	const { user } = useUser()
 	const router = useRouter()
-	const initialState = { message: null, errors: {} }
-	const [formState, dispatch] = useFormState<State, FormData>(
-		completeOnboarding,
-		initialState
-	)
-	const [showSection, setShowSection] = useState(ONBOARDING_SECTIONS.metrics)
+	const [showSection, setShowSection] = useState(ONBOARDING_SECTIONS.personal)
 	const [sex, setSex] = useState<sex | undefined>()
 	const [bornDate, setBornDate] = useState<Date | undefined>()
 	const [heightUnit, setHeightUnit] = useState('ft')
@@ -32,72 +28,54 @@ export default function OnboardingPage() {
 	const [activity, setActivity] = useState<string | undefined>()
 	const formRef = useRef<HTMLFormElement>(null)
 
-	async function redirectToDashboard() {
+	async function sendForm() {
+		confetti()
 		toast.success('Onboarding complete')
+		formRef.current?.requestSubmit()
+	}
+
+	const handleSubmit = async (formData: FormData) => {
+		await completeOnboarding(formData)
 		await user?.reload()
 		router.push('/dashboard')
 	}
 
-	if (formState?.onboardingComplete) redirectToDashboard()
-
-	if (!formState?.errors && formState?.message) toast.error(formState.message)
-
-	function sendForm() {
-		formRef.current?.submit()
-	}
-
 	return (
 		<section className='flex h-screen w-full flex-col place-content-center place-items-center'>
-			<form action={dispatch} ref={formRef}>
-				{showSection === ONBOARDING_SECTIONS.personal && (
-					<PersonalInfo
-						formState={formState}
-						setShowSection={setShowSection}
-						sex={{ value: sex, setValue: setSex }}
-						bornDate={{ value: bornDate, setValue: setBornDate }}
-					/>
-				)}
+			<form ref={formRef} action={handleSubmit}>
+				<PersonalInfo
+					setShowSection={setShowSection}
+					sex={{ value: sex, setValue: setSex }}
+					bornDate={{ value: bornDate, setValue: setBornDate }}
+					showSection={showSection === ONBOARDING_SECTIONS.personal}
+				/>
 
-				{showSection === ONBOARDING_SECTIONS.metrics && (
-					<BodyMetrics
-						formState={formState}
-						setShowSection={setShowSection}
-						height={{
-							value: height,
-							setValue: setHeight,
-							unit: heightUnit,
-							setUnit: setHeightUnit,
-							decimal: heightDecimal,
-							setDecimal: setHeightDecimal
-						}}
-						weight={{
-							value: weight,
-							setValue: setWeight,
-							unit: weightUnit,
-							setUnit: setWeightUnit
-						}}
-					/>
-				)}
+				<BodyMetrics
+					setShowSection={setShowSection}
+					height={{
+						value: height,
+						setValue: setHeight,
+						unit: heightUnit,
+						setUnit: setHeightUnit,
+						decimal: heightDecimal,
+						setDecimal: setHeightDecimal
+					}}
+					weight={{
+						value: weight,
+						setValue: setWeight,
+						unit: weightUnit,
+						setUnit: setWeightUnit
+					}}
+					showSection={showSection === ONBOARDING_SECTIONS.metrics}
+				/>
 
-				{showSection === ONBOARDING_SECTIONS.goals && (
-					<FitnessGoals
-						formState={formState}
-						setShowSection={setShowSection}
-						goal={{ value: goal, setValue: setGoal }}
-						activity={{ value: activity, setValue: setActivity }}
-						sendForm={sendForm}
-					/>
-				)}
-
-				{/* {formState.errors && formState.message && (
-					<div
-						id='amount-error'
-						aria-live='polite'
-						className='mt-2 text-sm text-red-500'
-					>
-						<p>{formState.message}</p>
-					</div>
-				)} */}
+				<FitnessGoals
+					setShowSection={setShowSection}
+					goal={{ value: goal, setValue: setGoal }}
+					activity={{ value: activity, setValue: setActivity }}
+					sendForm={sendForm}
+					showSection={showSection === ONBOARDING_SECTIONS.goals}
+				/>
 			</form>
 		</section>
 	)

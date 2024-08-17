@@ -1,4 +1,4 @@
-'use client'
+'use strict'
 
 import * as React from 'react'
 import { format } from 'date-fns'
@@ -13,16 +13,15 @@ import {
 	PopoverTrigger
 } from '~/components/ui/popover'
 import { Label } from '../../../../components/ui/label'
-import { State } from '~/app/onboarding/_actions'
 
 export function BornDatePicker({
-	formState,
 	date,
-	setDate
+	setDate,
+	showSection
 }: {
-	formState: State
 	date: Date | undefined
 	setDate: (date: Date | undefined) => void
+	showSection: boolean
 }) {
 	return (
 		<>
@@ -39,7 +38,9 @@ export function BornDatePicker({
 						{date ? format(date, 'PPP') : <span>Pick a date</span>}
 					</Button>
 				</PopoverTrigger>
-				<PopoverContent className='w-auto p-0'>
+				<PopoverContent
+					className={`w-auto p-0  ${showSection ? 'visible' : 'invisible'}`}
+				>
 					<Calendar
 						mode='single'
 						selected={date}
@@ -50,19 +51,7 @@ export function BornDatePicker({
 				</PopoverContent>
 			</Popover>
 			<Label className='mt-2 text-xs text-gray-600'>
-				{formState.errors?.born ? (
-					<div
-						id='born-error'
-						aria-live='polite'
-						className='text-xs text-red-500'
-					>
-						{formState.errors.born.map((error: string) => (
-							<p key={error}>{error}</p>
-						))}
-					</div>
-				) : (
-					'Your date of birth is used to calculate your age.'
-				)}
+				Your date of birth is used to calculate your age.
 			</Label>
 		</>
 	)

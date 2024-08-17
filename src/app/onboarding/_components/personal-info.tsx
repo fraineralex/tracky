@@ -1,7 +1,6 @@
 'use strict'
 
 import { FemaleIcon, MaleIcon } from '~/components/ui/icons'
-import { State } from '../_actions'
 import { BornDatePicker } from '~/app/onboarding/_components/ui/born-date-picker'
 import { useRef, useState } from 'react'
 import { ONBOARDING_SECTIONS } from '~/constants'
@@ -10,12 +9,11 @@ import { Button } from '~/components/ui/button'
 import { ChevronRight } from 'lucide-react'
 
 export default function PersonalInfo({
-	formState,
 	setShowSection,
 	sex,
-	bornDate
+	bornDate,
+	showSection
 }: {
-	formState: State
 	setShowSection: (section: string) => void
 	sex: {
 		value: sex | undefined
@@ -25,6 +23,7 @@ export default function PersonalInfo({
 		value: Date | undefined
 		setValue: (date: Date | undefined) => void
 	}
+	showSection: boolean
 }) {
 	const sexInputRef = useRef<HTMLInputElement | null>(null)
 	const bornDateInputRef = useRef<HTMLInputElement | null>(null)
@@ -43,7 +42,9 @@ export default function PersonalInfo({
 	}
 
 	return (
-		<section className='z-10 mx-5 flex flex-col items-center space-y-10 text-center sm:mx-auto'>
+		<section
+			className={`z-10 mx-5  ${showSection ? 'flex' : 'hidden'} flex-col items-center space-y-10 text-center sm:mx-auto`}
+		>
 			<h1 className='font-serif text-3xl font-bold text-green-600 dark:text-green-500'>
 				trac<span className='text-wood-950 dark:text-wood-100'>ky</span>
 			</h1>
@@ -72,17 +73,6 @@ export default function PersonalInfo({
 					</button>
 				</article>
 				<input type='hidden' name='sex' value={sex.value} ref={sexInputRef} />
-				{formState.errors?.sex ? (
-					<div
-						id='sex-error'
-						aria-live='polite'
-						className='mt-2 text-sm text-red-500'
-					>
-						{formState.errors.sex.map((error: string) => (
-							<p key={error}>{error}</p>
-						))}
-					</div>
-				) : null}
 			</article>
 			<article className='flex flex-col space-y-10 pt-5'>
 				<h2 className='font-display max-w-lg text-3xl font-semibold transition-colors sm:text-4xl'>
@@ -90,9 +80,9 @@ export default function PersonalInfo({
 				</h2>
 				<div className='flex flex-col place-content-center items-center text-start'>
 					<BornDatePicker
-						formState={formState}
 						date={bornDate.value}
 						setDate={handleChangeDate}
+						showSection={showSection}
 					/>
 				</div>
 				<input
@@ -108,6 +98,7 @@ export default function PersonalInfo({
 					variant={`${sex.value && bornDate.value ? 'default' : 'secondary'}`}
 					className='mt-5 text-base font-medium'
 					onClick={() => setShowSection(ONBOARDING_SECTIONS.metrics)}
+					disabled={!sex.value || !bornDate.value}
 				>
 					<ChevronRight />
 				</Button>

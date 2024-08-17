@@ -5,9 +5,9 @@ export const ONBOARDING_SECTIONS = {
 }
 
 export const GOALS_OPTIONS = {
-	loss: 'loss-weight',
-	maintain: 'maintain-weight',
-	gain: 'gain-weight'
+	loss: 'loss',
+	maintain: 'maintain',
+	gain: 'gain'
 }
 
 export const ACTIVITY_LEVELS = {
