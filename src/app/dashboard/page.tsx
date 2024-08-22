@@ -15,51 +15,25 @@ export default function DashboardPage() {
 					})}
 				</h1>
 
-				<head className='float-end flex space-x-5'>
+				<header className='float-end flex space-x-5'>
 					<FoodDialog />
 					<ExerciseDialog />
-				</head>
+				</header>
 			</div>
 			<article className='h-fit w-fit bg-slate-900/50 p-5'>
 				<h2 className='mb-3'>Nutrition & Targets</h2>
 				<div className='mb-2 grid grid-cols-10 space-x-10'>
-					<div className='col-span-8 grid grid-flow-row'>
-						<div className='flex space-x-5 border-b pb-2'>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-						</div>
-						<div className='mt-2 flex space-x-5 border-b pb-2'>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-						</div>
-						<div className='mt-2 flex space-x-5 border-b pb-2'>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-						</div>
-						<div className='mt-2 flex space-x-5'>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-							<span className='rounded-md bg-slate-800 px-4 py-5'></span>
-						</div>
+					<div className='col-span-8 grid grid-flow-row space-y-2'>
+						{[...Array(4)].map((_, index) => (
+							<div className='flex space-x-5 border-b pb-2' key={index}>
+								{[...Array(7)].map((_, index2) => (
+									<span
+										className='rounded-md bg-slate-800 px-4 py-5'
+										key={index2}
+									></span>
+								))}
+							</div>
+						))}
 					</div>
 					<aside className='col-span-2 flex flex-col place-content-center justify-between'>
 						<p className='font-bold leading-tight'>
