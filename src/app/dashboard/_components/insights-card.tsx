@@ -6,16 +6,18 @@ export default function InsightsCard({
 	dateRange,
 	value,
 	valueUnit,
-	children
+	children,
+	className = 'w-56 rounded-lg bg-slate-800/50 p-4 pb-1 border'
 }: {
 	title: string
 	dateRange: string
 	value: number
 	valueUnit: string
 	children: React.ReactNode
+	className?: string
 }) {
 	return (
-		<article className='w-56 rounded-md bg-slate-800/50 p-4 pb-1'>
+		<article className={className}>
 			<header className='flex flex-col space-y-1'>
 				<h3>{title}</h3>
 				<small className='text-gray-400'>{dateRange}</small>
@@ -23,7 +25,7 @@ export default function InsightsCard({
 			{children}
 			<footer className='flex items-center justify-between border-t pt-1'>
 				<p className='font-normal'>
-					{value}{' '}
+					{value != 0 ? value : '----'}{' '}
 					<span className='text-sm font-normal text-gray-400'>{valueUnit}</span>
 				</p>
 				<Button

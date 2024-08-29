@@ -27,15 +27,16 @@ export default function InsightsAndAnalitics() {
 						<Circle className='h-4 w-4 text-purple-400' strokeWidth={4} />
 					</span>
 				</InsightsCard>
-				<InsightsCard
-					title='Goal Progress'
-					dateRange='Jul 14 - Now'
-					value={10}
-					valueUnit='days in'
-				>
-					<Progress value={10} className='mb-8 mt-8 py-2' />
-				</InsightsCard>
 			</div>
+			<InsightsCard
+				title='Goal Progress'
+				dateRange='Jul 14 - Now'
+				value={10}
+				valueUnit='days in'
+				className='mt-3 w-full rounded-lg bg-slate-800/50 p-4 pb-1 border'
+			>
+				<Progress value={10} className='mb-8 mt-8 py-2' />
+			</InsightsCard>
 		</aside>
 	)
 }
