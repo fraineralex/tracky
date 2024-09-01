@@ -22,7 +22,7 @@ export default function FoodDialog() {
 					Register Food
 				</Button>
 			</DialogTrigger>
-			<DialogContent className='sm:max-w-[425px]'>
+			<DialogContent className='sm:max-w-6xl'>
 				<DialogHeader>
 					<DialogTitle>Register Food</DialogTitle>
 				</DialogHeader>
