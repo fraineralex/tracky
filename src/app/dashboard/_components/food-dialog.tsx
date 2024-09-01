@@ -1,5 +1,6 @@
 import { Plus } from 'lucide-react'
 import { Button } from '~/components/ui/button'
+import { DataTable } from '~/components/ui/data-table'
 import {
 	Dialog,
 	DialogContent,
@@ -9,8 +10,15 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '~/components/ui/dialog'
+import { columns, Food } from './food/columns'
 
-export default function FoodDialog() {
+async function getData(): Promise<Food[]> {
+	const data = await fetch('http://localhost:3000/food.json')
+	return await data.json()
+}
+
+export default async function FoodDialog() {
+	const data = await getData()
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -22,12 +30,16 @@ export default function FoodDialog() {
 					Register Food
 				</Button>
 			</DialogTrigger>
-			<DialogContent className='sm:max-w-6xl'>
+			<DialogContent className='sm:max-w-6xl h-[90%] my-auto'>
 				<DialogHeader>
-					<DialogTitle>Register Food</DialogTitle>
+					<DialogTitle className='ps-8'>Register Food</DialogTitle>
 				</DialogHeader>
-				<div className='grid gap-4 py-4'>...</div>
-				<DialogFooter>
+
+				<div className='container mx-auto py-5'>
+					<DataTable columns={columns} data={data} />
+				</div>
+
+				<DialogFooter className='pe-7'>
 					<Button type='submit'>Save</Button>
 				</DialogFooter>
 			</DialogContent>
