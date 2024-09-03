@@ -1,7 +1,7 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-import { PlusCircle } from 'lucide-react'
+import { ArrowUpDown, PlusCircle } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 
 export type Food = {
@@ -17,11 +17,31 @@ export type Food = {
 export const columns: ColumnDef<Food>[] = [
 	{
 		accessorKey: 'name',
-		header: 'Name'
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+				>
+					Email
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			)
+		}
 	},
 	{
 		accessorKey: 'protein',
-		header: 'Protein',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+				>
+					Protein
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			)
+		},
 		cell: ({ row }) => {
 			const protein = parseFloat(row.getValue('protein'))
 			const formatted = new Intl.NumberFormat('en-US', {
@@ -34,7 +54,17 @@ export const columns: ColumnDef<Food>[] = [
 	},
 	{
 		accessorKey: 'carbs',
-		header: 'Net Carbs',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+				>
+					Net Carbs
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			)
+		},
 		cell: ({ row }) => {
 			const carbs = parseFloat(row.getValue('carbs'))
 			const formatted = new Intl.NumberFormat('en-US', {
@@ -47,6 +77,17 @@ export const columns: ColumnDef<Food>[] = [
 	},
 	{
 		accessorKey: 'fat',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+				>
+					Fat
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			)
+		},
 		cell: ({ row }) => {
 			const fat = parseFloat(row.getValue('fat'))
 			const formatted = new Intl.NumberFormat('en-US', {
@@ -59,7 +100,17 @@ export const columns: ColumnDef<Food>[] = [
 	},
 	{
 		accessorKey: 'kcal',
-		header: 'Kilocalories',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+				>
+					Kilocalories
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			)
+		},
 		cell: ({ row }) => {
 			const kcal = parseFloat(row.getValue('kcal'))
 			const formatted = `${kcal} kcal`
@@ -69,7 +120,17 @@ export const columns: ColumnDef<Food>[] = [
 	},
 	{
 		accessorKey: 'servingSize',
-		header: 'Serving Size',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+				>
+					Serving Size
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			)
+		},
 		cell: ({ row }) => {
 			const servingSize = parseFloat(row.getValue('servingSize'))
 			const formatted = new Intl.NumberFormat('en-US', {
@@ -84,7 +145,10 @@ export const columns: ColumnDef<Food>[] = [
 		id: 'actions',
 		cell: ({ row }) => {
 			return (
-				<Button variant='ghost' className='h-8 w-8 p-0'>
+				<Button
+					variant='ghost'
+					className='h-8 w-8 p-0 duration-300 ease-in-out hover:scale-125 hover:bg-transparent'
+				>
 					<span className='sr-only'>Open Food Details</span>
 					<PlusCircle className='h-4 w-4' />
 				</Button>

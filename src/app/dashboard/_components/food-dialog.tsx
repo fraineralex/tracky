@@ -30,18 +30,18 @@ export default async function FoodDialog() {
 					Register Food
 				</Button>
 			</DialogTrigger>
-			<DialogContent className='sm:max-w-6xl h-[90%] my-auto'>
+			<DialogContent className='my-auto h-[90%] sm:max-w-6xl'>
 				<DialogHeader>
-					<DialogTitle className='ps-8'>Register Food</DialogTitle>
+					<DialogTitle className='ps-8 pt-2'>Add Food to Diary</DialogTitle>
 				</DialogHeader>
 
-				<div className='container mx-auto py-5'>
+				<div className='container mx-auto'>
 					<DataTable columns={columns} data={data} />
 				</div>
 
-				<DialogFooter className='pe-7'>
+				{/* <DialogFooter className='pe-7'>
 					<Button type='submit'>Save</Button>
-				</DialogFooter>
+				</DialogFooter> */}
 			</DialogContent>
 		</Dialog>
 	)
