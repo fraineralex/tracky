@@ -6,7 +6,7 @@ import DataAndHabits from './_sections/data-habits'
 
 export default function DashboardPage() {
 	return (
-		<section className='w-full ms-5 px-5 pt-16 h-full overflow-auto pb-10'>
+		<section className='ms-5 h-full w-full overflow-auto px-5 pb-10 pt-16'>
 			<div className='flex justify-between'>
 				<h1 className='mb-5 text-xl font-semibold uppercase'>
 					{new Date().toLocaleDateString('en-US', {

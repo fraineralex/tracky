@@ -2,7 +2,7 @@ import { Button } from '~/components/ui/button'
 
 export default function NutritionGraphic() {
 	return (
-		<article className='h-fit w-fit bg-slate-900/70 p-5'>
+		<article className='h-fit w-fit bg-slate-800/50 p-5 rounded-lg border'>
 			<h2 className='mb-3'>Nutrition & Targets</h2>
 			<div className='mb-2 grid grid-cols-10 space-x-10'>
 				<div className='col-span-8 grid grid-flow-row space-y-2'>
@@ -10,7 +10,7 @@ export default function NutritionGraphic() {
 						<div className='flex space-x-5 border-b pb-2' key={index}>
 							{[...Array(7)].map((_, index2) => (
 								<span
-									className='rounded-md bg-slate-800 px-4 py-5'
+									className='rounded-md bg-primary/20 px-4 py-5'
 									key={index2}
 								></span>
 							))}
