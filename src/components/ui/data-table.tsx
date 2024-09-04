@@ -31,6 +31,8 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger
 } from '~/components/ui/dropdown-menu'
+import { FoodDrawer } from '~/app/dashboard/_components/food/food-drawer'
+import { Drawer, DrawerTrigger } from './drawer'
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[]
@@ -47,6 +49,7 @@ export function DataTable<TData, TValue>({
 	)
 	const [columnVisibility, setColumnVisibility] =
 		React.useState<VisibilityState>({})
+	const [selectedRow, setSelectedRow] = React.useState<string | null>(null)
 
 	const table = useReactTable({
 		data,
@@ -67,7 +70,7 @@ export function DataTable<TData, TValue>({
 
 	return (
 		<div>
-			<div className='flex items-center py-4 space-x-20'>
+			<div className='flex items-center space-x-20 py-4'>
 				<Input
 					placeholder='Filter names...'
 					value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
@@ -106,37 +109,48 @@ export function DataTable<TData, TValue>({
 					<TableHeader>
 						{table.getHeaderGroups().map(headerGroup => (
 							<TableRow key={headerGroup.id}>
-								{headerGroup.headers.map(header => {
-									return (
-										<TableHead key={header.id}>
-											{header.isPlaceholder
-												? null
-												: flexRender(
-														header.column.columnDef.header,
-														header.getContext()
-													)}
-										</TableHead>
-									)
-								})}
+								{headerGroup.headers
+									.filter(header => header.column.columnDef.header !== 'ID')
+									.map(header => {
+										return (
+											<TableHead key={header.id}>
+												{header.isPlaceholder
+													? null
+													: flexRender(
+															header.column.columnDef.header,
+															header.getContext()
+														)}
+											</TableHead>
+										)
+									})}
 							</TableRow>
 						))}
 					</TableHeader>
 					<TableBody>
 						{table.getRowModel().rows?.length ? (
 							table.getRowModel().rows.map(row => (
-								<TableRow
-									key={row.id}
-									data-state={row.getIsSelected() && 'selected'}
-								>
-									{row.getVisibleCells().map(cell => (
-										<TableCell key={cell.id}>
-											{flexRender(
-												cell.column.columnDef.cell,
-												cell.getContext()
-											)}
-										</TableCell>
-									))}
-								</TableRow>
+								<Drawer key={row.id}>
+									<DrawerTrigger asChild>
+										<TableRow
+											data-state={row.getIsSelected() && 'selected'}
+											className='cursor-pointer'
+											onClick={() => setSelectedRow(row.getValue('id'))}
+										>
+											{row
+												.getVisibleCells()
+												.filter(cell => cell.column.columnDef.header !== 'ID')
+												.map(cell => (
+													<TableCell key={cell.id}>
+														{flexRender(
+															cell.column.columnDef.cell,
+															cell.getContext()
+														)}
+													</TableCell>
+												))}
+										</TableRow>
+									</DrawerTrigger>
+									{selectedRow && <FoodDrawer selectedRow={selectedRow} />}
+								</Drawer>
 							))
 						) : (
 							<TableRow>

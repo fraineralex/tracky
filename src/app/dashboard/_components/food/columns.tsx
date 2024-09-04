@@ -16,6 +16,11 @@ export type Food = {
 
 export const columns: ColumnDef<Food>[] = [
 	{
+		accessorKey: 'id',
+		header: 'ID',
+		enableHiding: true
+	},
+	{
 		accessorKey: 'name',
 		header: ({ column }) => {
 			return (
@@ -140,8 +145,8 @@ export const columns: ColumnDef<Food>[] = [
 
 			return <div className='text-left '>{formatted}</div>
 		}
-	},
-	{
+	}
+	/* {
 		id: 'actions',
 		cell: ({ row }) => {
 			return (
@@ -154,5 +159,5 @@ export const columns: ColumnDef<Food>[] = [
 				</Button>
 			)
 		}
-	}
+	} */
 ]
