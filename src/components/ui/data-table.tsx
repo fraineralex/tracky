@@ -4,6 +4,7 @@ import * as React from 'react'
 import {
 	ColumnDef,
 	ColumnFiltersState,
+	Row,
 	SortingState,
 	VisibilityState,
 	flexRender,
@@ -33,6 +34,7 @@ import {
 } from '~/components/ui/dropdown-menu'
 import { FoodDrawer } from '~/app/dashboard/_components/food/food-drawer'
 import { Drawer, DrawerTrigger } from './drawer'
+import { Food } from '~/app/dashboard/_components/food/columns'
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[]
@@ -49,7 +51,7 @@ export function DataTable<TData, TValue>({
 	)
 	const [columnVisibility, setColumnVisibility] =
 		React.useState<VisibilityState>({})
-	const [selectedRow, setSelectedRow] = React.useState<string | null>(null)
+	const [selectedRow, setSelectedRow] = React.useState<Food | null>(null)
 
 	const table = useReactTable({
 		data,
@@ -67,6 +69,20 @@ export function DataTable<TData, TValue>({
 			columnVisibility
 		}
 	})
+
+	const handleCellClick = (row: Row<TData>) => {
+		const foodData: Food = {
+			id: row.getValue('id'),
+			name: row.getValue('name'),
+			protein: parseFloat(row.getValue('protein')),
+			kcal: parseFloat(row.getValue('kcal')),
+			fat: parseFloat(row.getValue('fat')),
+			carbs: parseFloat(row.getValue('carbs')),
+			servingSize: parseFloat(row.getValue('servingSize'))
+		}
+
+		setSelectedRow(foodData)
+	}
 
 	return (
 		<div>
@@ -134,7 +150,7 @@ export function DataTable<TData, TValue>({
 										<TableRow
 											data-state={row.getIsSelected() && 'selected'}
 											className='cursor-pointer'
-											onClick={() => setSelectedRow(row.getValue('id'))}
+											onClick={() => handleCellClick(row)}
 										>
 											{row
 												.getVisibleCells()
@@ -149,7 +165,7 @@ export function DataTable<TData, TValue>({
 												))}
 										</TableRow>
 									</DrawerTrigger>
-									{selectedRow && <FoodDrawer selectedRow={selectedRow} />}
+									{selectedRow && <FoodDrawer foodData={selectedRow} />}
 								</Drawer>
 							))
 						) : (

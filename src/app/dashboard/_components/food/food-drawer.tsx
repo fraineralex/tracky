@@ -1,125 +1,182 @@
 import * as React from 'react'
-import { MinusIcon, PlusIcon } from '@radix-ui/react-icons'
-import { Bar, BarChart, ResponsiveContainer } from 'recharts'
 
 import { Button } from '~/components/ui/button'
 import {
-	Drawer,
 	DrawerClose,
 	DrawerContent,
-	DrawerDescription,
 	DrawerFooter,
 	DrawerHeader,
-	DrawerTitle,
-	DrawerTrigger
+	DrawerTitle
 } from '~/components/ui/drawer'
+import { Food } from './columns'
+import { Badge } from '~/components/ui/badge'
+import { Card } from '~/components/ui/card'
+import { Label } from '~/components/ui/label'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue
+} from '~/components/ui/select'
+import { Input } from '~/components/ui/input'
 
-const data = [
-	{
-		goal: 400
-	},
-	{
-		goal: 300
-	},
-	{
-		goal: 200
-	},
-	{
-		goal: 300
-	},
-	{
-		goal: 200
-	},
-	{
-		goal: 278
-	},
-	{
-		goal: 189
-	},
-	{
-		goal: 239
-	},
-	{
-		goal: 300
-	},
-	{
-		goal: 200
-	},
-	{
-		goal: 278
-	},
-	{
-		goal: 189
-	},
-	{
-		goal: 349
-	}
-]
+export function FoodDrawer({ foodData }: { foodData: Food }) {
+	const [portion, setPortion] = React.useState('100')
+	const [unit, setUnit] = React.useState('g')
+	const [mealGroup, setMealGroup] = React.useState('uncategorized')
 
-export function FoodDrawer({ selectedRow }: { selectedRow: string }) {
-	const [goal, setGoal] = React.useState(350)
+	const nutritionData = [
+		{ name: 'Calories', value: 256, balance: 'well', color: null },
+		{
+			name: 'Protein',
+			value: 12.3,
+			percent: 25,
+			color: 'bg-blue-500 dark:bg-blue-600'
+		},
+		{
+			name: 'Fat',
+			value: 8.7,
+			percent: 18,
+			color: 'bg-purple-500 dark:bg-purple-600'
+		},
+		{
+			name: 'Carbs',
+			value: 30.5,
+			percent: 57,
+			color: 'bg-orange-500 dark:bg-orange-600'
+		}
+	]
 
-	function onClick(adjustment: number) {
-		setGoal(Math.max(200, Math.min(400, goal + adjustment)))
+	const getBalanceBadge = (balance: string | undefined) => {
+		switch (balance) {
+			case 'well':
+				return {
+					color: 'bg-green-500 dark:bg-green-600',
+					text: 'Well Balanced'
+				}
+			case 'moderate':
+				return {
+					color: 'bg-yellow-500 dark:bg-yellow-600',
+					text: 'Moderately Balanced'
+				}
+			case 'poor':
+				return { color: 'bg-red-500 dark:bg-red-600', text: 'Poorly Balanced' }
+			default:
+				return {
+					color: 'bg-gray-500 dark:bg-gray-600',
+					text: 'Unknown Balance'
+				}
+		}
 	}
 
 	return (
 		<DrawerContent>
-			<div className='mx-auto w-full max-w-xs'>
+			<div className='mx-auto w-full max-w-xl'>
 				<DrawerHeader>
-					<DrawerTitle>{selectedRow}</DrawerTitle>
-					<DrawerDescription>Set your daily activity goal.</DrawerDescription>
+					<DrawerTitle className='text-center'>{foodData.name}</DrawerTitle>
 				</DrawerHeader>
-				<div className='p-4 pb-0'>
-					<div className='flex items-center justify-center space-x-2'>
-						<Button
-							variant='outline'
-							size='icon'
-							className='h-8 w-8 shrink-0 rounded-full'
-							onClick={() => onClick(-10)}
-							disabled={goal <= 200}
-						>
-							<MinusIcon className='h-4 w-4' />
-							<span className='sr-only'>Decrease</span>
-						</Button>
-						<div className='flex-1 text-center'>
-							<div className='text-7xl font-bold tracking-tighter'>{goal}</div>
-							<div className='text-[0.70rem] uppercase text-muted-foreground'>
-								Calories/day
+				<div className='mx-auto w-full max-w-md p-4 pb-0'>
+					<Card className='mx-auto border-0 bg-transparent ps-7'>
+						<div className='mx-auto grid grid-cols-4'>
+							{nutritionData.map((item, index) => (
+								<div
+									key={item.name}
+									className={`mx-auto flex h-full flex-col items-center justify-between ${index === 0 ? 'pe-20' : undefined}`}
+								>
+									<div className='flex flex-col items-center'>
+										{index === 0 ? (
+											<Badge
+												className={`${getBalanceBadge(item.balance).color} mb-2 text-nowrap rounded-full text-white`}
+											>
+												{getBalanceBadge(item.balance).text}
+											</Badge>
+										) : item.percent !== null ? (
+											<Badge
+												className={`${item.color} mb-2 rounded-full text-white`}
+											>
+												{item.percent}%
+											</Badge>
+										) : (
+											<div className='mb-2 h-6' />
+										)}
+										<span
+											className={`font-bold ${index === 0 ? 'text-3xl' : 'text-2xl'} mb-2 text-gray-900 dark:text-gray-100`}
+										>
+											{item.value.toFixed(1)}
+										</span>
+									</div>
+									<span className='text-center text-sm text-gray-600 dark:text-gray-400'>
+										{item.name}
+									</span>
+								</div>
+							))}
+						</div>
+					</Card>
+					<div className='items-center bg-transparent mt-10 w-full ps-5'>
+						<aside className='flex justify-between'>
+							<Label>Serving Size</Label>
+							<Label>Diary Group</Label>
+						</aside>
+						<div className='flex items-center justify-between space-x-4'>
+							<div className='min-w-0'>
+								<Label htmlFor='portion' className='sr-only'>
+									Portion
+								</Label>
+								<Input
+									id='portion'
+									type='number'
+									placeholder='Portion'
+									value={portion}
+									onChange={e => setPortion(e.target.value)}
+									className='w-full max-w-24'
+								/>
+							</div>
+							<div className='min-w-0'>
+								<Label htmlFor='unit' className='sr-only'>
+									Unit
+								</Label>
+								<Select value={unit} onValueChange={setUnit}>
+									<SelectTrigger id='unit'>
+										<SelectValue placeholder='Unit' />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value='g'>Grams (g)</SelectItem>
+										<SelectItem value='ml'>Milliliters (ml)</SelectItem>
+										<SelectItem value='oz'>Ounces (oz)</SelectItem>
+										<SelectItem value='cup'>Cups</SelectItem>
+									</SelectContent>
+								</Select>
+							</div>
+							<div className='min-w-0 '>
+								<Label htmlFor='mealGroup' className='sr-only'>
+									Meal Group
+								</Label>
+								<Select value={mealGroup} onValueChange={setMealGroup}>
+									<SelectTrigger id='mealGroup'>
+										<SelectValue placeholder='Meal Group' />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value='breakfast'>Breakfast</SelectItem>
+										<SelectItem value='lunch'>Lunch</SelectItem>
+										<SelectItem value='dinner'>Dinner</SelectItem>
+										<SelectItem value='snack'>Snack</SelectItem>
+										<SelectItem value='uncategorized'>Uncategorized</SelectItem>
+									</SelectContent>
+								</Select>
 							</div>
 						</div>
-						<Button
-							variant='outline'
-							size='icon'
-							className='h-8 w-8 shrink-0 rounded-full'
-							onClick={() => onClick(10)}
-							disabled={goal >= 400}
-						>
-							<PlusIcon className='h-4 w-4' />
-							<span className='sr-only'>Increase</span>
-						</Button>
-					</div>
-					<div className='mt-3 h-[120px]'>
-						<ResponsiveContainer width='100%' height='100%'>
-							<BarChart data={data}>
-								<Bar
-									dataKey='goal'
-									style={
-										{
-											fill: 'hsl(var(--foreground))',
-											opacity: 0.9
-										} as React.CSSProperties
-									}
-								/>
-							</BarChart>
-						</ResponsiveContainer>
 					</div>
 				</div>
 				<DrawerFooter>
-					<Button>Submit</Button>
-					<DrawerClose asChild>
-						<Button variant='outline'>Cancel</Button>
-					</DrawerClose>
+					<div className='mx-auto mt-10 flex space-x-5'>
+						<DrawerClose asChild>
+							<Button variant='outline' className='px-16'>
+								Cancel
+							</Button>
+						</DrawerClose>
+						<Button className='px-16'>Submit</Button>
+					</div>
 				</DrawerFooter>
 			</div>
 		</DrawerContent>
