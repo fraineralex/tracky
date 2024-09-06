@@ -1,29 +1,57 @@
-# Create T3 App
+# 🥗 [Tracky](/) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-004DFF.svg)](https://github.com/fraineralex/tracky/blob/main/LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](https://legacy.reactjs.org/docs/how-to-contribute.html#your-first-pull-request) [![PRs Welcome](https://img.shields.io/badge/state-development-FF0065.svg)](https://legacy.reactjs.org/docs/how-to-contribute.html#your-first-pull-request) ![Website](https://img.shields.io/website-running-stopped-7B2EFF-red/https/tracky.fraineralex.dev.svg)
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
-## What's next? How do I make an app with this?
+A smart, minimalist fitness tracking web app built with `T3 Stack`. It helps users follow their fitness journey every step of the way, without overwhelming them with unnecessary features. With a modern interface, Tracky makes it easy to log workouts and meals, keeping users focused on progress while simplifying their path to achieving fitness goals.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+![Open graph image of Chatify](/public/gh.webp)
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## 📦 Technologies
+- `Next.js`
+- `TypeScript`
+- `Tailwind CSS`
+- `Clerk`
+- `Drizzle`
+- `Postgres`
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## 🛠️ Development Progress
 
-## Learn More
+- ✅ **`Landing Page`**
+- ✅ **`Login/Registration`**
+- ✅ **`Onboarding`**
+- 🚧 **`Dashboard Page`**
+- 💡 **`Food Page`**
+- 💡 **`Exercise Page`**
+- 💡 **`Diary Page`**
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## 🚀 Features
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+- 🧭 Intuitive fitness tracking to easily log workouts and meals.
+- 🏋️‍♂️ Track workout details like exercise type, duration, and intensity.
+- 🍎 Record meals and track nutrition with simple inputs.
+- 📊 View progress through detailed charts and stats.
+- 🥇 Set and track fitness goals with real-time progress updates.
+- 🔍 Search and filter past workouts and meals for easy reference.
+- 🧠 Intelligent chat powered by openai api to automatically add meals or workouts to your log.
+- 📥 Get meal and workout suggestions directly from the chat feature.
+- 🌐 Minimalist, modern interface for a seamless user experience.
+- ❌ No unnecessary clutter—Tracky focuses on what matters most for your fitness journey.
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+## 🚦Running the Project
 
-## How do I deploy this?
+To run the project in your local environment, follow these steps:
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+1. Clone the repository to your local machine.
+2. Rename the file: `.env.example` to `.env.local`.
+3. Fill in the values of the environment variables with your own data.
+4. Ensure you have [Node.js](https://nodejs.org/) installed on your machine.
+5. Navigate to the root directory of the project and install dependencies by running `bun install`.
+6. Once the dependencies are installed, start the project by running `bun dev`.
+7. You can access the app at: [http://localhost:3000](http://localhost:3000).
+
+That's it! Your project should now be up and running locally.
+
+## 🌟 Contributions
+
+Thank you for exploring this project! If you find the structure or features useful, feel free to use this code for your project. Contributions are welcome! If you have ideas, corrections, or improvements, please open an issue or send a pull request. Your collaboration is valued and appreciated! 🚀
+
+Tracky is [MIT licensed](/LICENSE). 💚
