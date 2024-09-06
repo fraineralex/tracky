@@ -30,7 +30,7 @@ export default async function FoodDialog() {
 					Register Food
 				</Button>
 			</DialogTrigger>
-			<DialogContent className='my-auto h-[90%] sm:max-w-6xl'>
+			<DialogContent className='h-[80%] sm:max-w-6xl'>
 				<DialogHeader>
 					<DialogTitle className='ps-8 pt-2'>Add Food to Diary</DialogTitle>
 				</DialogHeader>
@@ -38,10 +38,6 @@ export default async function FoodDialog() {
 				<div className='container mx-auto'>
 					<DataTable columns={columns} data={data} />
 				</div>
-
-				{/* <DialogFooter className='pe-7'>
-					<Button type='submit'>Save</Button>
-				</DialogFooter> */}
 			</DialogContent>
 		</Dialog>
 	)

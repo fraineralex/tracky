@@ -18,7 +18,7 @@ export const columns: ColumnDef<Food>[] = [
 	{
 		accessorKey: 'id',
 		header: 'ID',
-		enableHiding: true
+		enableHiding: false
 	},
 	{
 		accessorKey: 'name',
@@ -32,7 +32,8 @@ export const columns: ColumnDef<Food>[] = [
 					<ArrowUpDown className='ml-2 h-4 w-4' />
 				</Button>
 			)
-		}
+		},
+		enableHiding: false
 	},
 	{
 		accessorKey: 'protein',

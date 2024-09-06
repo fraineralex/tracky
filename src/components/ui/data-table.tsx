@@ -86,7 +86,7 @@ export function DataTable<TData, TValue>({
 
 	return (
 		<div>
-			<div className='flex items-center space-x-20 py-4'>
+			<div className='flex items-center space-x-20 pb-4 '>
 				<Input
 					placeholder='Filter names...'
 					value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
