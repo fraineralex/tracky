@@ -21,6 +21,8 @@ import {
 } from '~/components/ui/select'
 import { Input } from '~/components/ui/input'
 import { toast } from 'sonner'
+import { db } from '~/server/db'
+import { food } from '~/server/db/schema'
 
 function FoodCardItem({
 	item
@@ -33,6 +35,8 @@ function FoodCardItem({
 		color: null | string
 	}
 }) {
+	console.log(db.select().from(food))
+	
 	const getBalanceBadge = (balance: string | undefined) => {
 		switch (balance) {
 			case 'well':
