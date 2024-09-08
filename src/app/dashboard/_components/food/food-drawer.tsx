@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from 'react'
 
 import { Button } from '~/components/ui/button'
@@ -21,8 +23,10 @@ import {
 } from '~/components/ui/select'
 import { Input } from '~/components/ui/input'
 import { toast } from 'sonner'
-import { db } from '~/server/db'
-import { food } from '~/server/db/schema'
+import { addConsumption } from '../../_actions'
+import { useFormState } from 'react-dom'
+import { error } from 'console'
+import { stat } from 'fs'
 
 function FoodCardItem({
 	item
@@ -35,8 +39,6 @@ function FoodCardItem({
 		color: null | string
 	}
 }) {
-	console.log(db.select().from(food))
-	
 	const getBalanceBadge = (balance: string | undefined) => {
 		switch (balance) {
 			case 'well':
@@ -101,6 +103,9 @@ export function FoodDrawer({ foodData }: { foodData: Food }) {
 	const [unit, setUnit] = React.useState<keyof typeof unitConversions>('g')
 	const [mealGroup, setMealGroup] = React.useState('uncategorized')
 
+	const initialState = { message: '', errors: {} }
+	const [state, formAction] = useFormState(addConsumption, initialState)
+
 	const unitConversions = {
 		g: 1,
 		ml: 0.001,
@@ -128,6 +133,9 @@ export function FoodDrawer({ foodData }: { foodData: Food }) {
 			toast.error('The portion exceeds the limit of 10,000 grams')
 		}
 	}
+
+	if (state && state.errors) toast.error(state.message)
+	if (state && state.message && !state.errors) toast.success(state.message)
 
 	return (
 		<DrawerContent>
@@ -179,7 +187,10 @@ export function FoodDrawer({ foodData }: { foodData: Food }) {
 							/>
 						</div>
 					</Card>
-					<div className='mt-10 w-full items-center bg-transparent ps-5'>
+					<form
+						className='mt-10 w-full items-center bg-transparent px-4 ps-5'
+						action={formAction}
+					>
 						<aside className='flex justify-between pb-3'>
 							<Label className='text-base font-semibold'>Serving Size</Label>
 							<Label className='text-base font-semibold'>Diary Group</Label>
@@ -197,6 +208,11 @@ export function FoodDrawer({ foodData }: { foodData: Food }) {
 									onChange={handlePortionChange}
 									className='w-full max-w-24'
 								/>
+								{state && state.errors?.portion && (
+									<small className='text-sm text-red-500'>
+										{state.errors.portion}
+									</small>
+								)}
 							</div>
 							<div className='min-w-0'>
 								<Label htmlFor='unit' className='sr-only'>
@@ -218,6 +234,11 @@ export function FoodDrawer({ foodData }: { foodData: Food }) {
 										<SelectItem value='cup'>Cups</SelectItem>
 									</SelectContent>
 								</Select>
+								{state && state.errors?.unit && (
+									<small className='text-sm text-red-500'>
+										{state.errors.unit}
+									</small>
+								)}
 							</div>
 							<div className='min-w-0 '>
 								<Label htmlFor='mealGroup' className='sr-only'>
@@ -237,18 +258,21 @@ export function FoodDrawer({ foodData }: { foodData: Food }) {
 								</Select>
 							</div>
 						</div>
-					</div>
+						<DrawerFooter className='mx-0 px-0'>
+							<div className='flex space-x-5 py-5'>
+								<DrawerClose asChild>
+									<Button
+										variant='outline'
+										className='px-16 dark:border-gray-400'
+									>
+										Cancel
+									</Button>
+								</DrawerClose>
+								<Button className='px-16'>Add</Button>
+							</div>
+						</DrawerFooter>
+					</form>
 				</div>
-				<DrawerFooter>
-					<div className='mx-auto flex space-x-5 py-5'>
-						<DrawerClose asChild>
-							<Button variant='outline' className='px-16 dark:border-gray-400'>
-								Cancel
-							</Button>
-						</DrawerClose>
-						<Button className='px-16'>Add</Button>
-					</div>
-				</DrawerFooter>
 			</div>
 		</DrawerContent>
 	)
