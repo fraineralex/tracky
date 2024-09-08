@@ -8,22 +8,23 @@ import {
 	uuid,
 	pgEnum
 } from 'drizzle-orm/pg-core'
-import { randomUUID } from 'crypto'
 
+export const unitEnum = pgEnum('unit', ['g', 'ml', 'oz', 'cup'])
 export const createTable = pgTableCreator(name => `tracky_${name}`)
-const unitsEnum = pgEnum('units', ['g', 'ml', 'oz', 'cup'])
 
 export const food = createTable(
 	'food',
 	{
-		id: uuid('id').primaryKey().default(randomUUID()),
+		id: uuid('id')
+			.primaryKey()
+			.default(sql`gen_random_uuid()`),
 		name: varchar('name', { length: 256 }).notNull(),
 		protein: decimal('protein', { precision: 5, scale: 2 }).notNull(),
 		kcal: decimal('kcal', { precision: 5, scale: 2 }).notNull(),
 		fat: decimal('fat', { precision: 5, scale: 2 }).notNull(),
 		carbs: decimal('carbs', { precision: 5, scale: 2 }).notNull(),
 		servingSize: decimal('serving_size', { precision: 5, scale: 2 }).notNull(),
-		unit: unitsEnum('units').notNull(),
+		unit: unitEnum('unit').notNull(),
 		createdAt: timestamp('created_at', { withTimezone: true })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
@@ -37,13 +38,15 @@ export const food = createTable(
 export const consumption = createTable(
 	'consumption',
 	{
-		id: uuid('id').primaryKey().default(randomUUID()),
+		id: uuid('id')
+			.primaryKey()
+			.default(sql`gen_random_uuid()`),
 		userId: varchar('user_id', { length: 50 }).notNull(),
 		foodId: uuid('food_id')
 			.references(() => food.id)
 			.notNull(),
 		portion: decimal('serving_size', { precision: 5, scale: 2 }).notNull(),
-		unit: unitsEnum('units').notNull(),
+		unit: unitEnum('unit').notNull(),
 		createdAt: timestamp('created_at', { withTimezone: true })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
