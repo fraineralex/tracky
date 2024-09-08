@@ -5,11 +5,13 @@ import {
 	timestamp,
 	varchar,
 	decimal,
-	uuid
+	uuid,
+	pgEnum
 } from 'drizzle-orm/pg-core'
 import { randomUUID } from 'crypto'
 
 export const createTable = pgTableCreator(name => `tracky_${name}`)
+const unitsEnum = pgEnum('units', ['g', 'ml', 'oz', 'cup'])
 
 export const food = createTable(
 	'food',
@@ -21,7 +23,7 @@ export const food = createTable(
 		fat: decimal('fat', { precision: 5, scale: 2 }).notNull(),
 		carbs: decimal('carbs', { precision: 5, scale: 2 }).notNull(),
 		servingSize: decimal('serving_size', { precision: 5, scale: 2 }).notNull(),
-		unit: varchar('unit', { length: 16 }).notNull(),
+		unit: unitsEnum('units').notNull(),
 		createdAt: timestamp('created_at', { withTimezone: true })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
@@ -41,7 +43,7 @@ export const consumption = createTable(
 			.references(() => food.id)
 			.notNull(),
 		portion: decimal('serving_size', { precision: 5, scale: 2 }).notNull(),
-		unit: varchar('unit', { length: 16 }).notNull(),
+		unit: unitsEnum('units').notNull(),
 		createdAt: timestamp('created_at', { withTimezone: true })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
