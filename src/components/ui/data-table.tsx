@@ -35,6 +35,7 @@ import {
 import { FoodDrawer } from '~/app/dashboard/_components/food/food-drawer'
 import { Drawer, DrawerTrigger } from './drawer'
 import { Food } from '~/app/dashboard/_components/food/columns'
+import { toast } from 'sonner'
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[]
@@ -74,14 +75,22 @@ export function DataTable<TData, TValue>({
 		const foodData: Food = {
 			id: row.getValue('id'),
 			name: row.getValue('name'),
-			protein: parseFloat(row.getValue('protein')),
-			kcal: parseFloat(row.getValue('kcal')),
-			fat: parseFloat(row.getValue('fat')),
-			carbs: parseFloat(row.getValue('carbs')),
-			servingSize: parseFloat(row.getValue('servingSize'))
+			protein: row.getValue('protein'),
+			kcal: row.getValue('kcal'),
+			fat: row.getValue('fat'),
+			carbs: row.getValue('carbs'),
+			servingSize: row.getValue('servingSize'),
+			unit: row.getValue('unit'),
+			createdAt: row.getValue('createdAt'),
+			updatedAt: row.getValue('updatedAt')
 		}
 
 		setSelectedRow(foodData)
+	}
+
+	const handleDrawerClose = () => {
+		setSelectedRow(null)
+		toast.success('Consumption added successfully')
 	}
 
 	return (
@@ -165,7 +174,12 @@ export function DataTable<TData, TValue>({
 												))}
 										</TableRow>
 									</DrawerTrigger>
-									{selectedRow && <FoodDrawer foodData={selectedRow} />}
+									{selectedRow && (
+										<FoodDrawer
+											foodData={selectedRow}
+											handleDrawerClose={handleDrawerClose}
+										/>
+									)}
 								</Drawer>
 							))
 						) : (

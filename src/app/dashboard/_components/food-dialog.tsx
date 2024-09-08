@@ -4,21 +4,16 @@ import { DataTable } from '~/components/ui/data-table'
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
-	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger
 } from '~/components/ui/dialog'
-import { columns, Food } from './food/columns'
-
-async function getData(): Promise<Food[]> {
-	const data = await fetch('http://localhost:3000/food.json')
-	return await data.json()
-}
+import { columns } from './food/columns'
+import { db } from '~/server/db'
+import { food } from '~/server/db/schema'
 
 export default async function FoodDialog() {
-	const data = await getData()
+	const data = await db.select().from(food)
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
