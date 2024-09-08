@@ -11,7 +11,10 @@ type NewConsumption = typeof consumption.$inferInsert
 const ConsumptionSchema = z.object({
 	userId: z.string({ required_error: 'You must be logged in to consume food' }),
 	foodId: z.string({ required_error: 'Please select a food' }),
-	portion: z.string({ required_error: 'Please enter a portion' }),
+	portion: z
+		.number({ required_error: 'Please enter a portion' })
+		.positive({ message: 'Portion must be a positive number' })
+		.transform(value => value.toString()),
 	unit: z.enum(['g', 'oz', 'ml', 'cup'], {
 		required_error: 'Please select a unit'
 	})
@@ -23,6 +26,7 @@ export type State = {
 		unit?: string[]
 	}
 	message?: string | null
+	success?: boolean
 }
 
 export const addConsumption = async (
@@ -31,7 +35,7 @@ export const addConsumption = async (
 ) => {
 	const { userId } = auth()
 
-	if (!userId) return { message: 'No Logged In User' }
+	if (!userId) return { message: 'You must be logged in to consume food', success: false }
 
 	const validatedFields = ConsumptionSchema.safeParse({
 		userId,
@@ -41,12 +45,10 @@ export const addConsumption = async (
 	})
 
 	if (!validatedFields.success) {
-		const state: State = {
+		return {
 			errors: validatedFields.error.flatten().fieldErrors,
 			message: 'Oops! There was an error with your submission.'
 		}
-
-		return state
 	}
 
 	try {
@@ -56,12 +58,12 @@ export const addConsumption = async (
 
 		await db.insert(consumption).values(newConsumption)
 		revalidatePath('/dashboard')
-		return { message: 'Consumption added successfully', errors: {} }
+		return { message: 'Consumption added successfully', success: true }
 	} catch (error) {
 		console.error(error)
 		return {
 			message: 'Consumption failed. Please try again later.',
-			errors: {}
+			success: false
 		}
 	}
 }
