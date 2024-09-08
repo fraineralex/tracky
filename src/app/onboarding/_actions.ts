@@ -68,8 +68,6 @@ export const completeOnboarding = async (formData: FormData) => {
 		)
 	}
 
-	console.log(validatedFields.data)
-
 	try {
 		await clerkClient().users.updateUser(userId, {
 			publicMetadata: {
@@ -80,6 +78,7 @@ export const completeOnboarding = async (formData: FormData) => {
 
 		return { message: 'Onboarding complete' }
 	} catch (err) {
+		console.error(err)
 		return {
 			message: 'Onboarding failed. Please try again later.'
 		}
