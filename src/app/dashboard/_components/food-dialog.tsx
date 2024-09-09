@@ -17,12 +17,9 @@ export default async function FoodDialog() {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button
-					variant='secondary'
-					className='bg-slate-300 font-medium hover:bg-slate-300/80 dark:bg-slate-800 dark:hover:bg-slate-800/80'
-				>
+				<Button variant='default' className='font-medium'>
 					<Plus className='me-2' />
-					Register Food
+					Add Food
 				</Button>
 			</DialogTrigger>
 			<DialogContent className='h-[80%] sm:max-w-6xl'>

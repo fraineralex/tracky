@@ -33,7 +33,7 @@ export default function InsightsAndAnalitics() {
 				dateRange='Jul 14 - Now'
 				value={10}
 				valueUnit='days in'
-				className='mt-3 w-full rounded-lg bg-slate-800/50 p-4 pb-1 border'
+				className='mt-3 w-full rounded-lg dark:bg-slate-800/50 bg-slate-200/50 p-4 pb-1 border'
 			>
 				<Progress value={10} className='mb-8 mt-8 py-2' />
 			</InsightsCard>

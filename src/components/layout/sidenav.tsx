@@ -11,7 +11,7 @@ export default function SideNav() {
 	if (pathname === '/' || pathname === '/onboarding') return null
 
 	return (
-		<nav className='flex shrink-0 flex-col pt-16 sm:w-[215px]'>
+		<nav className='flex shrink-0 flex-col pt-10 sm:w-[215px]'>
 			<article className='flex flex-row justify-between gap-x-4 gap-y-2 px-4 text-center sm:flex-col sm:px-6 sm:text-left'>
 				<SidenavButton label='Overview' href='/dashboard'>
 					<HouseIcon className='h-5 w-5 sm:h-4 sm:w-4' />

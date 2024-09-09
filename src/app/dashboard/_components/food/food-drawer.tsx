@@ -82,7 +82,7 @@ export function FoodDrawer({
 					)}
 				</DrawerHeader>
 				<div className='mx-auto w-full max-w-md p-4 pb-0'>
-					<Card className='mx-auto border-0 bg-transparent ps-7'>
+					<Card className='mx-auto border-0 bg-transparent ps-7 shadow-none'>
 						<div className='mx-auto grid grid-cols-4 space-x-5'>
 							<FoodCardItem
 								item={{

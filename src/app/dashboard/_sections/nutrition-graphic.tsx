@@ -2,7 +2,7 @@ import { Button } from '~/components/ui/button'
 
 export default function NutritionGraphic() {
 	return (
-		<article className='h-fit w-fit bg-slate-800/50 p-5 rounded-lg border'>
+		<article className='h-fit w-fit bg-slate-200 dark:bg-slate-800/50 p-5 rounded-lg border'>
 			<h2 className='mb-3'>Nutrition & Targets</h2>
 			<div className='mb-2 grid grid-cols-10 space-x-10'>
 				<div className='col-span-8 grid grid-flow-row space-y-2'>
@@ -20,25 +20,25 @@ export default function NutritionGraphic() {
 				<aside className='col-span-2 flex flex-col place-content-center justify-between'>
 					<p className='font-bold leading-tight'>
 						0 🔥
-						<small className='block text-sm font-normal text-gray-400'>
+						<small className='block text-sm font-normal dark:text-gray-400 text-gray-500'>
 							of 3113
 						</small>
 					</p>
 					<p className='font-bold leading-tight'>
 						0 P
-						<small className='block text-sm font-normal text-gray-400'>
+						<small className='block text-sm font-normal dark:text-gray-400 text-gray-500'>
 							of 165
 						</small>
 					</p>
 					<p className='font-bold leading-tight'>
 						0 F
-						<small className='block text-sm font-normal text-gray-400'>
+						<small className='block text-sm font-normal dark:text-gray-400 text-gray-500'>
 							of 103
 						</small>
 					</p>
 					<p className='font-bold leading-tight'>
 						0 C
-						<small className='block text-sm font-normal text-gray-400'>
+						<small className='block text-sm font-normal dark:text-gray-400 text-gray-500'>
 							of 379
 						</small>
 					</p>
@@ -58,7 +58,7 @@ export default function NutritionGraphic() {
 					Consumed
 				</Button>
 				<Button variant='ghost' className='rounded-full'>
-					Consumed
+					Remainig
 				</Button>
 			</footer>
 		</article>
