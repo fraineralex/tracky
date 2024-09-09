@@ -7,7 +7,7 @@ export default function InsightsCard({
 	value,
 	valueUnit,
 	children,
-	className = 'w-56 rounded-lg bg-slate-800/50 p-4 pb-1 border'
+	className = 'w-56 rounded-lg dark:bg-slate-800/50 bg-slate-200/50 p-4 pb-1 border'
 }: {
 	title: string
 	dateRange: string
@@ -20,13 +20,13 @@ export default function InsightsCard({
 		<article className={className}>
 			<header className='flex flex-col space-y-1'>
 				<h3>{title}</h3>
-				<small className='text-gray-400'>{dateRange}</small>
+				<small className='dark:text-gray-400 text-gray-500'>{dateRange}</small>
 			</header>
 			{children}
 			<footer className='flex items-center justify-between border-t pt-1'>
 				<p className='font-normal'>
 					{value != 0 ? value : '----'}{' '}
-					<span className='text-sm font-normal text-gray-400'>{valueUnit}</span>
+					<span className='text-sm font-normal dark:text-gray-400 text-gray-500'>{valueUnit}</span>
 				</p>
 				<Button
 					variant='ghost'

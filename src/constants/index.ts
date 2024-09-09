@@ -30,3 +30,10 @@ export const STAGGER_CHILD_VARIANTS = {
 		}
 	}
 }
+
+export const UNITS_MAP = {
+	g: 'gram',
+	ml: 'milliliter',
+	oz: 'ounce',
+	cup: 'cup'
+}

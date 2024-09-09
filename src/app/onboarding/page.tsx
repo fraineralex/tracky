@@ -1,7 +1,6 @@
 'use client'
 
 import { completeOnboarding } from './_actions'
-import { useFormState } from 'react-dom'
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'

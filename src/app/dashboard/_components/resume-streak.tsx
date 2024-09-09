@@ -2,7 +2,7 @@ import { Dumbbell, HandPlatter } from 'lucide-react'
 
 export default function ResumeStreak() {
 	return (
-		<article className='w-full max-w-xs 2xl:max-w-sm rounded-lg border bg-slate-800/50 py-1'>
+		<article className='w-full max-w-xs 2xl:max-w-sm rounded-lg border dark:bg-slate-800/50 bg-slate-200/50 py-1'>
 			<div className='grid grid-cols-2 gap-6 p-6'>
 				<header className='flex flex-col items-center gap-2'>
 					<HandPlatter className='h-8 w-8 text-primary' />

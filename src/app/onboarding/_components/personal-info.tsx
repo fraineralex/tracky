@@ -2,14 +2,13 @@
 
 import { FemaleIcon, MaleIcon } from '~/components/ui/icons'
 import { BornDatePicker } from '~/app/onboarding/_components/ui/born-date-picker'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { ONBOARDING_SECTIONS } from '~/constants'
 import { sex } from '~/types'
 import { Button } from '~/components/ui/button'
 import { ChevronRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { STAGGER_CHILD_VARIANTS } from '~/constants'
-import { set } from 'date-fns'
 
 export default function PersonalInfo({
 	setShowSection,

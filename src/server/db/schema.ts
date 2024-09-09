@@ -1,34 +1,59 @@
-// Example model schema from the Drizzle docs
-// https://orm.drizzle.team/docs/sql-schema-declaration
-
 import { sql } from 'drizzle-orm'
 import {
 	index,
 	pgTableCreator,
-	serial,
 	timestamp,
-	varchar
+	varchar,
+	decimal,
+	uuid,
+	pgEnum
 } from 'drizzle-orm/pg-core'
 
-/**
- * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
- * database instance for multiple projects.
- *
- * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
- */
+export const unitEnum = pgEnum('unit', ['g', 'ml', 'oz', 'cup'])
 export const createTable = pgTableCreator(name => `tracky_${name}`)
 
-export const posts = createTable(
-	'post',
+export const food = createTable(
+	'food',
 	{
-		id: serial('id').primaryKey(),
-		name: varchar('name', { length: 256 }),
+		id: uuid('id')
+			.primaryKey()
+			.default(sql`gen_random_uuid()`),
+		name: varchar('name', { length: 256 }).notNull(),
+		protein: decimal('protein', { precision: 5, scale: 2 }).notNull(),
+		kcal: decimal('kcal', { precision: 5, scale: 2 }).notNull(),
+		fat: decimal('fat', { precision: 5, scale: 2 }).notNull(),
+		carbs: decimal('carbs', { precision: 5, scale: 2 }).notNull(),
+		servingSize: decimal('serving_size', { precision: 5, scale: 2 }).notNull(),
+		unit: unitEnum('unit').notNull(),
 		createdAt: timestamp('created_at', { withTimezone: true })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
 		updatedAt: timestamp('updatedAt', { withTimezone: true })
 	},
-	example => ({
-		nameIndex: index('name_idx').on(example.name)
+	food => ({
+		nameIndex: index('name_idx').on(food.name)
+	})
+)
+
+export const consumption = createTable(
+	'consumption',
+	{
+		id: uuid('id')
+			.primaryKey()
+			.default(sql`gen_random_uuid()`),
+		userId: varchar('user_id', { length: 50 }).notNull(),
+		foodId: uuid('food_id')
+			.references(() => food.id)
+			.notNull(),
+		portion: decimal('serving_size', { precision: 5, scale: 2 }).notNull(),
+		unit: unitEnum('unit').notNull(),
+		createdAt: timestamp('created_at', { withTimezone: true })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+		updatedAt: timestamp('updatedAt', { withTimezone: true })
+	},
+	consumption => ({
+		userIndex: index('user_idx').on(consumption.userId),
+		foodIndex: index('food_idx').on(consumption.foodId)
 	})
 )

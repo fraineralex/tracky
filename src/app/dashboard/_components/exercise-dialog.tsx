@@ -3,7 +3,6 @@ import { Button } from '~/components/ui/button'
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
@@ -14,12 +13,9 @@ export default function ExerciseDialog() {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button
-					variant='secondary'
-					className='bg-slate-300 font-medium hover:bg-slate-300/80 dark:bg-slate-800 dark:hover:bg-slate-800/80'
-				>
+				<Button variant='default' className='font-medium'>
 					<Plus className='me-2' />
-					Register Exercise
+					Add Exercise
 				</Button>
 			</DialogTrigger>
 			<DialogContent className='sm:max-w-[425px]'>
