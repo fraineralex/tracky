@@ -10,6 +10,13 @@ import {
 } from 'drizzle-orm/pg-core'
 
 export const unitEnum = pgEnum('unit', ['g', 'ml', 'oz', 'cup'])
+export const diaryGroupEnum = pgEnum('diary_group', [
+	'breakfast',
+	'lunch',
+	'dinner',
+	'snack',
+	'uncategorized'
+])
 export const createTable = pgTableCreator(name => `tracky_${name}`)
 
 export const food = createTable(
@@ -47,6 +54,7 @@ export const consumption = createTable(
 			.notNull(),
 		portion: decimal('serving_size', { precision: 5, scale: 2 }).notNull(),
 		unit: unitEnum('unit').notNull(),
+		diaryGroup: diaryGroupEnum('diary_group').notNull(),
 		createdAt: timestamp('created_at', { withTimezone: true })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
@@ -76,7 +84,12 @@ export const exerciseCategory = createTable(
 	})
 )
 
-const effortEnum = pgEnum('effort', ['easy', 'moderate', 'hard', 'very-hard'])
+export const effortEnum = pgEnum('effort', [
+	'easy',
+	'moderate',
+	'hard',
+	'very-hard'
+])
 
 export const exercise = createTable(
 	'exercise',
@@ -93,6 +106,8 @@ export const exercise = createTable(
 		categoryId: uuid('category_id')
 			.references(() => exerciseCategory.id)
 			.notNull(),
+		diaryGroup: diaryGroupEnum('diary_group').notNull(),
+		userId: varchar('user_id', { length: 50 }).notNull(),
 		createdAt: timestamp('created_at', { withTimezone: true })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
