@@ -4,12 +4,17 @@ import { auth } from '@clerk/nextjs/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { db } from '~/server/db'
-import { consumption, exercise } from '~/server/db/schema'
+import {
+	consumption,
+	diaryGroupEnum,
+	effortEnum,
+	exercise
+} from '~/server/db/schema'
 import { createInsertSchema } from 'drizzle-zod'
 
 type NewConsumption = typeof consumption.$inferInsert
 
-const ConsumptionSchema = z.object({
+const ConsumptionSchema = createInsertSchema(consumption, {
 	userId: z.string({ required_error: 'You must be logged in to consume food' }),
 	foodId: z.string({ required_error: 'Please select a food' }),
 	portion: z
@@ -18,6 +23,9 @@ const ConsumptionSchema = z.object({
 		.transform(value => value.toString()),
 	unit: z.enum(['g', 'oz', 'ml', 'cup'], {
 		required_error: 'Please select a unit'
+	}),
+	mealGroup: z.enum(diaryGroupEnum.enumValues, {
+		required_error: 'Please select a meal group option'
 	})
 })
 
@@ -25,6 +33,7 @@ export type ConsumptionState = {
 	errors?: {
 		portion?: string[]
 		unit?: string[]
+		mealGroup?: string[]
 	}
 	message?: string | null
 	success?: boolean
@@ -41,9 +50,7 @@ export const addConsumption = async (
 
 	const validatedFields = ConsumptionSchema.safeParse({
 		userId,
-		foodId: formData.get('foodId'),
-		portion: Number(formData.get('portion')),
-		unit: formData.get('unit')
+		...Object.fromEntries(formData.entries())
 	})
 
 	if (!validatedFields.success) {
@@ -54,10 +61,7 @@ export const addConsumption = async (
 	}
 
 	try {
-		const newConsumption: NewConsumption = {
-			...validatedFields.data
-		}
-
+		const newConsumption = validatedFields.data satisfies NewConsumption
 		await db.insert(consumption).values(newConsumption)
 		revalidatePath('/dashboard')
 		return { message: 'Consumption added successfully', success: true }
@@ -70,12 +74,29 @@ export const addConsumption = async (
 	}
 }
 
-const exerciseSchema = createInsertSchema(exercise)
+const exerciseSchema = createInsertSchema(exercise, {
+	duration: z.coerce
+		.number({ required_error: 'Please enter your duration in minutes.' })
+		.positive({ message: 'Duration must be a positive number' })
+		.transform(value => value.toString()),
+	energyBurned: z.coerce
+		.number({ required_error: 'Energy burned is a required field.' })
+		.positive({ message: 'Energy burned must be a positive number' })
+		.transform(value => value.toString()),
+	effort: z.enum(effortEnum.enumValues, {
+		required_error: 'Please select an effort level option'
+	}),
+	diaryGroup: z.enum(diaryGroupEnum.enumValues, {
+		required_error: 'Please select a diary group option'
+	})
+})
 
 export type ExerciseState = {
 	errors?: {
 		energyBurned?: string[]
 		duration?: string[]
+		effort?: string[]
+		diaryGroup?: string[]
 	}
 	message?: string | null
 	success?: boolean
