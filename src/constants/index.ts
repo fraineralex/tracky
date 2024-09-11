@@ -1,8 +1,8 @@
-import { Dumbbell } from 'lucide-react'
 import {
 	Cleaner,
 	Contruction,
 	Cycling,
+	Gym,
 	Runnig,
 	SoccerKick,
 	Stretching,
@@ -49,47 +49,15 @@ export const UNITS_MAP = {
 	cup: 'cup'
 }
 
-export const EXERCISE_CATEGORIES = [
-	{
-		title: 'Gym',
-		icon: Dumbbell,
-		label: '🏋️‍♂️ Gym Workout'
-	},
-	{
-		title: 'Cardio',
-		icon: Treadmill,
-		label: '🏃‍♂️ Cardio Workout'
-	},
-	{
-		title: 'Household Activity',
-		icon: Cleaner,
-		label: '🧹 Household Chores'
-	},
-	{
-		title: 'Individual Sport',
-		icon: Runnig,
-		label: '🤸‍♂️ Individual Sport Activity'
-	},
-	{
-		title: 'Team Sport',
-		icon: SoccerKick,
-		label: '⚽ Team Sport Activity'
-	},
-	{
-		title: 'Outdoor Activity',
-		icon: Cycling,
-		label: '🚴‍♂️ Outdoor Activity'
-	},
-	{
-		title: 'Stretching & Mobility',
-		icon: Stretching,
-		label: '🤸‍♀️ Stretching & Mobility'
-	},
-	{
-		title: 'Ocupational Activity',
-		icon: Contruction,
-		label: '👷‍♂️ Ocupational Activity'
-	}
-]
-
-export type ExerciseCategory = (typeof EXERCISE_CATEGORIES)[number]
+export const EXERCISE_ICONS: {
+	[key: string]: React.FC<React.SVGProps<SVGSVGElement>>
+} = {
+	Gym: Gym,
+	Cardio: Treadmill,
+	'Household Activity': Cleaner,
+	'Individual Sport': Runnig,
+	'Team Sport': SoccerKick,
+	'Outdoor Activity': Cycling,
+	'Stretching & Mobility': Stretching,
+	'Ocupational Activity': Contruction
+}
