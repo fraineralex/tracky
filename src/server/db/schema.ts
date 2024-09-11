@@ -54,7 +54,7 @@ export const consumption = createTable(
 			.notNull(),
 		portion: decimal('serving_size', { precision: 5, scale: 2 }).notNull(),
 		unit: unitEnum('unit').notNull(),
-		diaryGroup: diaryGroupEnum('diary_group').notNull(),
+		mealGroup: diaryGroupEnum('diary_group').notNull(),
 		createdAt: timestamp('created_at', { withTimezone: true })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
