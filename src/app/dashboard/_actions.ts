@@ -4,7 +4,8 @@ import { auth } from '@clerk/nextjs/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { db } from '~/server/db'
-import { consumption } from '~/server/db/schema'
+import { consumption, exercise } from '~/server/db/schema'
+import { createInsertSchema } from 'drizzle-zod'
 
 type NewConsumption = typeof consumption.$inferInsert
 
@@ -20,7 +21,7 @@ const ConsumptionSchema = z.object({
 	})
 })
 
-export type State = {
+export type ConsumptionState = {
 	errors?: {
 		portion?: string[]
 		unit?: string[]
@@ -30,12 +31,13 @@ export type State = {
 }
 
 export const addConsumption = async (
-	prevState: State | undefined,
+	prevState: ConsumptionState | undefined,
 	formData: FormData
 ) => {
 	const { userId } = auth()
 
-	if (!userId) return { message: 'You must be logged in to consume food', success: false }
+	if (!userId)
+		return { message: 'You must be logged in to consume food', success: false }
 
 	const validatedFields = ConsumptionSchema.safeParse({
 		userId,
@@ -63,6 +65,57 @@ export const addConsumption = async (
 		console.error(error)
 		return {
 			message: 'Consumption failed. Please try again later.',
+			success: false
+		}
+	}
+}
+
+const exerciseSchema = createInsertSchema(exercise)
+
+export type ExerciseState = {
+	errors?: {
+		energyBurned?: string[]
+		duration?: string[]
+	}
+	message?: string | null
+	success?: boolean
+}
+
+type NewExercise = typeof exercise.$inferInsert
+
+export const addExercise = async (
+	prevState: ExerciseState,
+	formData: FormData
+) => {
+	const { userId } = auth()
+
+	if (!userId)
+		return {
+			message: 'You must be logged in to add an exercise',
+			success: false
+		}
+
+	const validatedFields = exerciseSchema.safeParse({
+		userId,
+		...Object.fromEntries(formData.entries())
+	})
+
+	if (!validatedFields.success) {
+		return {
+			errors: validatedFields.error.flatten().fieldErrors,
+			message: 'Oops! There was an error with your submission.'
+		}
+	}
+
+	try {
+		const newExercise = validatedFields.data satisfies NewExercise
+		await db.insert(exercise).values(newExercise)
+		revalidatePath('/dashboard')
+		return { message: 'Exercise added successfully', success: true }
+	} catch (error) {
+		console.error('There was an error inserting a exercise:', error)
+		return {
+			message: 'Exercise registration failed. Please try again later.',
 			success: false
 		}
 	}
