@@ -1,4 +1,4 @@
-import { LucideProps } from 'lucide-react'
+import { ComponentType } from 'react'
 import { Card, CardContent, CardTitle } from '~/components/ui/card'
 
 export function ExerciseCard({
@@ -6,11 +6,7 @@ export function ExerciseCard({
 	title,
 	handleCategorySelect
 }: {
-	Icon:
-		| React.ForwardRefExoticComponent<
-				Omit<LucideProps, 'ref'> & React.RefAttributes<SVGSVGElement>
-		  >
-		| React.FC<LucideProps>
+	Icon: React.FC<React.SVGProps<SVGSVGElement>>
 	title: string
 	handleCategorySelect: () => void
 }) {
@@ -20,7 +16,7 @@ export function ExerciseCard({
 			onClick={handleCategorySelect}
 		>
 			<CardContent className='my-auto pt-5'>
-				<Icon className='mx-auto h-16 w-16 text-foreground/80' />
+				<Icon className='mx-auto h-16 w-16 text-foreground/60 dark:text-foreground/80' />
 				<CardTitle className='mt-3 text-center'>{title}</CardTitle>
 			</CardContent>
 		</Card>

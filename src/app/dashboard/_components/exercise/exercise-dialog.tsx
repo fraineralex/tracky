@@ -9,8 +9,12 @@ import {
 } from '~/components/ui/dialog'
 
 import ExerciseCategories from './exercise-categories'
+import { db } from '~/server/db'
+import { exerciseCategory } from '~/server/db/schema'
 
-export default function ExerciseDialog() {
+export default async function ExerciseDialog() {
+	const categories = await db.select().from(exerciseCategory)
+	
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -23,7 +27,7 @@ export default function ExerciseDialog() {
 				<DialogHeader className='px-5'>
 					<DialogTitle>Register Exercise</DialogTitle>
 				</DialogHeader>
-				<ExerciseCategories />
+				<ExerciseCategories categories={categories} />
 			</DialogContent>
 		</Dialog>
 	)
