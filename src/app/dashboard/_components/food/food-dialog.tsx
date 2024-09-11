@@ -13,7 +13,8 @@ import { db } from '~/server/db'
 import { food } from '~/server/db/schema'
 
 export default async function FoodDialog() {
-	const data = await db.select().from(food)
+	const foodData = await db.select().from(food)
+	
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -28,7 +29,7 @@ export default async function FoodDialog() {
 				</DialogHeader>
 
 				<div className='container mx-auto'>
-					<DataTable columns={columns} data={data} />
+					<DataTable columns={columns} data={foodData} />
 				</div>
 			</DialogContent>
 		</Dialog>

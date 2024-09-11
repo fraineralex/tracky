@@ -199,7 +199,7 @@ export function FoodDrawer({
 								<Label htmlFor='mealGroup' className='sr-only'>
 									Meal Group
 								</Label>
-								<Select value={mealGroup} onValueChange={setMealGroup}>
+								<Select value={mealGroup} onValueChange={setMealGroup} name='mealGroup'>
 									<SelectTrigger id='mealGroup'>
 										<SelectValue placeholder='Meal Group' />
 									</SelectTrigger>
