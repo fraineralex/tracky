@@ -8,7 +8,7 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '~/components/ui/dialog'
-import { columns } from './food/columns'
+import { columns } from './columns'
 import { db } from '~/server/db'
 import { food } from '~/server/db/schema'
 
