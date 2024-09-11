@@ -17,7 +17,7 @@ type NewConsumption = typeof consumption.$inferInsert
 const ConsumptionSchema = createInsertSchema(consumption, {
 	userId: z.string({ required_error: 'You must be logged in to consume food' }),
 	foodId: z.string({ required_error: 'Please select a food' }),
-	portion: z
+	portion: z.coerce
 		.number({ required_error: 'Please enter a portion' })
 		.positive({ message: 'Portion must be a positive number' })
 		.transform(value => value.toString()),
