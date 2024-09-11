@@ -31,7 +31,7 @@ export const food = createTable(
 		updatedAt: timestamp('updatedAt', { withTimezone: true })
 	},
 	food => ({
-		nameIndex: index('name_idx').on(food.name)
+		nameIndex: index('food_name_idx').on(food.name)
 	})
 )
 
@@ -55,5 +55,50 @@ export const consumption = createTable(
 	consumption => ({
 		userIndex: index('user_idx').on(consumption.userId),
 		foodIndex: index('food_idx').on(consumption.foodId)
+	})
+)
+
+export const exerciseCategory = createTable(
+	'exercise_category',
+	{
+		id: uuid('id')
+			.primaryKey()
+			.default(sql`gen_random_uuid()`),
+		name: varchar('name', { length: 50 }).notNull(),
+		label: varchar('label', { length: 50 }).notNull(),
+		createdAt: timestamp('created_at', { withTimezone: true })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+		updatedAt: timestamp('updatedAt', { withTimezone: true })
+	},
+	exerciseCategory => ({
+		nameIndex: index('exercise_cat_name_idx').on(exerciseCategory.name)
+	})
+)
+
+const effortEnum = pgEnum('effort', ['easy', 'moderate', 'hard', 'very-hard'])
+
+export const exercise = createTable(
+	'exercise',
+	{
+		id: uuid('id')
+			.primaryKey()
+			.default(sql`gen_random_uuid()`),
+		duration: decimal('duration', { precision: 5, scale: 2 }).notNull(),
+		effort: effortEnum('effort').notNull(),
+		energyBurned: decimal('energy_burned', {
+			precision: 5,
+			scale: 2
+		}).notNull(),
+		categoryId: uuid('category_id')
+			.references(() => exerciseCategory.id)
+			.notNull(),
+		createdAt: timestamp('created_at', { withTimezone: true })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+		updatedAt: timestamp('updatedAt', { withTimezone: true })
+	},
+	exercise => ({
+		nameIndex: index('categoryId_idx').on(exercise.categoryId)
 	})
 )
