@@ -74,6 +74,10 @@ export const exerciseCategory = createTable(
 			.default(sql`gen_random_uuid()`),
 		name: varchar('name', { length: 50 }).notNull(),
 		label: varchar('label', { length: 50 }).notNull(),
+		energyBurnedPerMinute: decimal('energy_burned_per_minute', {
+			precision: 5,
+			scale: 2
+		}).notNull(),
 		createdAt: timestamp('created_at', { withTimezone: true })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
