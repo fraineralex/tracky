@@ -33,8 +33,9 @@ export default function ExerciseForm({
 	handleCategorySelect: (category: ExerciseCategories[number] | null) => void
 }) {
 	const [state, formAction] = useFormState(addExercise, initialState)
+	const [duration, setDuration] = React.useState(60)
+	const [energyBurned, setEnergyBurned] = React.useState<string | null>(null)
 	const { user } = useUser()
-	console.log(user)
 
 	if (state.success && state.message) {
 		handleFormClose(state.message)
@@ -82,6 +83,8 @@ export default function ExerciseForm({
 									placeholder='Duration'
 									className='col-span-3'
 									min={0}
+									value={duration}
+									onChange={e => setDuration(Number(e.target.value))}
 								/>
 								<small className='my-auto ps-2 text-xs text-foreground/80'>
 									Min
@@ -136,6 +139,12 @@ export default function ExerciseForm({
 									placeholder='Energy Burned'
 									className='col-span-3'
 									min={0}
+									value={
+										energyBurned ??
+										Number(selectedCategory.energyBurnedPerMinute) ??
+										0 * duration
+									}
+									onChange={e => setEnergyBurned(e.target.value)}
 								/>
 								<small className='my-auto ps-2 text-xs text-foreground/80'>
 									Kcal
