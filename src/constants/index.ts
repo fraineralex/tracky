@@ -61,3 +61,10 @@ export const EXERCISE_ICONS: {
 	'Stretching & Mobility': Stretching,
 	'Ocupational Activity': Contruction
 }
+
+export const EFFORT_LEVELS = {
+	easy: { label: 'Easy', multiplier: 1 },
+	moderate: { label: 'Moderate', multiplier: 1.2 },
+	hard: { label: 'Hard', multiplier: 1.4 },
+	'very-hard': { label: 'Very Hard', multiplier: 1.6 }
+}

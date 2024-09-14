@@ -16,6 +16,7 @@ import { ExerciseState, addExercise } from '../../_actions'
 import { useFormState } from 'react-dom'
 import { ExerciseCategories } from '~/types'
 import { useUser } from '@clerk/nextjs'
+import { EFFORT_LEVELS } from '~/constants'
 
 const initialState: ExerciseState = {
 	errors: {},
@@ -35,6 +36,7 @@ export default function ExerciseForm({
 	const [state, formAction] = useFormState(addExercise, initialState)
 	const [duration, setDuration] = React.useState(60)
 	const [energyBurned, setEnergyBurned] = React.useState<string | null>(null)
+	const [effort, setEffort] = React.useState<keyof typeof EFFORT_LEVELS>('easy')
 	const { user } = useUser()
 
 	if (state.success && state.message) {
@@ -54,6 +56,13 @@ export default function ExerciseForm({
 		)
 	}
 
+	const energyBurnedValue =
+		energyBurned ??
+		duration *
+			Number(selectedCategory?.energyBurnedPerMinute ?? 0) *
+			EFFORT_LEVELS[effort].multiplier
+
+	console.log(selectedCategory?.energyBurnedPerMinute, duration)
 	return (
 		<form action={formAction}>
 			{selectedCategory && (
@@ -105,15 +114,22 @@ export default function ExerciseForm({
 								<Label htmlFor='effort' className='sr-only'>
 									Effort Level
 								</Label>
-								<Select name='effort' required>
+								<Select
+									name='effort'
+									required
+									onValueChange={(value: string) =>
+										setEffort(value as keyof typeof EFFORT_LEVELS)
+									}
+								>
 									<SelectTrigger id='effort'>
 										<SelectValue placeholder='Effort Level' />
 									</SelectTrigger>
 									<SelectContent>
-										<SelectItem value='easy'>Easy</SelectItem>
-										<SelectItem value='moderate'>Moderate</SelectItem>
-										<SelectItem value='hard'>Hard</SelectItem>
-										<SelectItem value='very-hard'>Very Hard</SelectItem>
+										{Object.entries(EFFORT_LEVELS).map(([key, level]) => (
+											<SelectItem key={key} value={key}>
+												{level.label}
+											</SelectItem>
+										))}
 									</SelectContent>
 								</Select>
 							</div>
@@ -139,11 +155,7 @@ export default function ExerciseForm({
 									placeholder='Energy Burned'
 									className='col-span-3'
 									min={0}
-									value={
-										energyBurned ??
-										Number(selectedCategory.energyBurnedPerMinute) ??
-										0 * duration
-									}
+									value={energyBurnedValue}
 									onChange={e => setEnergyBurned(e.target.value)}
 								/>
 								<small className='my-auto ps-2 text-xs text-foreground/80'>
