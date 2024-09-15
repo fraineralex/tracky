@@ -14,7 +14,8 @@ export function calculateEnergyBurned({
 	age,
 	sex,
 	height,
-	heightUnit
+	heightUnit,
+	categoryMultiplier
 }: {
 	duration: number
 	effort: string
@@ -24,21 +25,25 @@ export function calculateEnergyBurned({
 	sex: string
 	height: number
 	heightUnit: string
+	categoryMultiplier: number
 }) {
 	weight = weightUnit === 'kg' ? weight : weight * 0.453592
+
 	if (heightUnit === 'ft') {
 		height = height * 30.48
 	} else if (heightUnit === 'in') {
 		height = height * 2.54
 	}
-  
+
 	const tmb =
 		sex === 'male'
 			? 88.362 + 13.397 * weight + 4.799 * height - 5.677 * age
 			: 447.593 + 9.247 * weight + 3.098 * height - 4.33 * age
 
-	const caloriesPerMinute =
-		(tmb / 1440) *
+	const effortMultiplier =
 		EFFORT_LEVELS[effort as keyof typeof EFFORT_LEVELS].multiplier
-	return (duration * caloriesPerMinute).toFixed(2)
+
+	const caloriesPerMinute = (tmb / 1440) * effortMultiplier * categoryMultiplier
+
+	return (duration * caloriesPerMinute).toFixed(0)
 }

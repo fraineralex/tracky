@@ -40,14 +40,15 @@ export default function ExerciseForm({
 	const [energyBurned, setEnergyBurned] = React.useState<string | null>(null)
 	const [effort, setEffort] = React.useState<keyof typeof EFFORT_LEVELS>('easy')
 	const { user } = useUser()
-	const { weight, weightUnit, height, heightUnit, born, sex } = user?.publicMetadata as {
-		weight: number
-		weightUnit: string
-		height: number
-		heightUnit: string
-		born: string
-		sex: sex
-	}
+	const { weight, weightUnit, height, heightUnit, born, sex } =
+		user?.publicMetadata as {
+			weight: number
+			weightUnit: string
+			height: number
+			heightUnit: string
+			born: string
+			sex: sex
+		}
 	const age = new Date().getFullYear() - new Date(born as string).getFullYear()
 
 	if (state.success && state.message) {
@@ -60,7 +61,12 @@ export default function ExerciseForm({
 				variant='outline'
 				className='font-medium'
 				type='button'
-				onClick={() => handleCategorySelect(null)}
+				onClick={() => {
+					setDuration(60)
+					setEnergyBurned(null)
+					setEffort('easy')
+					handleCategorySelect(null)
+				}}
 			>
 				Cancel
 			</Button>
@@ -75,10 +81,10 @@ export default function ExerciseForm({
 		height,
 		heightUnit,
 		age,
-		sex
+		sex,
+		categoryMultiplier: Number(selectedCategory?.energyBurnedPerMinute)
 	})
 
-	console.log(selectedCategory?.energyBurnedPerMinute, duration)
 	return (
 		<form action={formAction}>
 			{selectedCategory && (
@@ -171,7 +177,7 @@ export default function ExerciseForm({
 									placeholder='Energy Burned'
 									className='col-span-3'
 									min={0}
-									value={energyBurnedValue}
+									value={energyBurned ?? energyBurnedValue}
 									onChange={e => setEnergyBurned(e.target.value)}
 								/>
 								<small className='my-auto ps-2 text-xs text-foreground/80'>
