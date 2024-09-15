@@ -17,6 +17,8 @@ import { useFormState } from 'react-dom'
 import { ExerciseCategories } from '~/types'
 import { useUser } from '@clerk/nextjs'
 import { EFFORT_LEVELS } from '~/constants'
+import { calculateEnergyBurned } from '~/lib/utils'
+import { sex } from '~/types'
 
 const initialState: ExerciseState = {
 	errors: {},
@@ -38,6 +40,15 @@ export default function ExerciseForm({
 	const [energyBurned, setEnergyBurned] = React.useState<string | null>(null)
 	const [effort, setEffort] = React.useState<keyof typeof EFFORT_LEVELS>('easy')
 	const { user } = useUser()
+	const { weight, weightUnit, height, heightUnit, born, sex } = user?.publicMetadata as {
+		weight: number
+		weightUnit: string
+		height: number
+		heightUnit: string
+		born: string
+		sex: sex
+	}
+	const age = new Date().getFullYear() - new Date(born as string).getFullYear()
 
 	if (state.success && state.message) {
 		handleFormClose(state.message)
@@ -56,11 +67,16 @@ export default function ExerciseForm({
 		)
 	}
 
-	const energyBurnedValue =
-		energyBurned ??
-		duration *
-			Number(selectedCategory?.energyBurnedPerMinute ?? 0) *
-			EFFORT_LEVELS[effort].multiplier
+	const energyBurnedValue = calculateEnergyBurned({
+		duration,
+		effort,
+		weight,
+		weightUnit,
+		height,
+		heightUnit,
+		age,
+		sex
+	})
 
 	console.log(selectedCategory?.energyBurnedPerMinute, duration)
 	return (
