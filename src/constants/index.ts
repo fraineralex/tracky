@@ -63,8 +63,8 @@ export const EXERCISE_ICONS: {
 }
 
 export const EFFORT_LEVELS = {
-	easy: { label: 'Easy', multiplier: 1 },
-	moderate: { label: 'Moderate', multiplier: 1.2 },
-	hard: { label: 'Hard', multiplier: 1.4 },
-	'very-hard': { label: 'Very Hard', multiplier: 1.6 }
+	easy: { label: 'Easy', multiplier: 1.2 },
+	moderate: { label: 'Moderate', multiplier: 1.55 },
+	hard: { label: 'Hard', multiplier: 1.725 },
+	'very-hard': { label: 'Very Hard', multiplier: 1.9 }
 }
