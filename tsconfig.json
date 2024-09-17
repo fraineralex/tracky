@@ -37,6 +37,6 @@
 		"**/*.cjs",
 		"**/*.js",
 		".next/types/**/*.ts"
-	],
+, "src/server/db/seed.ts"	],
 	"exclude": ["node_modules"]
 }

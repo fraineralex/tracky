@@ -3,13 +3,18 @@ import { Button } from '~/components/ui/button'
 import {
 	Dialog,
 	DialogContent,
-	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger
 } from '~/components/ui/dialog'
 
-export default function ExerciseDialog() {
+import ExerciseCategories from './exercise-categories'
+import { db } from '~/server/db'
+import { exerciseCategory } from '~/server/db/schema'
+
+export default async function ExerciseDialog() {
+	const categories = await db.select().from(exerciseCategory)
+	
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -18,14 +23,11 @@ export default function ExerciseDialog() {
 					Add Exercise
 				</Button>
 			</DialogTrigger>
-			<DialogContent className='sm:max-w-[425px]'>
-				<DialogHeader>
+			<DialogContent className='sm:max-w-3xl'>
+				<DialogHeader className='px-5'>
 					<DialogTitle>Register Exercise</DialogTitle>
 				</DialogHeader>
-				<div className='grid gap-4 py-4'>...</div>
-				<DialogFooter>
-					<Button type='submit'>Save</Button>
-				</DialogFooter>
+				<ExerciseCategories categories={categories} />
 			</DialogContent>
 		</Dialog>
 	)

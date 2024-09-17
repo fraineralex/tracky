@@ -22,9 +22,15 @@ import {
 } from '~/components/ui/select'
 import { Input } from '~/components/ui/input'
 import { toast } from 'sonner'
-import { State, addConsumption } from '../../_actions'
+import { ConsumptionState, addConsumption } from '../../_actions'
 import { useFormState } from 'react-dom'
 import FoodCardItem from './food-card'
+
+const initialState: ConsumptionState = {
+	message: '',
+	errors: {},
+	success: false
+}
 
 export function FoodDrawer({
 	foodData,
@@ -37,7 +43,6 @@ export function FoodDrawer({
 	const [unit, setUnit] = React.useState<keyof typeof unitConversions>('g')
 	const [mealGroup, setMealGroup] = React.useState('uncategorized')
 
-	const initialState: State = { message: '', errors: {}, success: false }
 	const [state, formAction] = useFormState(addConsumption, initialState)
 
 	const unitConversions = {
@@ -129,11 +134,7 @@ export function FoodDrawer({
 						className='mt-10 w-full items-center bg-transparent px-4 ps-5'
 						action={formAction}
 					>
-						<input
-							type='hidden'
-							name='foodId'
-							value={'71576e45-5a19-48aa-bccc-6fb27121278b'}
-						/>
+						<input type='hidden' name='foodId' value={foodData.id} />
 						<aside className='flex justify-between pb-3'>
 							<Label className='text-base font-semibold'>
 								Serving Size
@@ -198,7 +199,7 @@ export function FoodDrawer({
 								<Label htmlFor='mealGroup' className='sr-only'>
 									Meal Group
 								</Label>
-								<Select value={mealGroup} onValueChange={setMealGroup}>
+								<Select value={mealGroup} onValueChange={setMealGroup} name='mealGroup'>
 									<SelectTrigger id='mealGroup'>
 										<SelectValue placeholder='Meal Group' />
 									</SelectTrigger>

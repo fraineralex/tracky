@@ -1,5 +1,5 @@
-import FoodDialog from './_components/food-dialog'
-import ExerciseDialog from './_components/exercise-dialog'
+import FoodDialog from './_components/food/food-dialog'
+import ExerciseDialog from './_components/exercise/exercise-dialog'
 import NutritionGraphic from './_sections/nutrition-graphic'
 import InsightsAndAnalitics from './_sections/insights-analytics'
 import DataAndHabits from './_sections/data-habits'
