@@ -14,7 +14,7 @@ import { DialogClose, DialogFooter } from '~/components/ui/dialog'
 import { Button } from '~/components/ui/button'
 import { ExerciseState, addExercise } from '../../_actions'
 import { useFormState } from 'react-dom'
-import { ExerciseCategories } from '~/types'
+import { ExerciseCategories, PublicMetadata } from '~/types'
 import { useUser } from '@clerk/nextjs'
 import { EFFORT_LEVELS } from '~/constants'
 import { calculateEnergyBurned } from '~/lib/utils'
@@ -41,14 +41,7 @@ export default function ExerciseForm({
 	const [effort, setEffort] = React.useState<keyof typeof EFFORT_LEVELS>('easy')
 	const { user } = useUser()
 	const { weight, weightUnit, height, heightUnit, born, sex } =
-		user?.publicMetadata as {
-			weight: number
-			weightUnit: string
-			height: number
-			heightUnit: string
-			born: string
-			sex: sex
-		}
+		user?.publicMetadata as PublicMetadata
 	const age = new Date().getFullYear() - new Date(born as string).getFullYear()
 
 	if (state.success && state.message) {
