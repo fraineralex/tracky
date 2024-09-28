@@ -26,11 +26,11 @@ export const food = createTable(
 			.primaryKey()
 			.default(sql`gen_random_uuid()`),
 		name: varchar('name', { length: 256 }).notNull(),
-		protein: decimal('protein', { precision: 5, scale: 2 }).notNull(),
-		kcal: decimal('kcal', { precision: 5, scale: 2 }).notNull(),
-		fat: decimal('fat', { precision: 5, scale: 2 }).notNull(),
-		carbs: decimal('carbs', { precision: 5, scale: 2 }).notNull(),
-		servingSize: decimal('serving_size', { precision: 5, scale: 2 }).notNull(),
+		protein: decimal('protein', { precision: 7, scale: 2 }).notNull(),
+		kcal: decimal('kcal', { precision: 7, scale: 2 }).notNull(),
+		fat: decimal('fat', { precision: 7, scale: 2 }).notNull(),
+		carbs: decimal('carbs', { precision: 7, scale: 2 }).notNull(),
+		servingSize: decimal('serving_size', { precision: 7, scale: 2 }).notNull(),
 		unit: unitEnum('unit').notNull(),
 		createdAt: timestamp('created_at', { withTimezone: true })
 			.default(sql`CURRENT_TIMESTAMP`)
@@ -52,7 +52,7 @@ export const consumption = createTable(
 		foodId: uuid('food_id')
 			.references(() => food.id)
 			.notNull(),
-		portion: decimal('serving_size', { precision: 5, scale: 2 }).notNull(),
+		portion: decimal('serving_size', { precision: 7, scale: 2 }).notNull(),
 		unit: unitEnum('unit').notNull(),
 		mealGroup: diaryGroupEnum('diary_group').notNull(),
 		createdAt: timestamp('created_at', { withTimezone: true })
@@ -75,7 +75,7 @@ export const exerciseCategory = createTable(
 		name: varchar('name', { length: 50 }).notNull(),
 		label: varchar('label', { length: 50 }).notNull(),
 		energyBurnedPerMinute: decimal('energy_burned_per_minute', {
-			precision: 5,
+			precision: 7,
 			scale: 2
 		}).notNull(),
 		createdAt: timestamp('created_at', { withTimezone: true })
@@ -101,10 +101,10 @@ export const exercise = createTable(
 		id: uuid('id')
 			.primaryKey()
 			.default(sql`gen_random_uuid()`),
-		duration: decimal('duration', { precision: 5, scale: 2 }).notNull(),
+		duration: decimal('duration', { precision: 7, scale: 2 }).notNull(),
 		effort: effortEnum('effort').notNull(),
 		energyBurned: decimal('energy_burned', {
-			precision: 5,
+			precision: 7,
 			scale: 2
 		}).notNull(),
 		categoryId: uuid('category_id')

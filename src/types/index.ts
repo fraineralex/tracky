@@ -17,12 +17,12 @@ export interface NutritionMetrics {
 		consumed: number
 		remaining: number
 	}
-	carbs: {
+	fats: {
 		needed: number
 		consumed: number
 		remaining: number
 	}
-	fats: {
+	carbs: {
 		needed: number
 		consumed: number
 		remaining: number
@@ -39,3 +39,5 @@ export type PublicMetadata = {
 	heightUnit: string
 	weightUnit: string
 }
+
+export type NutritionMetricsPerDay = { [key: number]: NutritionMetrics }
