@@ -92,15 +92,16 @@ export function calculateNutritionalNeeds({
 	const carbCalories = adjustedGet * 0.53
 	const fatCalories = adjustedGet * 0.26
 
-	const protein = proteinCalories / 4
-	const carbs = carbCalories / 4
-	const fats = fatCalories / 9
+	const protein = round(proteinCalories / 4)
+	const carbs = round(carbCalories / 4)
+	const fats = round(fatCalories / 9)
+	const calories = round(adjustedGet)
 
 	return {
 		calories: {
 			consumed: 0,
-			remaining: adjustedGet,
-			needed: adjustedGet
+			remaining: calories,
+			needed: calories
 		},
 		protein: {
 			consumed: 0,
@@ -118,4 +119,9 @@ export function calculateNutritionalNeeds({
 			needed: fats
 		}
 	}
+}
+
+export function round(value?: number, decimals = 0) {
+	const factor = Math.pow(10, decimals)
+	return Math.round(value ?? 0 * factor) / factor
 }
