@@ -5,7 +5,11 @@ import InsightsAndAnalitics from './_sections/insights-analytics'
 import DataAndHabits from './_sections/data-habits'
 import { calculateNutritionalNeeds } from '~/lib/utils'
 import { currentUser } from '@clerk/nextjs/server'
-import { PublicMetadata } from '~/types'
+import {
+	NutritionMetrics,
+	NutritionMetricsPerDay,
+	PublicMetadata
+} from '~/types'
 import { db } from '~/server/db'
 import { consumption, food } from '~/server/db/schema'
 import { eq, and, gte } from 'drizzle-orm'
@@ -16,6 +20,10 @@ export default async function DashboardPage() {
 	const nutritionMeatrics = calculateNutritionalNeeds(
 		user.publicMetadata as PublicMetadata
 	)
+	const dayOfWeek = new Date()
+	dayOfWeek.setDate(
+		dayOfWeek.getDate() - dayOfWeek.getDay() - 1
+	)
 	const result = await db
 		.select()
 		.from(consumption)
@@ -23,10 +31,19 @@ export default async function DashboardPage() {
 		.where(
 			and(
 				eq(consumption.userId, user.id),
-				gte(consumption.createdAt, new Date())
+				gte(consumption.createdAt, dayOfWeek)
 			)
 		)
 
+	const nutritionMeatricsPerDay: NutritionMetricsPerDay = {
+		1: structuredClone(nutritionMeatrics),
+		2: structuredClone(nutritionMeatrics),
+		3: structuredClone(nutritionMeatrics),
+		4: structuredClone(nutritionMeatrics),
+		5: structuredClone(nutritionMeatrics),
+		6: structuredClone(nutritionMeatrics),
+		7: structuredClone(nutritionMeatrics)
+	}
 	result.forEach(({ consumption, food }) => {
 		const calories =
 			(Number(consumption.portion) / Number(food.servingSize)) *
@@ -41,14 +58,22 @@ export default async function DashboardPage() {
 			(Number(consumption.portion) / Number(food.servingSize)) *
 			Number(food.fat)
 
-		nutritionMeatrics.calories.consumed += calories
-		nutritionMeatrics.protein.consumed += protein
-		nutritionMeatrics.carbs.consumed += carbs
-		nutritionMeatrics.fats.consumed += fats
-		nutritionMeatrics.calories.remaining -= calories
-		nutritionMeatrics.protein.remaining -= protein
-		nutritionMeatrics.carbs.remaining -= carbs
-		nutritionMeatrics.fats.remaining -= fats
+		const day = consumption.createdAt.getDay()
+		if (!nutritionMeatricsPerDay[day]) {
+			nutritionMeatricsPerDay[day] = { ...nutritionMeatrics }
+		}
+
+		nutritionMeatricsPerDay[day].calories.consumed += calories
+		nutritionMeatricsPerDay[day].protein.consumed += protein
+		nutritionMeatricsPerDay[day].carbs.consumed += carbs
+		nutritionMeatricsPerDay[day].fats.consumed += fats
+
+		if (day === new Date().getDay()) {
+			nutritionMeatricsPerDay[day].calories.remaining -= calories
+			nutritionMeatricsPerDay[day].protein.remaining -= protein
+			nutritionMeatricsPerDay[day].carbs.remaining -= carbs
+			nutritionMeatricsPerDay[day].fats.remaining -= fats
+		}
 	})
 
 	return (
@@ -68,7 +93,7 @@ export default async function DashboardPage() {
 				</header>
 			</div>
 			<div className='flex justify-between pt-5'>
-				<NutritionGraphic {...nutritionMeatrics} />
+				<NutritionGraphic nutritionMetrics={nutritionMeatricsPerDay} />
 				<InsightsAndAnalitics />
 			</div>
 			<DataAndHabits />
