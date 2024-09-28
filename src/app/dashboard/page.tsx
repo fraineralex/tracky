@@ -5,7 +5,7 @@ import InsightsAndAnalitics from './_sections/insights-analytics'
 import DataAndHabits from './_sections/data-habits'
 import { calculateNutritionalNeeds } from '~/lib/utils'
 import { currentUser } from '@clerk/nextjs/server'
-import { NutritionMetrics, PublicMetadata, sex } from '~/types'
+import { PublicMetadata } from '~/types'
 import { db } from '~/server/db'
 import { consumption, food } from '~/server/db/schema'
 import { eq, and, gte } from 'drizzle-orm'
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
 		nutritionMeatrics.carbs.remaining -= carbs
 		nutritionMeatrics.fats.remaining -= fats
 	})
-	console.log(result)
+
 	return (
 		<section className='ms-5 h-full w-full overflow-auto px-5 pb-10 pt-10'>
 			<div className='flex justify-between'>

@@ -23,7 +23,7 @@ export default async function FoodDialog() {
 					Add Food
 				</Button>
 			</DialogTrigger>
-			<DialogContent className='h-[80%] sm:max-w-6xl'>
+			<DialogContent className='sm:max-w-6xl'>
 				<DialogHeader>
 					<DialogTitle className='ps-8 pt-2'>Add Food to Diary</DialogTitle>
 				</DialogHeader>
