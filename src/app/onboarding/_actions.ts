@@ -72,7 +72,9 @@ export const completeOnboarding = async (formData: FormData) => {
 		await clerkClient().users.updateUser(userId, {
 			publicMetadata: {
 				onboardingComplete: true,
-				...validatedFields.data
+				...validatedFields.data,
+				born: validatedFields.data.born.toISOString().split('T')[0],
+				updateAt: new Date().toISOString().split('T')[0]
 			}
 		})
 
