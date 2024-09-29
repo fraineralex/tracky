@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { EFFORT_LEVELS } from '~/constants'
+import { ACTIVITY_FACTORS, EFFORT_LEVELS, GOAL_FACTORS } from '~/constants'
 import { NutritionMetrics, PublicMetadata } from '~/types'
 
 export function cn(...inputs: ClassValue[]) {
@@ -73,20 +73,9 @@ export function calculateNutritionalNeeds({
 			? 88.362 + 13.397 * weight + 4.799 * height - 5.677 * age
 			: 447.593 + 9.247 * weight + 3.098 * height - 4.33 * age
 
-	const activityFactors = {
-		sedentary: 1.2,
-		moderate: 1.55,
-		active: 1.9
-	}
+	const get = tmb * ACTIVITY_FACTORS[activity]
 
-	const get = tmb * activityFactors[activity]
-
-	const goalFactors = {
-		gain: 1.1,
-		maintain: 1.0,
-		lose: 0.9
-	}
-	const adjustedGet = get * goalFactors[goal]
+	const adjustedGet = get * GOAL_FACTORS[goal]
 
 	const proteinCalories = adjustedGet * 0.21
 	const carbCalories = adjustedGet * 0.53
@@ -124,4 +113,18 @@ export function calculateNutritionalNeeds({
 export function round(value?: number, decimals = 0) {
 	const factor = Math.pow(10, decimals)
 	return Math.round(value ?? 0 * factor) / factor
+}
+
+export function getStreakNumber(arr: Date[]) {
+	let streak = 0
+	arr.forEach((date, index) => {
+		if (index === arr.length - 1) streak++
+		else {
+			const nextDate = arr[index + 1]
+			const diff = nextDate ? date.getTime() - nextDate.getTime() : 0
+			if (diff === 86400000) streak++
+			else return streak
+		}
+	})
+	return streak
 }

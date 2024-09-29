@@ -38,6 +38,8 @@ export type PublicMetadata = {
 	activity: activityLevel
 	heightUnit: string
 	weightUnit: string
+	updatedAt: string
+	currentWeight: number
 }
 
 export type NutritionMetricsPerDay = { [key: number]: NutritionMetrics }
