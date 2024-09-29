@@ -9,7 +9,7 @@ export default function NavLinks() {
 	if (pathname !== '/') return null
 
 	return (
-		<article className='hidden sm:flex space-x-4 pt-3 text-sm text-foreground'>
+		<article className='hidden space-x-4 pt-3 text-sm text-foreground sm:flex'>
 			<Button variant='link' asChild title='Home page' aria-label='Home page'>
 				<Link
 					href='/'
@@ -36,7 +36,10 @@ export default function NavLinks() {
 				title='Contact developer'
 				aria-label='Contact developer'
 			>
-				<Link href='mailto:frainerdeveloper@gmail.com' className=''>
+				<Link
+					href='mailto:frainerdeveloper@gmail.com'
+					className=''
+				>
 					Contact
 				</Link>
 			</Button>
