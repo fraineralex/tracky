@@ -11,7 +11,6 @@ export default function NutritionGraphic({
 }: {
 	nutritionMetrics: NutritionMetricsPerDay
 }) {
-	console.log(nutrition)
 	const [showConsumed, setShowConsumed] = React.useState(true)
 
 	const dayOfWeek = new Date().getDay()
