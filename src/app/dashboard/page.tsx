@@ -17,13 +17,10 @@ import { eq, and, gte } from 'drizzle-orm'
 export default async function DashboardPage() {
 	const user = await currentUser()
 	if (!user) return null
-	const nutritionMeatrics = calculateNutritionalNeeds(
-		user.publicMetadata as PublicMetadata
-	)
+	const userMetadata = user.publicMetadata as PublicMetadata
+	const nutritionMeatrics = calculateNutritionalNeeds(userMetadata)
 	const dayOfWeek = new Date()
-	dayOfWeek.setDate(
-		dayOfWeek.getDate() - dayOfWeek.getDay() - 1
-	)
+	dayOfWeek.setDate(dayOfWeek.getDate() - dayOfWeek.getDay() - 1)
 	const result = await db
 		.select()
 		.from(consumption)
@@ -34,16 +31,12 @@ export default async function DashboardPage() {
 				gte(consumption.createdAt, dayOfWeek)
 			)
 		)
+		
+	const nutritionMeatricsPerDay: NutritionMetricsPerDay = {}
+	Array.from({ length: 7 }).forEach((_, index) => {
+		nutritionMeatricsPerDay[index + 1] = structuredClone(nutritionMeatrics)
+	})
 
-	const nutritionMeatricsPerDay: NutritionMetricsPerDay = {
-		1: structuredClone(nutritionMeatrics),
-		2: structuredClone(nutritionMeatrics),
-		3: structuredClone(nutritionMeatrics),
-		4: structuredClone(nutritionMeatrics),
-		5: structuredClone(nutritionMeatrics),
-		6: structuredClone(nutritionMeatrics),
-		7: structuredClone(nutritionMeatrics)
-	}
 	result.forEach(({ consumption, food }) => {
 		const calories =
 			(Number(consumption.portion) / Number(food.servingSize)) *
@@ -60,7 +53,7 @@ export default async function DashboardPage() {
 
 		const day = consumption.createdAt.getDay()
 		if (!nutritionMeatricsPerDay[day]) {
-			nutritionMeatricsPerDay[day] = { ...nutritionMeatrics }
+			nutritionMeatricsPerDay[day] = structuredClone(nutritionMeatrics)
 		}
 
 		nutritionMeatricsPerDay[day].calories.consumed += calories
@@ -94,9 +87,12 @@ export default async function DashboardPage() {
 			</div>
 			<div className='flex justify-between pt-5'>
 				<NutritionGraphic nutritionMetrics={nutritionMeatricsPerDay} />
-				<InsightsAndAnalitics />
+				<InsightsAndAnalitics
+					expenditure={nutritionMeatrics.calories.needed}
+					{...userMetadata}
+				/>
 			</div>
-			<DataAndHabits />
+			<DataAndHabits {...userMetadata} />
 		</section>
 	)
 }
