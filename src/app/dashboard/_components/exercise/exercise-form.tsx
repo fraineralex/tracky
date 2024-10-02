@@ -52,7 +52,7 @@ export default function ExerciseForm({
 		return (
 			<Button
 				variant='outline'
-				className='font-medium'
+				className='font-medium w-full sm:w-auto'
 				type='button'
 				onClick={() => {
 					setDuration(60)
@@ -81,7 +81,7 @@ export default function ExerciseForm({
 	return (
 		<form action={formAction}>
 			{selectedCategory && (
-				<div className='items-center bg-transparent px-10 py-5'>
+				<div className='items-center bg-transparent md:px-10 py-5'>
 					<header className='text-center'>
 						<h2 className=' text-xl font-semibold'>{selectedCategory.label}</h2>
 						{state.message && !state.success && (
@@ -159,7 +159,7 @@ export default function ExerciseForm({
 						</div>
 						<div className='min-w-0 max-w-xs '>
 							<div className='grid grid-cols-5 space-x-14 pb-1'>
-								<Label htmlFor='duration' className='my-auto text-nowrap'>
+								<Label htmlFor='duration' className='my-auto md:text-nowrap'>
 									Energy Burned
 								</Label>
 								<Input
@@ -221,7 +221,7 @@ export default function ExerciseForm({
 					</div>
 				</div>
 			)}
-			<DialogFooter className='flex space-x-5 pt-5'>
+			<DialogFooter className='sm:flex sm:space-x-5 pt-5'>
 				{!selectedCategory && (
 					<DialogClose>
 						<CalcelButton />
@@ -230,7 +230,7 @@ export default function ExerciseForm({
 				{selectedCategory && <CalcelButton />}
 				<Button
 					variant='default'
-					className='font-medium capitalize'
+					className='font-medium capitalize mb-3 sm:mb-0'
 					disabled={!selectedCategory}
 					type='submit'
 				>
