@@ -48,7 +48,7 @@ export default function RootLayout({
 					>
 						<div className='grid min-h-screen grid-rows-[auto,1fr] overflow-y-auto'>
 							<Header />
-							<main className='flex px-10'>
+							<main className='md:flex px-10'>
 								<SideNav />
 								{children}
 							</main>

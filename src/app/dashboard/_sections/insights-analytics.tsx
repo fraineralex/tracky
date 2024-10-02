@@ -33,9 +33,8 @@ export default function InsightsAndAnalitics({
 	const goalProgress = Math.floor(
 		((currentWeight - goalWeight) / (weight - goalWeight)) * 100
 	)
-	console.log(currentWeight, goalWeight, goalProgress)
 	return (
-		<aside className=''>
+		<aside className='mx-auto md:mx-0'>
 			<div className='flex space-x-3'>
 				<InsightsCard
 					title='Expenditure'
@@ -65,7 +64,7 @@ export default function InsightsAndAnalitics({
 				valueUnit='days in'
 				className='mt-3 w-full rounded-lg border bg-slate-200/50 p-4 pb-1 dark:bg-slate-800/50'
 			>
-				<Progress value={goalProgress} className='mb-8 mt-8 h-4' />
+				<Progress value={goalProgress} className='mb-6 mt-6 h-4' />
 			</InsightsCard>
 		</aside>
 	)

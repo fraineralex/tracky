@@ -54,12 +54,15 @@ export default function NutritionGraphic({
 				: 0
 	}
 	return (
-		<article className='h-fit w-full max-w-[490px] rounded-lg border bg-slate-200 p-5 dark:bg-slate-800/50'>
+		<article className='mx-auto h-fit w-full rounded-lg border bg-slate-200 p-5 pr-1 dark:bg-slate-800/50 md:mx-0 lg:max-w-96 xl:max-w-[490px]'>
 			<h2 className='mb-3'>Nutrition & Targets</h2>
-			<div className='mb-2 grid grid-cols-10 space-x-5'>
+			<div className='mb-2 grid grid-cols-10 space-x-5 lg:space-x-3 xl:space-x-5'>
 				<div className='col-span-8 grid grid-flow-row space-y-2'>
 					{[...Array(4)].map((_, nutrientIndex) => (
-						<div className='flex space-x-5 border-b pb-2' key={nutrientIndex}>
+						<div
+							className='flex space-x-5 border-b pb-2 lg:space-x-2 xl:space-x-5'
+							key={nutrientIndex}
+						>
 							{[...Array(7)].map((_, dayIndex) => (
 								<span
 									className={`rounded-md px-4 py-4 ${dayIndex === dayOfWeek - 1 ? 'border-2 border-primary' : ''}`}
@@ -72,7 +75,7 @@ export default function NutritionGraphic({
 						</div>
 					))}
 				</div>
-				<aside className='col-span-2 flex flex-col place-content-center justify-between'>
+				<aside className='col-span-2 flex flex-col place-content-center justify-between text-sm'>
 					<p className='font-bold leading-tight'>
 						{round(calories)}
 						<Flame className='inline h-6 w-6 pb-1' />
@@ -100,7 +103,7 @@ export default function NutritionGraphic({
 					</p>
 				</aside>
 			</div>
-			<div className='mt-4 flex space-x-4'>
+			<div className='mt-4 flex space-x-4 lg:space-x-1 xl:space-x-4'>
 				{days.map((day, index) => (
 					<span
 						className={`px-3 py-2 ${index === dayOfWeek - 1 ? 'rounded-md border-2 border-primary font-bold' : ''}`}

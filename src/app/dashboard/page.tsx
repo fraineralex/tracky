@@ -70,7 +70,7 @@ export default async function DashboardPage() {
 	})
 
 	return (
-		<section className='ms-5 h-full w-full overflow-auto px-5 pb-10 pt-10'>
+		<section className='xl:ms-5 h-full w-full overflow-auto xl:px-5 pb-10 pt-10'>
 			<div className='flex justify-between'>
 				<h1 className='mb-5 text-xl font-semibold uppercase'>
 					{new Date().toLocaleDateString('en-US', {
@@ -85,7 +85,7 @@ export default async function DashboardPage() {
 					<ExerciseDialog />
 				</header>
 			</div>
-			<div className='flex justify-between pt-5'>
+			<div className='lg:flex space-x-3 lg:justify-between pt-5 flex-col md:flex-row space-y-3'>
 				<NutritionGraphic nutritionMetrics={nutritionMeatricsPerDay} />
 				<InsightsAndAnalitics
 					expenditure={nutritionMeatrics.calories.needed}
