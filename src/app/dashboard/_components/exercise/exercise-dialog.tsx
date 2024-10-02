@@ -23,7 +23,7 @@ export default async function ExerciseDialog() {
 					Add Exercise
 				</Button>
 			</DialogTrigger>
-			<DialogContent className='sm:max-w-3xl'>
+			<DialogContent className='max-w-lg sm:max-w-xl md:max-w-3xl'>
 				<DialogHeader className='px-5'>
 					<DialogTitle>Register Exercise</DialogTitle>
 				</DialogHeader>
