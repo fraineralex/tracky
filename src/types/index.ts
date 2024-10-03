@@ -10,22 +10,18 @@ export interface NutritionMetrics {
 	calories: {
 		needed: number
 		consumed: number
-		remaining: number
 	}
 	protein: {
 		needed: number
 		consumed: number
-		remaining: number
 	}
 	fats: {
 		needed: number
 		consumed: number
-		remaining: number
 	}
 	carbs: {
 		needed: number
 		consumed: number
-		remaining: number
 	}
 }
 

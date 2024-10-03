@@ -16,7 +16,9 @@ export default function NutritionGraphic({
 	const dayOfWeek = new Date().getDay()
 	const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
 	const colors = ['#60a5fa', '#fb923c', '#facc15', '#4ade80']
-	const todayNutrition = nutrition[dayOfWeek]
+	const { calories, protein, fats, carbs } = nutrition[
+		dayOfWeek as keyof NutritionMetricsPerDay
+	] as NutritionMetrics
 
 	function getNutrientPercentage(index: number, day: number) {
 		if (!nutrition[day]) return 0
@@ -24,35 +26,26 @@ export default function NutritionGraphic({
 			index
 		] as NutritionMetrics[keyof NutritionMetrics]
 		return (
-			((showConsumed ? nutrient.consumed : nutrient.remaining) /
+			((showConsumed
+				? nutrient.consumed
+				: nutrient.needed - nutrient.consumed) /
 				nutrient.needed) *
 			100
 		)
 	}
 
-	let calories = todayNutrition?.calories.consumed
-	let protein = todayNutrition?.protein.consumed
-	let fats = todayNutrition?.fats.consumed
-	let carbs = todayNutrition?.carbs.consumed
+	let tdayCalories = calories.consumed
+	let tdayProtein = protein.consumed
+	let tdayFats = fats.consumed
+	let tdayCarbs = carbs.consumed
 
 	if (!showConsumed) {
-		calories =
-			(todayNutrition?.calories.remaining ?? 0) > 0
-				? todayNutrition?.calories.remaining
-				: 0
-		protein =
-			(todayNutrition?.protein.remaining ?? 0) > 0
-				? todayNutrition?.protein.remaining
-				: 0
-		fats =
-			(todayNutrition?.fats.remaining ?? 0) > 0
-				? todayNutrition?.fats.remaining
-				: 0
-		carbs =
-			(todayNutrition?.carbs.remaining ?? 0) > 0
-				? todayNutrition?.carbs.remaining
-				: 0
+		tdayCalories = Math.max(calories.needed, calories.consumed, 0)
+		tdayProtein = Math.max(protein.needed, protein.consumed, 0)
+		tdayFats = Math.max(fats.needed, fats.consumed, 0)
+		tdayCarbs = Math.max(carbs.needed, carbs.consumed, 0)
 	}
+
 	return (
 		<article className='mx-auto h-fit w-full rounded-lg border bg-slate-200 p-5 pr-1 dark:bg-slate-800/50 md:mx-0 lg:max-w-96 xl:max-w-[490px]'>
 			<h2 className='mb-3'>Nutrition & Targets</h2>
@@ -77,28 +70,28 @@ export default function NutritionGraphic({
 				</div>
 				<aside className='col-span-2 flex flex-col place-content-center justify-between text-sm'>
 					<p className='font-bold leading-tight'>
-						{round(calories)}
+						{round(tdayCalories)}
 						<Flame className='inline h-6 w-6 pb-1' />
 						<small className='block text-sm font-normal text-gray-500 dark:text-gray-400'>
-							of {todayNutrition?.calories?.needed}
+							of {calories?.needed}
 						</small>
 					</p>
 					<p className='font-bold leading-tight'>
-						{round(protein)} P
+						{round(tdayProtein)} P
 						<small className='block text-sm font-normal text-gray-500 dark:text-gray-400'>
-							of {todayNutrition?.protein.needed}
+							of {protein.needed}
 						</small>
 					</p>
 					<p className='font-bold leading-tight'>
-						{round(fats)} F
+						{round(tdayFats)} F
 						<small className='block text-sm font-normal text-gray-500 dark:text-gray-400'>
-							of {todayNutrition?.fats.needed}
+							of {fats.needed}
 						</small>
 					</p>
 					<p className='font-bold leading-tight'>
-						{round(carbs)} C
+						{round(tdayCarbs)} C
 						<small className='block text-sm font-normal text-gray-500 dark:text-gray-400'>
-							of {todayNutrition?.carbs.needed}
+							of {carbs.needed}
 						</small>
 					</p>
 				</aside>

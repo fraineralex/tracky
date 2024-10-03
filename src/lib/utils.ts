@@ -89,22 +89,18 @@ export function calculateNutritionalNeeds({
 	return {
 		calories: {
 			consumed: 0,
-			remaining: calories,
 			needed: calories
 		},
 		protein: {
 			consumed: 0,
-			remaining: protein,
 			needed: protein
 		},
 		carbs: {
 			consumed: 0,
-			remaining: carbs,
 			needed: carbs
 		},
 		fats: {
 			consumed: 0,
-			remaining: fats,
 			needed: fats
 		}
 	}

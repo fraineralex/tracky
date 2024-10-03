@@ -6,7 +6,6 @@ import DataAndHabits from './_sections/data-habits'
 import { calculateNutritionalNeeds } from '~/lib/utils'
 import { currentUser } from '@clerk/nextjs/server'
 import {
-	NutritionMetrics,
 	NutritionMetricsPerDay,
 	PublicMetadata
 } from '~/types'
@@ -60,13 +59,6 @@ export default async function DashboardPage() {
 		nutritionMeatricsPerDay[day].protein.consumed += protein
 		nutritionMeatricsPerDay[day].carbs.consumed += carbs
 		nutritionMeatricsPerDay[day].fats.consumed += fats
-
-		if (day === new Date().getDay()) {
-			nutritionMeatricsPerDay[day].calories.remaining -= calories
-			nutritionMeatricsPerDay[day].protein.remaining -= protein
-			nutritionMeatricsPerDay[day].carbs.remaining -= carbs
-			nutritionMeatricsPerDay[day].fats.remaining -= fats
-		}
 	})
 
 	return (
