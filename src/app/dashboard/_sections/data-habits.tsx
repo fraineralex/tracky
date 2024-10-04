@@ -1,16 +1,18 @@
 import { Circle, Square } from 'lucide-react'
 import InsightsCard from '../_components/insights-card'
 import ResumeStreak from '../_components/resume-streak'
+import { Weights } from '~/types'
 
 export default function DataAndHabits({
-	weight,
+	weights,
 	weightUnit,
 	updatedAt
 }: {
-	weight: number
+	weights: Weights
 	weightUnit: string
 	updatedAt: string
 }) {
+	const currentWeight = weights[weights.length - 1]?.value ?? 0
 	const dateRange = `${new Date(updatedAt).toLocaleDateString('en-US', {
 		day: 'numeric',
 		month: 'short'
@@ -32,7 +34,7 @@ export default function DataAndHabits({
 			<InsightsCard
 				title='Scale Weight'
 				dateRange={dateRange}
-				value={weight}
+				value={currentWeight}
 				valueUnit={weightUnit}
 				className='w-56 rounded-lg border bg-slate-200/50 p-4 pb-1 dark:bg-slate-800/50 md:w-full md:max-w-xs'
 			>

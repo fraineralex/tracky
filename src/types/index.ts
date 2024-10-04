@@ -1,8 +1,10 @@
 import { exerciseCategory } from '~/server/db/schema'
 
-export type sex = 'male' | 'female'
-export type goal = 'gain' | 'maintain' | 'lose'
-export type activityLevel = 'sedentary' | 'moderate' | 'active'
+export type Sex = 'male' | 'female'
+export type Goal = 'gain' | 'maintain' | 'lose'
+export type ActivityLevel = 'sedentary' | 'moderate' | 'active'
+export type Unit = 'kg' | 'lb' | 'cm' | 'ft'
+export type Weights = Array<{ value: number; date: string; unit: Unit }>
 
 export type ExerciseCategories = Array<typeof exerciseCategory.$inferSelect>
 
@@ -26,16 +28,24 @@ export interface NutritionMetrics {
 }
 
 export type PublicMetadata = {
-	sex: sex
+	sex: Sex
 	born: string
-	goal: goal
+	goal: Goal
 	height: number
-	weight: number
-	activity: activityLevel
+	weights: Weights
+	activity: ActivityLevel
 	heightUnit: string
-	weightUnit: string
 	updatedAt: string
-	currentWeight: number
+	goalWeight: number
+	weightUnit: string
 }
 
 export type NutritionMetricsPerDay = { [key: number]: NutritionMetrics }
+
+export interface WeeklyNutrition {
+	name: string
+	carbs: number
+	protein: number
+	fats: number
+	calories: number
+}

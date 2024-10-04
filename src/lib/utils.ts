@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 export function calculateEnergyBurned({
 	duration,
 	effort,
-	weight,
+	currentWeight,
 	weightUnit,
 	age,
 	sex,
@@ -20,7 +20,7 @@ export function calculateEnergyBurned({
 }: {
 	duration: number
 	effort: string
-	weight: number
+	currentWeight: number
 	age: number
 	sex: string
 	height: number
@@ -28,7 +28,7 @@ export function calculateEnergyBurned({
 	weightUnit: string
 	categoryMultiplier: number
 }) {
-	weight = weightUnit === 'kg' ? weight : weight * 0.453592
+	const weight = weightUnit === 'kg' ? currentWeight : currentWeight * 0.453592
 
 	if (heightUnit === 'ft') {
 		height = height * 30.48
@@ -50,7 +50,7 @@ export function calculateEnergyBurned({
 }
 
 export function calculateNutritionalNeeds({
-	weight,
+	weights,
 	height,
 	heightUnit,
 	weightUnit,
@@ -59,8 +59,9 @@ export function calculateNutritionalNeeds({
 	activity,
 	goal
 }: PublicMetadata): NutritionMetrics {
+	let currentWeight = weights[weights.length - 1]?.value ?? 0
 	const age = new Date().getFullYear() - new Date(born).getFullYear()
-	weight = weightUnit === 'kg' ? weight : weight * 0.453592
+	currentWeight = weightUnit === 'kg' ? currentWeight : currentWeight * 0.453592
 
 	if (heightUnit === 'ft') {
 		height = height * 30.48
@@ -70,8 +71,8 @@ export function calculateNutritionalNeeds({
 
 	const tmb =
 		sex === 'male'
-			? 88.362 + 13.397 * weight + 4.799 * height - 5.677 * age
-			: 447.593 + 9.247 * weight + 3.098 * height - 4.33 * age
+			? 88.362 + 13.397 * currentWeight + 4.799 * height - 5.677 * age
+			: 447.593 + 9.247 * currentWeight + 3.098 * height - 4.33 * age
 
 	const get = tmb * ACTIVITY_FACTORS[activity]
 
@@ -111,6 +112,11 @@ export function round(value?: number, decimals = 0) {
 	return Math.round(value ?? 0 * factor) / factor
 }
 
+export function getAdjustedDay(date: Date): number {
+	const day = date.getDay()
+	return day === 0 ? 6 : day - 1
+}
+
 export function getStreakNumber(arr: Date[]) {
 	let streak = 0
 	arr.forEach((date, index) => {
@@ -123,4 +129,19 @@ export function getStreakNumber(arr: Date[]) {
 		}
 	})
 	return streak
+}
+
+export function getPercentage(nutrient: { consumed: number; needed: number }) {
+	const consumptionRatio = nutrient.consumed / nutrient.needed
+	return (
+		round(consumptionRatio < 1 ? consumptionRatio : 1) * 100
+	).toLocaleString()
+}
+
+export const getMacroPercentage = (
+	macroConsumed: number,
+	caloriesConsumed: number
+) => {
+	if (caloriesConsumed === 0) return 0
+	return round((macroConsumed / caloriesConsumed) * 100)
 }

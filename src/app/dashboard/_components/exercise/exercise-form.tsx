@@ -18,7 +18,7 @@ import { ExerciseCategories, PublicMetadata } from '~/types'
 import { useUser } from '@clerk/nextjs'
 import { EFFORT_LEVELS } from '~/constants'
 import { calculateEnergyBurned } from '~/lib/utils'
-import { sex } from '~/types'
+import { Sex } from '~/types'
 
 const initialState: ExerciseState = {
 	errors: {},
@@ -40,8 +40,9 @@ export default function ExerciseForm({
 	const [energyBurned, setEnergyBurned] = React.useState<string | null>(null)
 	const [effort, setEffort] = React.useState<keyof typeof EFFORT_LEVELS>('easy')
 	const { user } = useUser()
-	const { weight, weightUnit, height, heightUnit, born, sex } =
+	const { weights, weightUnit, height, heightUnit, born, sex } =
 		user?.publicMetadata as PublicMetadata
+	const currentWeight = weights[weights.length - 1]?.value ?? 0
 	const age = new Date().getFullYear() - new Date(born as string).getFullYear()
 
 	if (state.success && state.message) {
@@ -52,7 +53,7 @@ export default function ExerciseForm({
 		return (
 			<Button
 				variant='outline'
-				className='font-medium w-full sm:w-auto'
+				className='w-full font-medium sm:w-auto'
 				type='button'
 				onClick={() => {
 					setDuration(60)
@@ -69,7 +70,7 @@ export default function ExerciseForm({
 	const energyBurnedValue = calculateEnergyBurned({
 		duration,
 		effort,
-		weight,
+		currentWeight,
 		weightUnit,
 		height,
 		heightUnit,
@@ -81,7 +82,7 @@ export default function ExerciseForm({
 	return (
 		<form action={formAction}>
 			{selectedCategory && (
-				<div className='items-center bg-transparent md:px-10 py-5'>
+				<div className='items-center bg-transparent py-5 md:px-10'>
 					<header className='text-center'>
 						<h2 className=' text-xl font-semibold'>{selectedCategory.label}</h2>
 						{state.message && !state.success && (
@@ -221,7 +222,7 @@ export default function ExerciseForm({
 					</div>
 				</div>
 			)}
-			<DialogFooter className='sm:flex sm:space-x-5 pt-5'>
+			<DialogFooter className='pt-5 sm:flex sm:space-x-5'>
 				{!selectedCategory && (
 					<DialogClose>
 						<CalcelButton />
@@ -230,7 +231,7 @@ export default function ExerciseForm({
 				{selectedCategory && <CalcelButton />}
 				<Button
 					variant='default'
-					className='font-medium capitalize mb-3 sm:mb-0'
+					className='mb-3 font-medium capitalize sm:mb-0'
 					disabled={!selectedCategory}
 					type='submit'
 				>
