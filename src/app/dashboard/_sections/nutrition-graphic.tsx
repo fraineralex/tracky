@@ -3,7 +3,7 @@
 import { Flame } from 'lucide-react'
 import React from 'react'
 import { Button } from '~/components/ui/button'
-import { round } from '~/lib/utils'
+import { round, getAdjustedDay } from '~/lib/utils'
 import { NutritionMetrics, NutritionMetricsPerDay } from '~/types'
 
 export default function NutritionGraphic({
@@ -13,7 +13,7 @@ export default function NutritionGraphic({
 }) {
 	const [showConsumed, setShowConsumed] = React.useState(true)
 
-	const dayOfWeek = new Date().getDay()
+	const dayOfWeek = getAdjustedDay(new Date())
 	const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
 	const colors = ['#60a5fa', '#fb923c', '#facc15', '#4ade80']
 	const { calories, protein, fats, carbs } = nutrition[
@@ -70,28 +70,28 @@ export default function NutritionGraphic({
 				</div>
 				<aside className='col-span-2 flex flex-col place-content-center justify-between text-sm'>
 					<p className='font-bold leading-tight'>
-						{round(tdayCalories)}
+						{round(tdayCalories).toLocaleString()}
 						<Flame className='inline h-6 w-6 pb-1' />
 						<small className='block text-sm font-normal text-gray-500 dark:text-gray-400'>
-							of {calories?.needed}
+							of {calories.needed.toLocaleString()}
 						</small>
 					</p>
 					<p className='font-bold leading-tight'>
-						{round(tdayProtein)} P
+						{round(tdayProtein).toLocaleString()} P
 						<small className='block text-sm font-normal text-gray-500 dark:text-gray-400'>
-							of {protein.needed}
+							of {protein.needed.toLocaleString()}
 						</small>
 					</p>
 					<p className='font-bold leading-tight'>
-						{round(tdayFats)} F
+						{round(tdayFats).toLocaleString()} F
 						<small className='block text-sm font-normal text-gray-500 dark:text-gray-400'>
-							of {fats.needed}
+							of {fats.needed.toLocaleString()}
 						</small>
 					</p>
 					<p className='font-bold leading-tight'>
-						{round(tdayCarbs)} C
+						{round(tdayCarbs).toLocaleString()} C
 						<small className='block text-sm font-normal text-gray-500 dark:text-gray-400'>
-							of {carbs.needed}
+							of {carbs.needed.toLocaleString()}
 						</small>
 					</p>
 				</aside>
