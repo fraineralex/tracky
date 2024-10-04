@@ -2,23 +2,25 @@ import { Circle, Square } from 'lucide-react'
 import { Progress } from '~/components/ui/progress'
 import InsightsCard from '../_components/insights-card'
 import { GOAL_FACTORS } from '~/constants'
-import { goal } from '~/types'
+import { Goal, Weights } from '~/types'
 
 export default function InsightsAndAnalitics({
 	expenditure,
-	weight,
+	weights,
 	weightUnit,
 	updatedAt,
-	currentWeight,
+	goalWeight,
 	goal
 }: {
 	expenditure: number
-	weight: number
+	weights: Weights
 	weightUnit: string
 	updatedAt: string
-	currentWeight: number
-	goal: goal
+	goalWeight: number
+	goal: Goal
 }) {
+	const currentWeight = weights[weights.length - 1]?.value ?? 0
+	const initialWeight = weights[0]?.value ?? 0
 	const dateRange = `${new Date(updatedAt).toLocaleDateString('en-US', {
 		day: 'numeric',
 		month: 'short'
@@ -29,10 +31,24 @@ export default function InsightsAndAnalitics({
 			(1000 * 60 * 60 * 24)
 	)
 
-	const goalWeight = GOAL_FACTORS[goal] * weight
-	const goalProgress = Math.floor(
-		((currentWeight - goalWeight) / (weight - goalWeight)) * 100
-	)
+	let goalProgress: number
+
+	if (goal === 'maintain') {
+		goalProgress =
+			100 -
+			Math.abs(
+				((currentWeight - goalWeight) / (initialWeight - goalWeight)) * 100
+			)
+	} else {
+		goalProgress = Math.floor(
+			((currentWeight - goalWeight) / (initialWeight - goalWeight)) * 100
+		)
+
+		if (goal === 'lose') {
+			goalProgress = 100 - goalProgress
+		}
+	}
+
 	return (
 		<aside className='mx-auto md:mx-0'>
 			<div className='flex space-x-3'>
@@ -49,7 +65,7 @@ export default function InsightsAndAnalitics({
 				<InsightsCard
 					title='Weight Trend'
 					dateRange={dateRange}
-					value={weight}
+					value={currentWeight}
 					valueUnit={weightUnit}
 				>
 					<span className='mb-8 mt-8 flex place-content-end'>
