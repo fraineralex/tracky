@@ -28,6 +28,7 @@ export interface NutritionMetrics {
 }
 
 export type PublicMetadata = {
+	onboardingCompleted: boolean
 	sex: Sex
 	born: string
 	goal: Goal

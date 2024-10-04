@@ -2,6 +2,8 @@
 
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import { z } from 'zod'
+import { GOAL_FACTORS } from '~/constants'
+import { PublicMetadata } from '~/types'
 
 const OnboardingSchema = z.object({
 	sex: z.enum(['male', 'female'], { required_error: 'Please select a sex' }),
@@ -22,11 +24,11 @@ const OnboardingSchema = z.object({
 		.number({ required_error: 'Please enter your height' })
 		.positive()
 		.max(300),
-	weight: z.coerce
+	weights: z.coerce
 		.number({ required_error: 'Please enter your weight' })
 		.positive()
 		.max(600),
-	goal: z.enum(['loss', 'maintain', 'gain'], {
+	goal: z.enum(['lose', 'maintain', 'gain'], {
 		required_error: 'Please select a goal'
 	}),
 	activity: z.enum(['sedentary', 'moderate', 'active'], {
@@ -45,7 +47,7 @@ export const completeOnboarding = async (formData: FormData) => {
 		sex: formData.get('sex'),
 		born: formData.get('born'),
 		height: formData.get('height'),
-		weight: formData.get('weight'),
+		weights: formData.get('weight'),
 		goal: formData.get('goal'),
 		activity: formData.get('activity'),
 		weightUnit: formData.get('weightUnit'),
@@ -69,14 +71,22 @@ export const completeOnboarding = async (formData: FormData) => {
 	}
 
 	try {
-		await clerkClient().users.updateUser(userId, {
-			publicMetadata: {
-				onboardingComplete: true,
-				...validatedFields.data,
-				born: validatedFields.data.born.toISOString().split('T')[0],
-				updateAt: new Date().toISOString().split('T')[0]
-			}
-		})
+		const publicMetadata: PublicMetadata = {
+			onboardingCompleted: true,
+			...validatedFields.data,
+			weights: [
+				{
+					value: validatedFields.data.weights,
+					date: new Date().toISOString(),
+					unit: validatedFields.data.weightUnit
+				}
+			],
+			goalWeight:
+				validatedFields.data.weights * GOAL_FACTORS[validatedFields.data.goal],
+			born: validatedFields.data.born.toISOString().split('T')[0] as string,
+			updatedAt: new Date().toISOString().split('T')[0] as string
+		}
+		await clerkClient().users.updateUser(userId, { publicMetadata })
 
 		return { message: 'Onboarding complete' }
 	} catch (err) {

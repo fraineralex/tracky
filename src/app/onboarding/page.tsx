@@ -9,14 +9,14 @@ import BodyMetrics from './_components/body-metrics'
 import FitnessGoals from './_components/fitness-goals'
 import { useRef, useState } from 'react'
 import { ONBOARDING_SECTIONS } from '~/constants'
-import { sex } from '~/types'
+import { Sex } from '~/types'
 import confetti from 'canvas-confetti'
 
 export default function OnboardingPage() {
 	const { user } = useUser()
 	const router = useRouter()
 	const [showSection, setShowSection] = useState(ONBOARDING_SECTIONS.personal)
-	const [sex, setSex] = useState<sex | undefined>()
+	const [sex, setSex] = useState<Sex | undefined>()
 	const [bornDate, setBornDate] = useState<Date | undefined>()
 	const [heightUnit, setHeightUnit] = useState('ft')
 	const [heightDecimal, setHeightDecimal] = useState(5)
