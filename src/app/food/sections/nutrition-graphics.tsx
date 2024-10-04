@@ -73,6 +73,11 @@ export default function NutritionGraphic({
 			acc.protein.consumed += day.protein.consumed
 			acc.fats.consumed += day.fats.consumed
 			acc.carbs.consumed += day.carbs.consumed
+
+			acc.calories.needed += day.calories.needed
+			acc.protein.needed += day.protein.needed
+			acc.fats.needed += day.fats.needed
+			acc.carbs.needed += day.carbs.needed
 			return acc
 		}
 	)

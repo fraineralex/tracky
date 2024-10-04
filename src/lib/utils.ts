@@ -119,22 +119,34 @@ export function getAdjustedDay(date: Date): number {
 
 export function getStreakNumber(arr: Date[]) {
 	let streak = 0
-	arr.forEach((date, index) => {
-		if (index === arr.length - 1) streak++
-		else {
-			const nextDate = arr[index + 1]
-			const diff = nextDate ? date.getTime() - nextDate.getTime() : 0
-			if (diff === 86400000) streak++
-			else return streak
+	const today = new Date(new Date().setHours(0, 0, 0, 0))
+
+	for (const [index, date] of arr.entries()) {
+		if (arr.length === 1) {
+			if (today.getTime() === date.getTime()) return streak++
 		}
-	})
+		const beforeDate = arr[index + 1]
+		const diff = beforeDate ? date.getTime() - beforeDate.getTime() : 0
+		if (diff === 86400000) {
+			streak++
+			continue
+		}
+
+		if (
+			index === arr.length - 1 &&
+			streak === 0 &&
+			today.getTime() === arr[0]?.getTime()
+		)
+			streak++
+	}
+
 	return streak
 }
 
 export function getPercentage(nutrient: { consumed: number; needed: number }) {
 	const consumptionRatio = nutrient.consumed / nutrient.needed
-	return (
-		round(consumptionRatio < 1 ? consumptionRatio : 1) * 100
+	return round(
+		(consumptionRatio < 1 ? consumptionRatio : 1) * 100
 	).toLocaleString()
 }
 

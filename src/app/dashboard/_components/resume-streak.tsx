@@ -21,25 +21,25 @@ export default async function ResumeStreak() {
 		.orderBy(desc(exercise.createdAt))
 
 	const foodStreak = getStreakNumber(
-		foodDates.map(({ createdAt }) => createdAt)
+		foodDates.map(({ createdAt }) => new Date(createdAt.setHours(0, 0, 0, 0)))
 	)
 	const exerciseStreak = getStreakNumber(
-		exerciseDates.map(({ createdAt }) => createdAt)
+		exerciseDates.map(({ createdAt }) => new Date(createdAt.setHours(0, 0, 0, 0)))
 	)
 	return (
-		<article className='order-last w-full col-span-2 md:max-w-xs rounded-lg border bg-slate-200/50 py-1 dark:bg-slate-800/50 md:order-none'>
+		<article className='order-last col-span-2 w-full rounded-lg border bg-slate-200/50 py-1 dark:bg-slate-800/50 md:order-none md:max-w-xs'>
 			<div className='grid grid-cols-2 gap-6 p-6'>
 				<header className='flex flex-col items-center gap-2'>
 					<HandPlatter className='h-8 w-8 text-primary' />
 					<div className='text-2xl font-bold'>{foodStreak}</div>
-					<p className='lg:text-nowrap text-wrap text-center text-sm text-muted-foreground'>
+					<p className='text-wrap text-center text-sm text-muted-foreground lg:text-nowrap'>
 						Food Streak
 					</p>
 				</header>
 				<footer className='flex flex-col items-center gap-2'>
 					<Dumbbell className='h-8 w-8 text-primary' />
 					<div className='text-2xl font-bold'>{exerciseStreak}</div>
-					<p className='lg:text-nowrap text-wrap text-center text-sm text-muted-foreground'>
+					<p className='text-wrap text-center text-sm text-muted-foreground lg:text-nowrap'>
 						Exercise Streak
 					</p>
 				</footer>

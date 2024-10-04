@@ -14,7 +14,7 @@ import { DialogClose, DialogFooter } from '~/components/ui/dialog'
 import { Button } from '~/components/ui/button'
 import { ExerciseState, addExercise } from '../../_actions'
 import { useFormState } from 'react-dom'
-import { ExerciseCategories, PublicMetadata } from '~/types'
+import { ExerciseCategories, PublicMetadata, Weights } from '~/types'
 import { useUser } from '@clerk/nextjs'
 import { EFFORT_LEVELS } from '~/constants'
 import { calculateEnergyBurned } from '~/lib/utils'
@@ -42,7 +42,8 @@ export default function ExerciseForm({
 	const { user } = useUser()
 	const { weights, weightUnit, height, heightUnit, born, sex } =
 		user?.publicMetadata as PublicMetadata
-	const currentWeight = weights[weights.length - 1]?.value ?? 0
+
+	const currentWeight = weights[weights.length - 1] as Weights[number]
 	const age = new Date().getFullYear() - new Date(born as string).getFullYear()
 
 	if (state.success && state.message) {
@@ -70,7 +71,7 @@ export default function ExerciseForm({
 	const energyBurnedValue = calculateEnergyBurned({
 		duration,
 		effort,
-		currentWeight,
+		currentWeight: currentWeight.value,
 		weightUnit,
 		height,
 		heightUnit,
@@ -187,9 +188,8 @@ export default function ExerciseForm({
 								</small>
 							))}
 							<p className='col-span-5 text-nowrap text-xs font-light text-foreground/80'>
-								Based on your current weight of{' '}
-								{user?.publicMetadata.weight as string}{' '}
-								{user?.publicMetadata.weightUnit as string}
+								Based on your current weight of {currentWeight.value}{' '}
+								{currentWeight.unit}
 							</p>
 						</div>
 						<div className='w-full min-w-0 max-w-xs'>

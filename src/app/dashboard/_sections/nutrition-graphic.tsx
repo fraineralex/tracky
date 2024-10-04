@@ -15,13 +15,13 @@ export default function NutritionGraphic({
 
 	const dayOfWeek = getAdjustedDay(new Date())
 	const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
-	const colors = ['#60a5fa', '#fb923c', '#facc15', '#4ade80']
+	const colors = ['#60a5fa', '#ffffff', '#facc15', '#4ade80']
 	const { calories, protein, fats, carbs } = nutrition[
 		dayOfWeek as keyof NutritionMetricsPerDay
 	] as NutritionMetrics
 
 	function getNutrientPercentage(index: number, day: number) {
-		if (!nutrition[day]) return 0
+		if (!nutrition[day] || day > dayOfWeek) return 0
 		const nutrient = Object.values(nutrition[day])[
 			index
 		] as NutritionMetrics[keyof NutritionMetrics]
@@ -40,10 +40,10 @@ export default function NutritionGraphic({
 	let tdayCarbs = carbs.consumed
 
 	if (!showConsumed) {
-		tdayCalories = Math.max(calories.needed, calories.consumed, 0)
-		tdayProtein = Math.max(protein.needed, protein.consumed, 0)
-		tdayFats = Math.max(fats.needed, fats.consumed, 0)
-		tdayCarbs = Math.max(carbs.needed, carbs.consumed, 0)
+		tdayCalories = Math.max(calories.needed - calories.consumed, 0)
+		tdayProtein = Math.max(protein.needed - protein.consumed, 0)
+		tdayFats = Math.max(fats.needed - fats.consumed, 0)
+		tdayCarbs = Math.max(carbs.needed - carbs.consumed, 0)
 	}
 
 	return (
@@ -51,20 +51,29 @@ export default function NutritionGraphic({
 			<h2 className='mb-3'>Nutrition & Targets</h2>
 			<div className='mb-2 grid grid-cols-10 space-x-5 lg:space-x-3 xl:space-x-5'>
 				<div className='col-span-8 grid grid-flow-row space-y-2'>
-					{[...Array(4)].map((_, nutrientIndex) => (
+					{[...Array(5)].map((_, nutrientIndex) => (
 						<div
-							className='flex space-x-5 border-b pb-2 lg:space-x-2 xl:space-x-5'
+							className={`flex pb-2 ${nutrientIndex === 4 ? 'space-x-4 lg:space-x-1 xl:space-x-4' : 'space-x-5 lg:space-x-2 xl:space-x-5 border-b'}`}
 							key={nutrientIndex}
 						>
-							{[...Array(7)].map((_, dayIndex) => (
-								<span
-									className={`rounded-md px-4 py-4 ${dayIndex === dayOfWeek - 1 ? 'border-2 border-primary' : ''}`}
-									key={dayIndex}
-									style={{
-										background: `linear-gradient(to top, ${colors[nutrientIndex]} ${getNutrientPercentage(nutrientIndex, dayIndex + 1)}%, hsl(var(--primary) / 0.2) ${getNutrientPercentage(nutrientIndex, dayIndex + 1)}%)`
-									}}
-								></span>
-							))}
+							{[...Array(8)].map((_, dayIndex) =>
+								dayIndex < 7 && nutrientIndex < 4 ? (
+									<span
+										className='rounded-md px-4 py-4'
+										key={dayIndex}
+										style={{
+											background: `linear-gradient(to top, hsl(var(--foreground) / ${dayIndex === dayOfWeek ? '1' : '0.5'}) ${getNutrientPercentage(nutrientIndex, dayIndex)}%, hsl(var(--primary) / 0.2) ${getNutrientPercentage(nutrientIndex, dayIndex)}%)`
+										}}
+									></span>
+								) : (
+									<span
+										className={`-ms-1 px-3 py-2 ${dayIndex === dayOfWeek ? 'rounded-md border-2 border-primary font-bold' : ''}`}
+										key={dayIndex}
+									>
+										{days[dayIndex]}
+									</span>
+								)
+							)}
 						</div>
 					))}
 				</div>
@@ -95,16 +104,6 @@ export default function NutritionGraphic({
 						</small>
 					</p>
 				</aside>
-			</div>
-			<div className='mt-4 flex space-x-4 lg:space-x-1 xl:space-x-4'>
-				{days.map((day, index) => (
-					<span
-						className={`px-3 py-2 ${index === dayOfWeek - 1 ? 'rounded-md border-2 border-primary font-bold' : ''}`}
-						key={index}
-					>
-						{day}
-					</span>
-				))}
 			</div>
 			<footer className='mt-4 flex place-content-center space-x-3'>
 				<Button

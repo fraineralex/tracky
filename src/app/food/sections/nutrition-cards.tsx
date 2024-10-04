@@ -22,7 +22,7 @@ export function NutritionCards({ nutrition }: { nutrition: NutritionMetrics }) {
 					<div className='mt-4 h-2 overflow-hidden rounded-full bg-secondary'>
 						<div
 							className='h-full bg-primary'
-							style={{ width: getPercentage(calories) }}
+							style={{ width: `${getPercentage(calories)}%` }}
 						></div>
 					</div>
 				</CardContent>
@@ -61,7 +61,7 @@ export function NutritionCards({ nutrition }: { nutrition: NutritionMetrics }) {
 					<div className='mt-4 h-2 overflow-hidden rounded-full bg-secondary'>
 						<div
 							className='h-full bg-primary'
-							style={{ width: getPercentage(fats) }}
+							style={{ width: `${getPercentage(fats)}%` }}
 						></div>
 					</div>
 				</CardContent>
@@ -81,7 +81,7 @@ export function NutritionCards({ nutrition }: { nutrition: NutritionMetrics }) {
 					<div className='mt-4 h-2 overflow-hidden rounded-full bg-secondary'>
 						<div
 							className='h-full bg-primary'
-							style={{ width: getPercentage(carbs) }}
+							style={{ width: `${getPercentage(carbs)}%` }}
 						></div>
 					</div>
 				</CardContent>
