@@ -41,14 +41,12 @@ export async function getUserNutritionMetrics(
 			Number(food.fat)
 
 		const day = getAdjustedDay(consumption.createdAt)
-		if (!nutritionMeatricsPerDay[day]) {
-			nutritionMeatricsPerDay[day] = structuredClone(nutritionMeatrics)
-		}
+		let nutrition = nutritionMeatricsPerDay[day] ?? structuredClone(nutritionMeatrics)
 
-		nutritionMeatricsPerDay[day].calories.consumed += calories
-		nutritionMeatricsPerDay[day].protein.consumed += protein
-		nutritionMeatricsPerDay[day].carbs.consumed += carbs
-		nutritionMeatricsPerDay[day].fats.consumed += fats
+		nutrition.calories.consumed += calories
+		nutrition.protein.consumed += protein
+		nutrition.carbs.consumed += carbs
+		nutrition.fats.consumed += fats
 	})
 
 	return nutritionMeatricsPerDay

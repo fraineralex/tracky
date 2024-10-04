@@ -22,7 +22,7 @@ export default function NutritionGraphic({
 
 	function getNutrientPercentage(index: number, day: number) {
 		if (!nutrition[day] || day > dayOfWeek) return 0
-		const nutrient = Object.values(nutrition[day])[
+		const nutrient = Object.values(nutrition[day] ?? {})[
 			index
 		] as NutritionMetrics[keyof NutritionMetrics]
 		return (
@@ -53,7 +53,7 @@ export default function NutritionGraphic({
 				<div className='col-span-8 grid grid-flow-row space-y-2'>
 					{[...Array(5)].map((_, nutrientIndex) => (
 						<div
-							className={`flex pb-2 ${nutrientIndex === 4 ? 'space-x-4 lg:space-x-1 xl:space-x-4' : 'space-x-5 lg:space-x-2 xl:space-x-5 border-b'}`}
+							className={`flex pb-2 ${nutrientIndex === 4 ? 'space-x-4 lg:space-x-1 xl:space-x-4' : 'space-x-5 border-b lg:space-x-2 xl:space-x-5'}`}
 							key={nutrientIndex}
 						>
 							{[...Array(8)].map((_, dayIndex) =>
