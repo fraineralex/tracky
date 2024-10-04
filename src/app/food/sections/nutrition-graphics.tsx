@@ -13,47 +13,121 @@ import {
 } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { CustomTooltip } from '../_components/custom-tooltip'
+import {
+	NutritionMetrics,
+	NutritionMetricsPerDay,
+	WeeklyNutrition,
+	Weights
+} from '~/types'
+import {
+	getAdjustedDay,
+	getMacroPercentage,
+	getPercentage,
+	round
+} from '~/lib/utils'
 
-const weeklyData = [
-	{ name: 'Mon', fiber: 20, sugar: 30, sodium: 1800, vitaminC: 65 },
-	{ name: 'Tue', fiber: 22, sugar: 25, sodium: 2000, vitaminC: 72 },
-	{ name: 'Wed', fiber: 18, sugar: 35, sodium: 1600, vitaminC: 58 },
-	{ name: 'Thu', fiber: 25, sugar: 20, sodium: 1900, vitaminC: 80 },
-	{ name: 'Fri', fiber: 23, sugar: 28, sodium: 2100, vitaminC: 75 },
-	{ name: 'Sat', fiber: 19, sugar: 32, sodium: 1700, vitaminC: 62 },
-	{ name: 'Sun', fiber: 21, sugar: 27, sodium: 1850, vitaminC: 70 }
-]
+export default function NutritionGraphic({
+	nutritionMeatrics,
+	weightsChanges
+}: {
+	nutritionMeatrics: NutritionMetricsPerDay
+	weightsChanges: Weights
+}) {
+	const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+	const nutritionWeek: WeeklyNutrition[] = Object.entries(
+		nutritionMeatrics
+	).map(([key, nutritients]) => {
+		return {
+			name: daysOfWeek[Number(key)] ?? '',
+			calories: round(nutritients.calories.consumed),
+			protein: round(nutritients.protein.consumed),
+			fats: round(nutritients.fats.consumed),
+			carbs: round(nutritients.carbs.consumed)
+		}
+	})
 
-const weightData = [
-	{ name: 'Jan', weight: 70 },
-	{ name: 'Feb', weight: 69 },
-	{ name: 'Mar', weight: 68 },
-	{ name: 'Apr', weight: 67.5 },
-	{ name: 'May', weight: 67 },
-	{ name: 'Jun', weight: 66 }
-]
+	const weekDay = getAdjustedDay(new Date())
+	const todayNutrition = nutritionMeatrics[weekDay] as NutritionMetrics
+	const todayGoalData = [
+		{
+			name: 'Calories',
+			value: getPercentage(todayNutrition.calories)
+		},
+		{
+			name: 'Protein',
+			value: getPercentage(todayNutrition.protein)
+		},
+		{
+			name: 'Carbs',
+			value: getPercentage(todayNutrition.carbs)
+		},
+		{
+			name: 'Fat',
+			value: getPercentage(todayNutrition.fats)
+		}
+	]
 
-const goalData = [
-	{ name: 'Calories', value: 84 },
-	{ name: 'Protein', value: 75 },
-	{ name: 'Carbs', value: 67 },
-	{ name: 'Fat', value: 71 }
-]
+	const weekGoalNutrition = Object.values(nutritionMeatrics).reduce(
+		(acc, day) => {
+			acc.calories.consumed += day.calories.consumed
+			acc.protein.consumed += day.protein.consumed
+			acc.fats.consumed += day.fats.consumed
+			acc.carbs.consumed += day.carbs.consumed
+			return acc
+		}
+	)
 
-const macroData = [
-	{ name: 'Protein', value: 25 },
-	{ name: 'Carbs', value: 50 },
-	{ name: 'Fat', value: 25 }
-]
+	const weekGoalData = [
+		{
+			name: 'Calories',
+			value: getPercentage(weekGoalNutrition.calories)
+		},
+		{
+			name: 'Protein',
+			value: getPercentage(weekGoalNutrition.protein)
+		},
+		{
+			name: 'Carbs',
+			value: getPercentage(weekGoalNutrition.carbs)
+		},
+		{
+			name: 'Fat',
+			value: getPercentage(weekGoalNutrition.fats)
+		}
+	]
 
-const microData = [
-	{ name: 'Vitamin C', value: 80 },
-	{ name: 'Iron', value: 60 },
-	{ name: 'Calcium', value: 75 },
-	{ name: 'Potassium', value: 65 }
-]
+	const macroData = [
+		{
+			name: 'Protein',
+			value: getMacroPercentage(
+				todayNutrition.protein.consumed,
+				todayNutrition.calories.consumed
+			)
+		},
+		{
+			name: 'Carbs',
+			value: getMacroPercentage(
+				todayNutrition.carbs.consumed,
+				todayNutrition.calories.consumed
+			)
+		},
+		{
+			name: 'Fat',
+			value: getMacroPercentage(
+				todayNutrition.fats.consumed,
+				todayNutrition.calories.consumed
+			)
+		}
+	]
 
-export default function NutritionGraphic() {
+	const weightData = weightsChanges.map(({ value, date, unit }) => ({
+		name: new Date(date).toLocaleDateString('en-US', {
+			day: 'numeric',
+			month: 'short'
+		}),
+		weight: unit === 'lb' ? round(value * 0.453592) : value
+	}))
+
 	return (
 		<Tabs
 			defaultValue='weekly'
@@ -73,22 +147,22 @@ export default function NutritionGraphic() {
 					Weight Changes
 				</TabsTrigger>
 				<TabsTrigger
-					value='goals'
-					className='flex-grow data-[state=active]:bg-muted sm:flex-grow-0'
-				>
-					Goal Completion
-				</TabsTrigger>
-				<TabsTrigger
 					value='macro'
 					className='flex-grow data-[state=active]:bg-muted sm:flex-grow-0'
 				>
 					Macronutrients
 				</TabsTrigger>
 				<TabsTrigger
-					value='micro'
+					value='goalsToday'
 					className='flex-grow data-[state=active]:bg-muted sm:flex-grow-0'
 				>
-					Micronutrients
+					Goal Completion (Today)
+				</TabsTrigger>
+				<TabsTrigger
+					value='goalsWeek'
+					className='flex-grow data-[state=active]:bg-muted sm:flex-grow-0'
+				>
+					Goal Completion (Week)
 				</TabsTrigger>
 			</TabsList>
 			<TabsContent value='weekly' className='mt-4 space-y-4'>
@@ -100,7 +174,7 @@ export default function NutritionGraphic() {
 					</CardHeader>
 					<CardContent className='pl-2'>
 						<ResponsiveContainer width='100%' height={350}>
-							<LineChart data={weeklyData}>
+							<LineChart data={nutritionWeek}>
 								<XAxis
 									dataKey='name'
 									stroke='currentColor'
@@ -118,31 +192,31 @@ export default function NutritionGraphic() {
 								<Tooltip content={<CustomTooltip />} />
 								<Line
 									type='monotone'
-									dataKey='fiber'
-									stroke='#4ade80'
-									strokeWidth={2}
-									name='Fiber'
-								/>
-								<Line
-									type='monotone'
-									dataKey='sugar'
-									stroke='#f43f5e'
-									strokeWidth={2}
-									name='Sugar'
-								/>
-								<Line
-									type='monotone'
-									dataKey='sodium'
-									stroke='#fbbf24'
-									strokeWidth={2}
-									name='Sodium'
-								/>
-								<Line
-									type='monotone'
-									dataKey='vitaminC'
+									dataKey='calories'
 									stroke='#3b82f6'
 									strokeWidth={2}
-									name='Vitamin C'
+									name='Calories'
+								/>
+								<Line
+									type='monotone'
+									dataKey='protein'
+									stroke='#f43f5e'
+									strokeWidth={2}
+									name='Protein'
+								/>
+								<Line
+									type='monotone'
+									dataKey='fats'
+									stroke='#fbbf24'
+									strokeWidth={2}
+									name='Fats'
+								/>
+								<Line
+									type='monotone'
+									dataKey='carbs'
+									stroke='#4ade80'
+									strokeWidth={2}
+									name='Carbs'
 								/>
 							</LineChart>
 						</ResponsiveContainer>
@@ -171,7 +245,7 @@ export default function NutritionGraphic() {
 									fontSize={12}
 									tickLine={false}
 									axisLine={false}
-									tickFormatter={value => `${value}kg`}
+									tickFormatter={value => `${value} kg`}
 								/>
 								<Tooltip content={<CustomTooltip />} />
 								<Line
@@ -181,37 +255,6 @@ export default function NutritionGraphic() {
 									strokeWidth={2}
 								/>
 							</LineChart>
-						</ResponsiveContainer>
-					</CardContent>
-				</Card>
-			</TabsContent>
-			<TabsContent value='goals' className='mt-4 space-y-4'>
-				<Card>
-					<CardHeader>
-						<CardTitle className='text-lg font-medium'>
-							Goal Completion Percentage
-						</CardTitle>
-					</CardHeader>
-					<CardContent className='pl-2'>
-						<ResponsiveContainer width='100%' height={350}>
-							<BarChart data={goalData}>
-								<XAxis
-									dataKey='name'
-									stroke='currentColor'
-									fontSize={12}
-									tickLine={false}
-									axisLine={false}
-								/>
-								<YAxis
-									stroke='currentColor'
-									fontSize={12}
-									tickLine={false}
-									axisLine={false}
-									tickFormatter={value => `${value}%`}
-								/>
-								<Tooltip content={<CustomTooltip />} cursor={false} />
-								<Bar dataKey='value' fill='#8b5cf6' radius={[4, 4, 0, 0]} />
-							</BarChart>
 						</ResponsiveContainer>
 					</CardContent>
 				</Card>
@@ -247,16 +290,16 @@ export default function NutritionGraphic() {
 					</CardContent>
 				</Card>
 			</TabsContent>
-			<TabsContent value='micro' className='mt-4 space-y-4'>
+			<TabsContent value='goalsToday' className='mt-4 space-y-4'>
 				<Card>
 					<CardHeader>
 						<CardTitle className='text-lg font-medium'>
-							Micronutrient Intake
+							Today&apos;s Goal Completion Percentage
 						</CardTitle>
 					</CardHeader>
 					<CardContent className='pl-2'>
 						<ResponsiveContainer width='100%' height={350}>
-							<BarChart data={microData}>
+							<BarChart data={todayGoalData}>
 								<XAxis
 									dataKey='name'
 									stroke='currentColor'
@@ -273,6 +316,37 @@ export default function NutritionGraphic() {
 								/>
 								<Tooltip content={<CustomTooltip />} cursor={false} />
 								<Bar dataKey='value' fill='#ec4899' radius={[4, 4, 0, 0]} />
+							</BarChart>
+						</ResponsiveContainer>
+					</CardContent>
+				</Card>
+			</TabsContent>
+			<TabsContent value='goalsWeek' className='mt-4 space-y-4'>
+				<Card>
+					<CardHeader>
+						<CardTitle className='text-lg font-medium'>
+							Week Goal Completion Percentage
+						</CardTitle>
+					</CardHeader>
+					<CardContent className='pl-2'>
+						<ResponsiveContainer width='100%' height={350}>
+							<BarChart data={weekGoalData}>
+								<XAxis
+									dataKey='name'
+									stroke='currentColor'
+									fontSize={12}
+									tickLine={false}
+									axisLine={false}
+								/>
+								<YAxis
+									stroke='currentColor'
+									fontSize={12}
+									tickLine={false}
+									axisLine={false}
+									tickFormatter={value => `${value}%`}
+								/>
+								<Tooltip content={<CustomTooltip />} cursor={false} />
+								<Bar dataKey='value' fill='#8b5cf6' radius={[4, 4, 0, 0]} />
 							</BarChart>
 						</ResponsiveContainer>
 					</CardContent>
