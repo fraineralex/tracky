@@ -39,7 +39,7 @@ export default async function DashboardPage() {
 					<ExerciseDialog />
 				</header>
 			</div>
-			<div className='flex-col space-x-3 space-y-3 mt-4 sm:mt-0  md:flex-row lg:flex lg:justify-between'>
+			<div className='flex-col space-x-3 space-y-3 mt-4 sm:mt-0  md:flex-row lg:flex lg:justify-between md:pt-2'>
 				<NutritionGraphic nutritionMetrics={nutritionMeatrics} />
 				<InsightsAndAnalitics expenditure={expenditure} {...userMetadata} />
 			</div>

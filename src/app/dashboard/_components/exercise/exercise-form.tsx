@@ -18,7 +18,6 @@ import { ExerciseCategories, PublicMetadata, Weights } from '~/types'
 import { useUser } from '@clerk/nextjs'
 import { EFFORT_LEVELS } from '~/constants'
 import { calculateEnergyBurned } from '~/lib/utils'
-import { Sex } from '~/types'
 
 const initialState: ExerciseState = {
 	errors: {},
