@@ -1,5 +1,6 @@
 import { ChevronRight } from 'lucide-react'
 import { Button } from '~/components/ui/button'
+import { Card } from '~/components/ui/card'
 
 export default function InsightsCard({
 	title,
@@ -7,7 +8,7 @@ export default function InsightsCard({
 	value,
 	valueUnit,
 	children,
-	className = 'w-full lg:w-40 xl:w-56 rounded-lg dark:bg-slate-800/50 bg-slate-200/50 p-4 pb-1 border'
+	className = 'w-full lg:w-40 xl:w-56 rounded-lg dark:bg-slate-800/50 p-4 pb-1 border'
 }: {
 	title: string
 	dateRange: string
@@ -17,9 +18,9 @@ export default function InsightsCard({
 	className?: string
 }) {
 	return (
-		<article className={className}>
+		<Card className={className}>
 			<header className='flex flex-col space-y-1'>
-				<h3>{title}</h3>
+				<h3 className='font-semibold'>{title}</h3>
 				<small className='dark:text-gray-400 text-gray-500'>{dateRange}</small>
 			</header>
 			{children}
@@ -35,6 +36,6 @@ export default function InsightsCard({
 					<ChevronRight />
 				</Button>
 			</footer>
-		</article>
+		</Card>
 	)
 }

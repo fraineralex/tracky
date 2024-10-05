@@ -3,6 +3,7 @@
 import { Flame } from 'lucide-react'
 import React from 'react'
 import { Button } from '~/components/ui/button'
+import { Card } from '~/components/ui/card'
 import { round, getAdjustedDay } from '~/lib/utils'
 import { NutritionMetrics, NutritionMetricsPerDay } from '~/types'
 
@@ -47,13 +48,13 @@ export default function NutritionGraphic({
 	}
 
 	return (
-		<article className='mx-auto h-fit w-full rounded-lg border bg-slate-200 p-5 pr-1 dark:bg-slate-800/50 md:mx-0 lg:max-w-96 xl:max-w-[490px]'>
-			<h2 className='mb-3'>Nutrition & Targets</h2>
+		<Card className='mx-auto h-fit w-full rounded-lg border p-5 pr-1 dark:bg-slate-800/50 md:mx-0 lg:max-w-96 xl:max-w-[490px]'>
+			<h2 className='mb-3 font-semibold'>Nutrition & Targets</h2>
 			<div className='mb-2 grid grid-cols-10 space-x-5 lg:space-x-3 xl:space-x-5'>
 				<div className='col-span-8 grid grid-flow-row space-y-2'>
 					{[...Array(5)].map((_, nutrientIndex) => (
 						<div
-							className={`flex pb-2 ${nutrientIndex === 4 ? 'space-x-4 lg:space-x-1 xl:space-x-4' : 'space-x-5 border-b lg:space-x-2 xl:space-x-5'}`}
+							className={`flex pb-2 ${nutrientIndex === 4 ? 'space-x-4 lg:space-x-1 xl:space-x-4' : 'space-x-5 lg:space-x-2 xl:space-x-5'}`}
 							key={nutrientIndex}
 						>
 							{[...Array(8)].map((_, dayIndex) =>
@@ -67,7 +68,7 @@ export default function NutritionGraphic({
 									></span>
 								) : (
 									<span
-										className={`-ms-1 px-3 py-2 ${dayIndex === dayOfWeek ? 'rounded-md border-2 border-primary font-bold' : ''}`}
+										className={`-ms-1 px-3 py-2 ${dayIndex === dayOfWeek ? 'rounded-md border-2 border-primary font-semibold' : ''}`}
 										key={dayIndex}
 									>
 										{days[dayIndex]}
@@ -121,6 +122,6 @@ export default function NutritionGraphic({
 					Remainig
 				</Button>
 			</footer>
-		</article>
+		</Card>
 	)
 }

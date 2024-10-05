@@ -15,9 +15,9 @@ export default async function DashboardPage() {
 	const expenditure = nutritionMeatrics[0]?.calories.needed ?? 0
 
 	return (
-		<section className='h-full w-full overflow-auto pb-10 pt-10 xl:ms-5 xl:px-5'>
+		<section className='h-full w-full overflow-auto py-5 xl:ms-5 xl:px-5'>
 			<div className='flex justify-between'>
-				<h1 className='mb-5 text-xl font-semibold uppercase'>
+				<h1 className='mb-3 text-xl font-semibold uppercase'>
 					{new Date().toLocaleDateString('en-US', {
 						weekday: 'long',
 						month: 'long',
@@ -30,11 +30,11 @@ export default async function DashboardPage() {
 					<ExerciseDialog />
 				</header>
 			</div>
-			<div className='flex-col space-x-3 space-y-3 pt-5 md:flex-row lg:flex lg:justify-between'>
+			<div className='flex-col space-x-3 space-y-3 md:flex-row lg:flex lg:justify-between'>
 				<NutritionGraphic nutritionMetrics={nutritionMeatrics} />
 				<InsightsAndAnalitics expenditure={expenditure} {...userMetadata} />
 			</div>
-			<DataAndHabits {...userMetadata} />
+			<DataAndHabits userMetadata={userMetadata} expenditure={expenditure} />
 		</section>
 	)
 }
