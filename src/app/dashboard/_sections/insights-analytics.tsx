@@ -51,7 +51,7 @@ export default function InsightsAndAnalitics({
 
 	return (
 		<aside className='mx-auto md:mx-0'>
-			<div className='flex space-x-3 -mt-3'>
+			<div className='flex space-x-3 sm:-mt-3'>
 				<InsightsCard
 					title='Expenditure'
 					dateRange={dateRange}
@@ -78,7 +78,7 @@ export default function InsightsAndAnalitics({
 				dateRange={dateRange}
 				value={daysFromLastUpdate}
 				valueUnit='days in'
-				className='mt-3 w-full rounded-lg border p-4 pb-1 dark:bg-slate-800/50'
+				className='mt-3 rounded-lg border p-4 pb-1 dark:bg-slate-800/50 -ml-3 sm:ml-0'
 			>
 				<Progress value={goalProgress} className='mb-6 mt-6 h-4' />
 			</InsightsCard>
