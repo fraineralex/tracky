@@ -15,7 +15,7 @@ export function Header() {
 
 	if (pathname === '/onboarding') return null
 	return (
-		<nav className='flex w-full items-center justify-between px-6 pb-2 pt-8 text-xl font-semibold lg:px-16'>
+		<nav className='flex w-full items-center justify-between px-10 pb-2 pt-8 text-xl font-semibold lg:px-16'>
 			<div className='flex space-x-10 md:space-x-28'>
 				<Link
 					href='/'

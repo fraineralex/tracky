@@ -171,7 +171,7 @@ export default function NutritionGraphic({
 				</TabsTrigger>
 			</TabsList>
 			<TabsContent value='weekly' className='mt-4 space-y-4'>
-				<Card>
+				<Card className='dark:bg-slate-800/50'>
 					<CardHeader>
 						<CardTitle className='text-lg font-medium'>
 							Weekly Nutritional Trends
@@ -229,7 +229,7 @@ export default function NutritionGraphic({
 				</Card>
 			</TabsContent>
 			<TabsContent value='weight' className='mt-4 space-y-4'>
-				<Card>
+				<Card className='dark:bg-slate-800/50'>
 					<CardHeader>
 						<CardTitle className='text-lg font-medium'>
 							Weight Changes
@@ -265,7 +265,7 @@ export default function NutritionGraphic({
 				</Card>
 			</TabsContent>
 			<TabsContent value='macro' className='mt-4 space-y-4'>
-				<Card>
+				<Card className='dark:bg-slate-800/50'>
 					<CardHeader>
 						<CardTitle className='text-lg font-medium'>
 							Macronutrient Distribution
@@ -296,7 +296,7 @@ export default function NutritionGraphic({
 				</Card>
 			</TabsContent>
 			<TabsContent value='goalsToday' className='mt-4 space-y-4'>
-				<Card>
+				<Card className='dark:bg-slate-800/50'>
 					<CardHeader>
 						<CardTitle className='text-lg font-medium'>
 							Today&apos;s Goal Completion Percentage
@@ -320,14 +320,14 @@ export default function NutritionGraphic({
 									tickFormatter={value => `${value}%`}
 								/>
 								<Tooltip content={<CustomTooltip />} cursor={false} />
-								<Bar dataKey='value' fill='#ec4899' radius={[4, 4, 0, 0]} />
+								<Bar dataKey='value' fill='#4ade80' radius={[4, 4, 0, 0]} />
 							</BarChart>
 						</ResponsiveContainer>
 					</CardContent>
 				</Card>
 			</TabsContent>
 			<TabsContent value='goalsWeek' className='mt-4 space-y-4'>
-				<Card>
+				<Card className='dark:bg-slate-800/50'>
 					<CardHeader>
 						<CardTitle className='text-lg font-medium'>
 							Week Goal Completion Percentage
