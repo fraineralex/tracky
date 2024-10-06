@@ -25,6 +25,7 @@ import { toast } from 'sonner'
 import { ConsumptionState, addConsumption } from '../../_actions'
 import { useFormState } from 'react-dom'
 import FoodCardItem from './food-card'
+import { ShowErrors } from '~/components/forms/show-errors'
 
 const initialState: ConsumptionState = {
 	message: '',
@@ -138,13 +139,7 @@ export function FoodDrawer({
 						<aside className='flex justify-between pb-3'>
 							<Label className='text-base font-semibold'>
 								Serving Size
-								{state &&
-									state.errors?.portion &&
-									state.errors.portion.map(error => (
-										<p key={error} className='text-xs font-light text-red-500'>
-											{error}
-										</p>
-									))}
+								<ShowErrors errors={state.errors?.portion} />
 							</Label>
 							<Label className='text-base font-semibold'>Diary Group</Label>
 						</aside>
@@ -152,16 +147,7 @@ export function FoodDrawer({
 							<div className='min-w-0'>
 								<Label htmlFor='portion' className='sr-only'>
 									Portion
-									{state &&
-										state.errors?.unit &&
-										state.errors.unit.map(error => (
-											<p
-												key={error}
-												className='text-sm font-light text-red-500'
-											>
-												{error}
-											</p>
-										))}
+									<ShowErrors errors={state.errors?.unit} />
 								</Label>
 								<Input
 									id='portion'
@@ -171,6 +157,7 @@ export function FoodDrawer({
 									value={portion}
 									onChange={handlePortionChange}
 									className='w-full max-w-24'
+									required
 								/>
 							</div>
 							<div className='min-w-0'>
@@ -183,6 +170,7 @@ export function FoodDrawer({
 									onValueChange={(value: string) =>
 										setUnit(value as keyof typeof unitConversions)
 									}
+									required
 								>
 									<SelectTrigger id='unit'>
 										<SelectValue placeholder='Unit' />
@@ -199,7 +187,12 @@ export function FoodDrawer({
 								<Label htmlFor='mealGroup' className='sr-only'>
 									Meal Group
 								</Label>
-								<Select value={mealGroup} onValueChange={setMealGroup} name='mealGroup'>
+								<Select
+									value={mealGroup}
+									onValueChange={setMealGroup}
+									name='mealGroup'
+									required
+								>
 									<SelectTrigger id='mealGroup'>
 										<SelectValue placeholder='Meal Group' />
 									</SelectTrigger>

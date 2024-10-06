@@ -18,6 +18,7 @@ import { ExerciseCategories, PublicMetadata, Weights } from '~/types'
 import { useUser } from '@clerk/nextjs'
 import { EFFORT_LEVELS } from '~/constants'
 import { calculateEnergyBurned } from '~/lib/utils'
+import { ShowErrors } from '~/components/forms/show-errors'
 
 const initialState: ExerciseState = {
 	errors: {},
@@ -115,15 +116,7 @@ export default function ExerciseForm({
 									Min
 								</small>
 							</div>
-							{state.errors?.duration &&
-								state.errors?.duration?.map(error => (
-									<small
-										key={error}
-										className='col-span-5 text-nowrap text-xs font-light text-red-500'
-									>
-										{error}
-									</small>
-								))}
+							<ShowErrors errors={state.errors?.duration} />
 						</div>
 						<div className='min-w-0 max-w-xs'>
 							<div>
@@ -149,14 +142,7 @@ export default function ExerciseForm({
 									</SelectContent>
 								</Select>
 							</div>
-							{state.errors?.effort?.map(error => (
-								<small
-									key={error}
-									className='col-span-5 text-nowrap text-xs font-light text-red-500'
-								>
-									{error}
-								</small>
-							))}
+							<ShowErrors errors={state.errors?.effort} />
 						</div>
 						<div className='min-w-0 max-w-xs '>
 							<div className='grid grid-cols-5 space-x-14 pb-1'>
@@ -178,14 +164,8 @@ export default function ExerciseForm({
 									Kcal
 								</small>
 							</div>
-							{state.errors?.energyBurned?.map(error => (
-								<small
-									key={error}
-									className='col-span-5 text-nowrap text-xs font-light text-red-500'
-								>
-									{error}
-								</small>
-							))}
+							<ShowErrors errors={state.errors?.energyBurned} />
+
 							<p className='col-span-5 text-nowrap text-xs font-light text-foreground/80'>
 								Based on your current weight of {currentWeight.value}{' '}
 								{currentWeight.unit}
@@ -209,14 +189,7 @@ export default function ExerciseForm({
 									</SelectContent>
 								</Select>
 							</div>
-							{state.errors?.diaryGroup?.map(error => (
-								<small
-									key={error}
-									className='col-span-5 text-nowrap text-xs font-light text-red-500'
-								>
-									{error}
-								</small>
-							))}
+							<ShowErrors errors={state.errors?.diaryGroup} />
 						</div>
 					</div>
 				</div>
