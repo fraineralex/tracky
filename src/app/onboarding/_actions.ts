@@ -3,6 +3,7 @@
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import { z } from 'zod'
 import { GOAL_FACTORS } from '~/constants'
+import { round } from '~/lib/utils'
 import { PublicMetadata } from '~/types'
 
 const OnboardingSchema = z.object({
@@ -41,7 +42,11 @@ const OnboardingSchema = z.object({
 export const completeOnboarding = async (formData: FormData) => {
 	const { userId } = auth()
 
-	if (!userId) return { message: 'No Logged In User' }
+	if (!userId)
+		return {
+			message: 'You must be logged in to complete onboarding',
+			success: false
+		}
 
 	const validatedFields = OnboardingSchema.safeParse({
 		sex: formData.get('sex'),
@@ -56,7 +61,8 @@ export const completeOnboarding = async (formData: FormData) => {
 
 	if (!validatedFields.success) {
 		return {
-			message: 'Onboarding failed. Please try again later.'
+			message: 'Onboarding failed. Please try again later.',
+			success: false
 		}
 	}
 
@@ -77,22 +83,24 @@ export const completeOnboarding = async (formData: FormData) => {
 			weights: [
 				{
 					value: validatedFields.data.weights,
-					date: new Date().toISOString(),
+					date: new Date().toISOString().split('T')[0] as string,
 					unit: validatedFields.data.weightUnit
 				}
 			],
-			goalWeight:
-				validatedFields.data.weights * GOAL_FACTORS[validatedFields.data.goal],
+			goalWeight: round(
+				validatedFields.data.weights * GOAL_FACTORS[validatedFields.data.goal]
+			),
 			born: validatedFields.data.born.toISOString().split('T')[0] as string,
 			updatedAt: new Date().toISOString().split('T')[0] as string
 		}
 		await clerkClient().users.updateUser(userId, { publicMetadata })
 
-		return { message: 'Onboarding complete' }
+		return { message: 'Onboarding completed succesfuly', success: true }
 	} catch (err) {
 		console.error(err)
 		return {
-			message: 'Onboarding failed. Please try again later.'
+			message: 'Onboarding failed. Please try again later.',
+			success: false
 		}
 	}
 }

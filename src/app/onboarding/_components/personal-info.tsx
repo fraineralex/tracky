@@ -88,6 +88,7 @@ export default function PersonalInfo({
 							showSection={showSection}
 						/>
 					</div>
+					<input type='hidden' name='born' value={bornDate.value?.toISOString()} ref={bornDateInputRef} />
 				</motion.article>
 				<motion.article
 					className='space-y-10 pt-5'

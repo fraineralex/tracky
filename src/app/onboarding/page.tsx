@@ -20,8 +20,8 @@ export default function OnboardingPage() {
 	const [bornDate, setBornDate] = useState<Date | undefined>()
 	const [heightUnit, setHeightUnit] = useState('ft')
 	const [heightDecimal, setHeightDecimal] = useState(5)
-	const [weightUnit, setWeightUnit] = useState('lb')
-	const [height, setHeight] = useState(1)
+	const [weightUnit, setWeightUnit] = useState('kg')
+	const [height, setHeight] = useState(5)
 	const [weight, setWeight] = useState(0)
 	const [goal, setGoal] = useState<string | undefined>()
 	const [activity, setActivity] = useState<string | undefined>()
@@ -30,13 +30,28 @@ export default function OnboardingPage() {
 	const [fitnessGoalsEntry, setFitnessGoalsEntry] = useState(false)
 
 	async function sendForm() {
-		confetti()
-		toast.success('Onboarding complete')
 		formRef.current?.requestSubmit()
+		const promise = () =>
+			new Promise(resolve =>
+				setTimeout(() => resolve({ name: 'Sonner' }), 100000)
+			)
+
+		toast.promise(promise, {
+			loading: 'Completing onboarding...',
+			id: 'onboarding-form'
+		})
 	}
 
 	const handleSubmit = async (formData: FormData) => {
-		await completeOnboarding(formData)
+		const result = await completeOnboarding(formData)
+		toast.dismiss('onboarding-form')
+		if (!result.success) {
+			toast.error(result.message)
+			return
+		}
+
+		confetti()
+		toast.success(result.message)
 		await user?.reload()
 		router.push('/dashboard')
 	}
