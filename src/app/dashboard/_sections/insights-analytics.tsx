@@ -31,22 +31,32 @@ export default function InsightsAndAnalitics({
 			(1000 * 60 * 60 * 24)
 	)
 
-	let goalProgress: number
+	let goalProgress: number = 0
 
 	if (goal === 'maintain') {
-		goalProgress =
-			100 -
-			Math.abs(
-				((currentWeight - goalWeight) / (initialWeight - goalWeight)) * 100
-			)
-	} else {
-		goalProgress = Math.floor(
-			((currentWeight - goalWeight) / (initialWeight - goalWeight)) * 100
-		)
+		if (currentWeight === goalWeight) goalProgress = 100
+		else
+			goalProgress =
+				100 -
+				Math.abs(
+					((currentWeight - goalWeight) / (initialWeight - goalWeight)) * 100
+				)
+	}
 
-		if (goal === 'lose') {
-			goalProgress = 100 - goalProgress
-		}
+	if (goal === 'gain') {
+		if (currentWeight <= initialWeight) goalProgress = 0
+		else if (currentWeight >= goalWeight) goalProgress = 100
+		else
+			goalProgress =
+				((currentWeight - initialWeight) / (goalWeight - initialWeight)) * 100
+	}
+
+	if (goal === 'lose') {
+		if (currentWeight >= initialWeight) goalProgress = 0
+		else if (currentWeight <= goalWeight) goalProgress = 100
+		else
+			goalProgress =
+				((initialWeight - currentWeight) / (initialWeight - goalWeight)) * 100
 	}
 
 	return (
@@ -78,7 +88,7 @@ export default function InsightsAndAnalitics({
 				dateRange={dateRange}
 				value={daysFromLastUpdate}
 				valueUnit='days in'
-				className='mt-3 rounded-lg border p-4 pb-1 dark:bg-slate-800/50 -ml-3 sm:ml-0'
+				className='-ml-3 mt-3 rounded-lg border p-4 pb-1 dark:bg-slate-800/50 sm:ml-0'
 			>
 				<Progress value={goalProgress} className='mb-6 mt-6 h-4' />
 			</InsightsCard>
