@@ -54,6 +54,32 @@ export function DataTable<TData, TValue>({
 		React.useState<VisibilityState>({})
 	const [selectedRow, setSelectedRow] = React.useState<Food | null>(null)
 
+	React.useEffect(() => {
+		const handleResize = () => {
+			if (window.innerWidth < 768) {
+				setColumnVisibility({
+					fat: false,
+					carbs: false,
+					servingSize: false
+				})
+			} else if (window.innerWidth < 1024) {
+				setColumnVisibility({
+					servingSize: false
+				})
+			} else {
+				setColumnVisibility({
+					fat: true,
+					carbs: true,
+					servingSize: window.innerWidth > 1024 ? true : false
+				})
+			}
+		}
+
+		window.addEventListener('resize', handleResize)
+		handleResize()
+
+		return () => window.removeEventListener('resize', handleResize)
+	}, [])
 	const table = useReactTable({
 		data,
 		columns,
@@ -195,6 +221,10 @@ export function DataTable<TData, TValue>({
 					</TableBody>
 				</Table>
 			</div>
+			<p className='lg:hidden col-span-5 text-nowrap text-xs font-light text-foreground/80 mt-3'>
+				Nutritional values are based on a 100g serving size.
+			</p>
+
 			<div className='flex items-center justify-end space-x-2 py-4'>
 				<Button
 					variant='outline'

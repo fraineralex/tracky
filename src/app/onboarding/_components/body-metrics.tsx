@@ -162,6 +162,8 @@ export default function BodyMetrics({
 							required
 							onChange={e => weight.setValue(Number(e.target.value))}
 							value={weight.value > 0 ? weight.value : ''}
+							min={0}
+							max={weight.unit === 'lb' ? 500 : 250}
 						/>
 						<Select
 							name='weightUnit'

@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { EFFORT_LEVELS } from '~/constants'
+import { ACTIVITY_FACTORS, EFFORT_LEVELS, GOAL_FACTORS } from '~/constants'
 import { NutritionMetrics, PublicMetadata } from '~/types'
 
 export function cn(...inputs: ClassValue[]) {
@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 export function calculateEnergyBurned({
 	duration,
 	effort,
-	weight,
+	currentWeight,
 	weightUnit,
 	age,
 	sex,
@@ -20,7 +20,7 @@ export function calculateEnergyBurned({
 }: {
 	duration: number
 	effort: string
-	weight: number
+	currentWeight: number
 	age: number
 	sex: string
 	height: number
@@ -28,7 +28,7 @@ export function calculateEnergyBurned({
 	weightUnit: string
 	categoryMultiplier: number
 }) {
-	weight = weightUnit === 'kg' ? weight : weight * 0.453592
+	const weight = weightUnit === 'kg' ? currentWeight : currentWeight * 0.453592
 
 	if (heightUnit === 'ft') {
 		height = height * 30.48
@@ -50,7 +50,7 @@ export function calculateEnergyBurned({
 }
 
 export function calculateNutritionalNeeds({
-	weight,
+	weights,
 	height,
 	heightUnit,
 	weightUnit,
@@ -59,8 +59,9 @@ export function calculateNutritionalNeeds({
 	activity,
 	goal
 }: PublicMetadata): NutritionMetrics {
+	let currentWeight = weights[weights.length - 1]?.value ?? 0
 	const age = new Date().getFullYear() - new Date(born).getFullYear()
-	weight = weightUnit === 'kg' ? weight : weight * 0.453592
+	currentWeight = weightUnit === 'kg' ? currentWeight : currentWeight * 0.453592
 
 	if (heightUnit === 'ft') {
 		height = height * 30.48
@@ -70,52 +71,89 @@ export function calculateNutritionalNeeds({
 
 	const tmb =
 		sex === 'male'
-			? 88.362 + 13.397 * weight + 4.799 * height - 5.677 * age
-			: 447.593 + 9.247 * weight + 3.098 * height - 4.33 * age
+			? 88.362 + 13.397 * currentWeight + 4.799 * height - 5.677 * age
+			: 447.593 + 9.247 * currentWeight + 3.098 * height - 4.33 * age
 
-	const activityFactors = {
-		sedentary: 1.2,
-		moderate: 1.55,
-		active: 1.9
-	}
+	const get = tmb * ACTIVITY_FACTORS[activity]
 
-	const get = tmb * activityFactors[activity]
-
-	const goalFactors = {
-		gain: 1.1,
-		maintain: 1.0,
-		lose: 0.9
-	}
-	const adjustedGet = get * goalFactors[goal]
+	const adjustedGet = get * GOAL_FACTORS[goal]
 
 	const proteinCalories = adjustedGet * 0.21
 	const carbCalories = adjustedGet * 0.53
 	const fatCalories = adjustedGet * 0.26
 
-	const protein = proteinCalories / 4
-	const carbs = carbCalories / 4
-	const fats = fatCalories / 9
+	const protein = round(proteinCalories / 4)
+	const carbs = round(carbCalories / 4)
+	const fats = round(fatCalories / 9)
+	const calories = round(adjustedGet)
 
 	return {
 		calories: {
 			consumed: 0,
-			remaining: adjustedGet,
-			needed: adjustedGet
+			needed: calories
 		},
 		protein: {
 			consumed: 0,
-			remaining: protein,
 			needed: protein
 		},
 		carbs: {
 			consumed: 0,
-			remaining: carbs,
 			needed: carbs
 		},
 		fats: {
 			consumed: 0,
-			remaining: fats,
 			needed: fats
 		}
 	}
+}
+
+export function round(value?: number, decimals = 0) {
+	const factor = Math.pow(10, decimals)
+	return Math.round(value ?? 0 * factor) / factor
+}
+
+export function getAdjustedDay(date: Date): number {
+	const day = date.getDay()
+	return day === 0 ? 6 : day - 1
+}
+
+export function getStreakNumber(arr: Date[]) {
+	let streak = 0
+	const today = new Date(new Date().setHours(0, 0, 0, 0))
+
+	for (const [index, date] of arr.entries()) {
+		if (arr.length === 1) {
+			if (today.getTime() === date.getTime()) return streak++
+		}
+		const beforeDate = arr[index + 1]
+		const diff = beforeDate ? date.getTime() - beforeDate.getTime() : 0
+		if (diff === 86400000) {
+			streak++
+			continue
+		}
+
+		if (
+			index === arr.length - 1 &&
+			streak === 0 &&
+			today.getTime() === arr[0]?.getTime()
+		)
+			streak++
+	}
+
+	return streak
+}
+
+export function getPercentage(nutrient: { consumed: number; needed: number }) {
+	const consumptionRatio = nutrient.consumed / nutrient.needed
+	return round(
+		(consumptionRatio < 1 ? consumptionRatio : 1) * 100
+	).toLocaleString()
+}
+
+export const getMacroPercentage = (
+	macroConsumed: number,
+	caloriesConsumed: number
+) => {
+	if (caloriesConsumed === 0) return 0
+	return round((macroConsumed / caloriesConsumed) * 100)
 }

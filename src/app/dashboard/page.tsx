@@ -3,63 +3,35 @@ import ExerciseDialog from './_components/exercise/exercise-dialog'
 import NutritionGraphic from './_sections/nutrition-graphic'
 import InsightsAndAnalitics from './_sections/insights-analytics'
 import DataAndHabits from './_sections/data-habits'
-import { calculateNutritionalNeeds } from '~/lib/utils'
 import { currentUser } from '@clerk/nextjs/server'
-import { NutritionMetrics, PublicMetadata, sex } from '~/types'
-import { db } from '~/server/db'
-import { consumption, food } from '~/server/db/schema'
-import { eq, and, gte } from 'drizzle-orm'
+import { PublicMetadata } from '~/types'
+import { getUserNutritionMetrics } from '~/server/utils/nutrition'
 
 export default async function DashboardPage() {
 	const user = await currentUser()
 	if (!user) return null
-	const nutritionMeatrics = calculateNutritionalNeeds(
-		user.publicMetadata as PublicMetadata
-	)
-	const result = await db
-		.select()
-		.from(consumption)
-		.innerJoin(food, eq(consumption.foodId, food.id))
-		.where(
-			and(
-				eq(consumption.userId, user.id),
-				gte(consumption.createdAt, new Date())
-			)
-		)
+	const userMetadata = user.publicMetadata as PublicMetadata
+	const nutritionMeatrics = await getUserNutritionMetrics(user.id, userMetadata)
+	const expenditure = nutritionMeatrics[0]?.calories.needed ?? 0
 
-	result.forEach(({ consumption, food }) => {
-		const calories =
-			(Number(consumption.portion) / Number(food.servingSize)) *
-			Number(food.kcal)
-		const protein =
-			(Number(consumption.portion) / Number(food.servingSize)) *
-			Number(food.protein)
-		const carbs =
-			(Number(consumption.portion) / Number(food.servingSize)) *
-			Number(food.carbs)
-		const fats =
-			(Number(consumption.portion) / Number(food.servingSize)) *
-			Number(food.fat)
-
-		nutritionMeatrics.calories.consumed += calories
-		nutritionMeatrics.protein.consumed += protein
-		nutritionMeatrics.carbs.consumed += carbs
-		nutritionMeatrics.fats.consumed += fats
-		nutritionMeatrics.calories.remaining -= calories
-		nutritionMeatrics.protein.remaining -= protein
-		nutritionMeatrics.carbs.remaining -= carbs
-		nutritionMeatrics.fats.remaining -= fats
+	const todayLong = new Date().toLocaleDateString('en-US', {
+		weekday: 'long',
+		month: 'long',
+		day: 'numeric'
 	})
-	console.log(result)
+
+	const todayShort = new Date().toLocaleDateString('en-US', {
+		weekday: 'short',
+		month: 'short',
+		day: 'numeric'
+	})
+
 	return (
-		<section className='ms-5 h-full w-full overflow-auto px-5 pb-10 pt-10'>
+		<section className='h-full w-full overflow-auto pt-5 -mb-8 sm:mb-0 sm:pb-5 xl:ms-5 xl:px-5'>
 			<div className='flex justify-between'>
-				<h1 className='mb-5 text-xl font-semibold uppercase'>
-					{new Date().toLocaleDateString('en-US', {
-						weekday: 'long',
-						month: 'long',
-						day: 'numeric'
-					})}
+				<h1 className='mb-3 text-xl font-semibold uppercase'>
+					<span className='hidden md:inline'>{todayLong}</span>
+					<span className='md:hidden'>{todayShort}</span>
 				</h1>
 
 				<header className='float-end flex space-x-5'>
@@ -67,11 +39,11 @@ export default async function DashboardPage() {
 					<ExerciseDialog />
 				</header>
 			</div>
-			<div className='flex justify-between pt-5'>
-				<NutritionGraphic {...nutritionMeatrics} />
-				<InsightsAndAnalitics />
+			<div className='flex-col space-x-3 space-y-3 mt-4 sm:mt-0  md:flex-row lg:flex lg:justify-between md:pt-2'>
+				<NutritionGraphic nutritionMetrics={nutritionMeatrics} />
+				<InsightsAndAnalitics expenditure={expenditure} {...userMetadata} />
 			</div>
-			<DataAndHabits />
+			<DataAndHabits userMetadata={userMetadata} expenditure={expenditure} />
 		</section>
 	)
 }

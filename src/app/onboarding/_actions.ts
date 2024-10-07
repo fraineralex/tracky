@@ -2,6 +2,9 @@
 
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import { z } from 'zod'
+import { GOAL_FACTORS } from '~/constants'
+import { round } from '~/lib/utils'
+import { PublicMetadata } from '~/types'
 
 const OnboardingSchema = z.object({
 	sex: z.enum(['male', 'female'], { required_error: 'Please select a sex' }),
@@ -22,11 +25,11 @@ const OnboardingSchema = z.object({
 		.number({ required_error: 'Please enter your height' })
 		.positive()
 		.max(300),
-	weight: z.coerce
+	weights: z.coerce
 		.number({ required_error: 'Please enter your weight' })
 		.positive()
 		.max(600),
-	goal: z.enum(['loss', 'maintain', 'gain'], {
+	goal: z.enum(['lose', 'maintain', 'gain'], {
 		required_error: 'Please select a goal'
 	}),
 	activity: z.enum(['sedentary', 'moderate', 'active'], {
@@ -39,13 +42,17 @@ const OnboardingSchema = z.object({
 export const completeOnboarding = async (formData: FormData) => {
 	const { userId } = auth()
 
-	if (!userId) return { message: 'No Logged In User' }
+	if (!userId)
+		return {
+			message: 'You must be logged in to complete onboarding',
+			success: false
+		}
 
 	const validatedFields = OnboardingSchema.safeParse({
 		sex: formData.get('sex'),
 		born: formData.get('born'),
 		height: formData.get('height'),
-		weight: formData.get('weight'),
+		weights: formData.get('weight'),
 		goal: formData.get('goal'),
 		activity: formData.get('activity'),
 		weightUnit: formData.get('weightUnit'),
@@ -54,7 +61,8 @@ export const completeOnboarding = async (formData: FormData) => {
 
 	if (!validatedFields.success) {
 		return {
-			message: 'Onboarding failed. Please try again later.'
+			message: 'Onboarding failed. Please try again later.',
+			success: false
 		}
 	}
 
@@ -69,18 +77,30 @@ export const completeOnboarding = async (formData: FormData) => {
 	}
 
 	try {
-		await clerkClient().users.updateUser(userId, {
-			publicMetadata: {
-				onboardingComplete: true,
-				...validatedFields.data
-			}
-		})
+		const publicMetadata: PublicMetadata = {
+			onboardingCompleted: true,
+			...validatedFields.data,
+			weights: [
+				{
+					value: validatedFields.data.weights,
+					date: new Date().toISOString().split('T')[0] as string,
+					unit: validatedFields.data.weightUnit
+				}
+			],
+			goalWeight: round(
+				validatedFields.data.weights * GOAL_FACTORS[validatedFields.data.goal]
+			),
+			born: validatedFields.data.born.toISOString().split('T')[0] as string,
+			updatedAt: new Date().toISOString().split('T')[0] as string
+		}
+		await clerkClient().users.updateUser(userId, { publicMetadata })
 
-		return { message: 'Onboarding complete' }
+		return { message: 'Onboarding completed succesfuly', success: true }
 	} catch (err) {
 		console.error(err)
 		return {
-			message: 'Onboarding failed. Please try again later.'
+			message: 'Onboarding failed. Please try again later.',
+			success: false
 		}
 	}
 }

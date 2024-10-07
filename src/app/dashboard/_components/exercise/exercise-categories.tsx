@@ -42,7 +42,7 @@ export default function ExerciseCategories({
 	}
 
 	return (
-		<section className='px-5'>
+		<section className='sm:px-5'>
 			{selectedCategory && (
 				<Breadcrumb className='py-2'>
 					<BreadcrumbList>
@@ -64,7 +64,7 @@ export default function ExerciseCategories({
 				</Breadcrumb>
 			)}
 			{!selectedCategory && (
-				<div className='grid grid-cols-4 gap-4 py-10'>
+				<div className='grid grid-cols-3 md:grid-cols-4 gap-2 md:gap-4 py-2 md:py-10'>
 					{categories &&
 						categories.map(category => (
 							<ExerciseCard

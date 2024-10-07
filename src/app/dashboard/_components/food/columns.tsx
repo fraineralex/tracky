@@ -1,9 +1,8 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-import { ArrowUpDown, PlusCircle } from 'lucide-react'
+import { ArrowUpDown } from 'lucide-react'
 import { Button } from '~/components/ui/button'
-import { UNITS_MAP } from '~/constants'
 import { food } from '~/server/db/schema'
 
 export type Food = typeof food.$inferSelect
@@ -22,12 +21,12 @@ export const columns: ColumnDef<Food>[] = [
 					variant='ghost'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
-					Email
+					Name
 					<ArrowUpDown className='ml-2 h-4 w-4' />
 				</Button>
 			)
 		},
-		enableHiding: false
+		enableHiding: false,
 	},
 	{
 		accessorKey: 'protein',

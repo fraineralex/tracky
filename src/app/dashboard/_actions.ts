@@ -8,7 +8,8 @@ import {
 	consumption,
 	diaryGroupEnum,
 	effortEnum,
-	exercise
+	exercise,
+	unitEnum
 } from '~/server/db/schema'
 import { createInsertSchema } from 'drizzle-zod'
 
@@ -21,8 +22,8 @@ const ConsumptionSchema = createInsertSchema(consumption, {
 		.number({ required_error: 'Please enter a portion' })
 		.positive({ message: 'Portion must be a positive number' })
 		.transform(value => value.toString()),
-	unit: z.enum(['g', 'oz', 'ml', 'cup'], {
-		required_error: 'Please select a unit'
+	unit: z.enum(unitEnum.enumValues, {
+		required_error: 'Please select a unit of measure'
 	}),
 	mealGroup: z.enum(diaryGroupEnum.enumValues, {
 		required_error: 'Please select a meal group option'

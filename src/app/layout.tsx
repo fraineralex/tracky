@@ -31,7 +31,7 @@ export default function RootLayout({
 	children: React.ReactNode
 }) {
 	return (
-		<ClerkProvider>
+		<ClerkProvider afterSignOutUrl='/'>
 			<html lang='en' suppressHydrationWarning>
 				<body
 					className={cn(
@@ -48,7 +48,7 @@ export default function RootLayout({
 					>
 						<div className='grid min-h-screen grid-rows-[auto,1fr] overflow-y-auto'>
 							<Header />
-							<main className='flex px-10'>
+							<main className='px-10 md:flex'>
 								<SideNav />
 								{children}
 							</main>

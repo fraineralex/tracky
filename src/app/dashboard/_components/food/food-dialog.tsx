@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react'
+import { ClipboardList, Plus } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import { DataTable } from '~/components/ui/data-table'
 import {
@@ -14,18 +14,17 @@ import { food } from '~/server/db/schema'
 
 export default async function FoodDialog() {
 	const foodData = await db.select().from(food)
-	
+
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button variant='default' className='font-medium'>
-					<Plus className='me-2' />
-					Add Food
+				<Button size='sm' className='flex-grow sm:flex-grow-0'>
+					<ClipboardList className='mr-2 h-4 w-4' /> Add Meal
 				</Button>
 			</DialogTrigger>
-			<DialogContent className='h-[80%] sm:max-w-6xl'>
+			<DialogContent className='max-w-lg px-0 sm:max-w-xl md:max-w-3xl lg:max-w-5xl lg:px-5 xl:max-w-6xl'>
 				<DialogHeader>
-					<DialogTitle className='ps-8 pt-2'>Add Food to Diary</DialogTitle>
+					<DialogTitle className='ps-8 pt-2'>Add Meal to Diary</DialogTitle>
 				</DialogHeader>
 
 				<div className='container mx-auto'>

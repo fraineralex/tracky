@@ -4,7 +4,7 @@ import { FemaleIcon, MaleIcon } from '~/components/ui/icons'
 import { BornDatePicker } from '~/app/onboarding/_components/ui/born-date-picker'
 import { useRef } from 'react'
 import { ONBOARDING_SECTIONS } from '~/constants'
-import { sex } from '~/types'
+import { Sex } from '~/types'
 import { Button } from '~/components/ui/button'
 import { ChevronRight } from 'lucide-react'
 import { motion } from 'framer-motion'
@@ -19,8 +19,8 @@ export default function PersonalInfo({
 }: {
 	setShowSection: (section: string) => void
 	sex: {
-		value: sex | undefined
-		setValue: (sexParam: sex) => void
+		value: Sex | undefined
+		setValue: (sexParam: Sex) => void
 	}
 	bornDate: {
 		value: Date | undefined
@@ -32,7 +32,7 @@ export default function PersonalInfo({
 	const sexInputRef = useRef<HTMLInputElement | null>(null)
 	const bornDateInputRef = useRef<HTMLInputElement | null>(null)
 
-	const handleClickSex = (value: sex) => () => {
+	const handleClickSex = (value: Sex) => () => {
 		sex.setValue(value)
 		if (sexInputRef.current) sexInputRef.current.value = value
 		if (value && bornDate.value) handleClickNext()
@@ -88,6 +88,7 @@ export default function PersonalInfo({
 							showSection={showSection}
 						/>
 					</div>
+					<input type='hidden' name='born' value={bornDate.value?.toISOString()} ref={bornDateInputRef} />
 				</motion.article>
 				<motion.article
 					className='space-y-10 pt-5'

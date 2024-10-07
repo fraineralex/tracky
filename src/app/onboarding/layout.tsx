@@ -6,7 +6,7 @@ export default function RootLayout({
 }: {
 	children: React.ReactNode
 }) {
-	if (auth().sessionClaims?.metadata?.onboardingComplete === true) {
+	if (auth().sessionClaims?.metadata?.onboardingCompleted === true) {
 		redirect('/dashboard')
 	}
 

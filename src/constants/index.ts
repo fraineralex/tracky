@@ -68,3 +68,15 @@ export const EFFORT_LEVELS = {
 	hard: { label: 'Hard', multiplier: 1.55 },
 	'very-hard': { label: 'Very Hard', multiplier: 1.725 }
 }
+
+export const GOAL_FACTORS = {
+	gain: 1.1,
+	maintain: 1.0,
+	lose: 0.9
+}
+
+export const ACTIVITY_FACTORS = {
+	sedentary: 1.2,
+	moderate: 1.55,
+	active: 1.9
+}

@@ -3,68 +3,108 @@
 import { Flame } from 'lucide-react'
 import React from 'react'
 import { Button } from '~/components/ui/button'
-import { NutritionMetrics } from '~/types'
+import { Card } from '~/components/ui/card'
+import { round, getAdjustedDay } from '~/lib/utils'
+import { NutritionMetrics, NutritionMetricsPerDay } from '~/types'
 
 export default function NutritionGraphic({
-	calories,
-	protein,
-	carbs,
-	fats
-}: NutritionMetrics) {
+	nutritionMetrics: nutrition
+}: {
+	nutritionMetrics: NutritionMetricsPerDay
+}) {
 	const [showConsumed, setShowConsumed] = React.useState(true)
 
+	const dayOfWeek = getAdjustedDay(new Date())
+	const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+	const colors = ['#60a5fa', '#ffffff', '#facc15', '#4ade80']
+	const { calories, protein, fats, carbs } = nutrition[
+		dayOfWeek as keyof NutritionMetricsPerDay
+	] as NutritionMetrics
+
+	function getNutrientPercentage(index: number, day: number) {
+		if (!nutrition[day] || day > dayOfWeek) return 0
+		const nutrient = Object.values(nutrition[day] ?? {})[
+			index
+		] as NutritionMetrics[keyof NutritionMetrics]
+		return (
+			((showConsumed
+				? nutrient.consumed
+				: nutrient.needed - nutrient.consumed) /
+				nutrient.needed) *
+			100
+		)
+	}
+
+	let tdayCalories = calories.consumed
+	let tdayProtein = protein.consumed
+	let tdayFats = fats.consumed
+	let tdayCarbs = carbs.consumed
+
+	if (!showConsumed) {
+		tdayCalories = Math.max(calories.needed - calories.consumed, 0)
+		tdayProtein = Math.max(protein.needed - protein.consumed, 0)
+		tdayFats = Math.max(fats.needed - fats.consumed, 0)
+		tdayCarbs = Math.max(carbs.needed - carbs.consumed, 0)
+	}
+
 	return (
-		<article className='h-fit w-full max-w-[490px] rounded-lg border bg-slate-200 p-5 dark:bg-slate-800/50'>
-			<h2 className='mb-3'>Nutrition & Targets</h2>
-			<div className='mb-2 grid grid-cols-10 space-x-5'>
+		<Card className='mx-auto h-fit w-full rounded-lg border p-2 sm:p-5 pr-1 dark:bg-slate-800/50 md:mx-0 lg:max-w-96 xl:max-w-[490px]'>
+			<h2 className='mb-3 font-semibold'>Nutrition & Targets</h2>
+			<div className='mb-2 grid grid-cols-10 space-x-1 sm:space-x-5 lg:space-x-3 xl:space-x-5'>
 				<div className='col-span-8 grid grid-flow-row space-y-2'>
-					{[...Array(4)].map((_, index) => (
-						<div className='flex space-x-5 border-b pb-2' key={index}>
-							{[...Array(7)].map((_, index2) => (
-								<span
-									className={`rounded-md bg-primary/20 px-4 py-5 ${index2 === 3 ? 'border-2 border-primary' : ''}`}
-									key={index2}
-								></span>
-							))}
+					{[...Array(5)].map((_, nutrientIndex) => (
+						<div
+							className={`flex pb-2 ${nutrientIndex === 4 ? 'space-x-1 sm:space-x-4 lg:space-x-1 xl:space-x-4' : 'space-x-2 sm:space-x-5 lg:space-x-2 xl:space-x-5'}`}
+							key={nutrientIndex}
+						>
+							{[...Array(8)].map((_, dayIndex) =>
+								dayIndex < 7 && nutrientIndex < 4 ? (
+									<span
+										className='rounded-md px-4 py-4'
+										key={dayIndex}
+										style={{
+											background: `linear-gradient(to top, hsl(var(--foreground) / ${dayIndex === dayOfWeek ? '1' : '0.5'}) ${getNutrientPercentage(nutrientIndex, dayIndex)}%, hsl(var(--primary) / 0.2) ${getNutrientPercentage(nutrientIndex, dayIndex)}%)`
+										}}
+									></span>
+								) : (
+									<span
+										className={`-ms-1 px-3 py-2 ${dayIndex === dayOfWeek ? 'rounded-md border-2 border-primary font-semibold' : ''}`}
+										key={dayIndex}
+									>
+										{days[dayIndex]}
+									</span>
+								)
+							)}
 						</div>
 					))}
 				</div>
-				<aside className='col-span-2 flex flex-col place-content-center justify-between'>
+				<aside className='col-span-2 flex flex-col sm:place-content-center sm:justify-between text-sm space-y-4 sm:space-y-0'>
 					<p className='font-bold leading-tight'>
-						{(showConsumed ? calories.consumed : calories.remaining).toFixed(0)}{' '}
+						{round(tdayCalories).toLocaleString()}
 						<Flame className='inline h-6 w-6 pb-1' />
-						<small className='block text-sm font-normal text-gray-500 dark:text-gray-400'>
-							of {calories.needed.toFixed(0)}
+						<small className='block font-xs sm:text-sm font-normal text-gray-500 dark:text-gray-400'>
+							of {calories.needed.toLocaleString()}
 						</small>
 					</p>
 					<p className='font-bold leading-tight'>
-						{(showConsumed ? protein.consumed : protein.remaining).toFixed(0)} P
-						<small className='block text-sm font-normal text-gray-500 dark:text-gray-400'>
-							of {protein.needed.toFixed(0)}
+						{round(tdayProtein).toLocaleString()} P
+						<small className='block font-xs sm:text-sm font-normal text-gray-500 dark:text-gray-400'>
+							of {protein.needed.toLocaleString()}
 						</small>
 					</p>
 					<p className='font-bold leading-tight'>
-						{(showConsumed ? fats.consumed : fats.remaining).toFixed(0)} F
-						<small className='block text-sm font-normal text-gray-500 dark:text-gray-400'>
-							of {fats.needed.toFixed(0)}
+						{round(tdayFats).toLocaleString()} F
+						<small className='block font-xs sm:text-sm font-normal text-gray-500 dark:text-gray-400'>
+							of {fats.needed.toLocaleString()}
 						</small>
 					</p>
 					<p className='font-bold leading-tight'>
-						{(showConsumed ? carbs.consumed : carbs.remaining).toFixed(0)} C
-						<small className='block text-sm font-normal text-gray-500 dark:text-gray-400'>
-							of {carbs.needed.toFixed(0)}
+						{round(tdayCarbs).toLocaleString()} C
+						<small className='block font-xs sm:text-sm font-normal text-gray-500 dark:text-gray-400'>
+							of {carbs.needed.toLocaleString()}
 						</small>
 					</p>
 				</aside>
-			</div>
-			<div className='mt-4 flex space-x-10'>
-				<span className='ps-2'>T</span>
-				<span className=''>M</span>
-				<span className=''>W</span>
-				<span className=''>T</span>
-				<span className=''>F</span>
-				<span className=''>S</span>
-				<span className='ps-2'>S</span>
 			</div>
 			<footer className='mt-4 flex place-content-center space-x-3'>
 				<Button
@@ -82,6 +122,6 @@ export default function NutritionGraphic({
 					Remainig
 				</Button>
 			</footer>
-		</article>
+		</Card>
 	)
 }
