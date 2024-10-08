@@ -9,11 +9,11 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
+    "db:seed": "env $(grep -v '^#' .env | xargs) bun tsx src/server/db/seed.ts",
     "dev": "next dev --turbo",
     "lint": "next lint",
     "start": "next start",
-    "format": "prettier --write .",
-    "db:seed": "node --loader esbuild-register/loader -r esbuild-register ./src/server/db/seed.ts"
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@clerk/nextjs": "5.2.1",
@@ -68,6 +68,7 @@
     "prettier": "3.2.5",
     "prettier-plugin-tailwindcss": "0.5.14",
     "tailwindcss": "3.4.3",
+    "tsx": "^4.19.1",
     "typescript": "5.4.2"
   },
   "ct3aMetadata": {
