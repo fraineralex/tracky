@@ -80,6 +80,7 @@ export const registerFood = async (
 		return { message: 'Food registered successfully', success: true }
 	} catch (error) {
 		console.error(error)
+		
 		return {
 			message: 'Food registration failed. Please try again later',
 			success: false

@@ -11,9 +11,16 @@ import {
 import { columns } from './columns'
 import { db } from '~/server/db'
 import { food } from '~/server/db/schema'
+import { and, eq, isNull, or } from 'drizzle-orm'
+import { currentUser } from '@clerk/nextjs/server'
 
 export default async function FoodDialog() {
-	const foodData = await db.select().from(food)
+	const user = await currentUser()
+	if (!user) return null
+	const foodData = await db
+		.select()
+		.from(food)
+		.where(or(isNull(food.userId), eq(food.userId, user?.id)))
 
 	return (
 		<Dialog>

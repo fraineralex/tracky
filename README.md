@@ -3,7 +3,7 @@
 
 A smart, minimalist fitness tracking web app built with `T3 Stack`. It helps users follow their fitness journey every step of the way, without overwhelming them with unnecessary features. With a modern interface, Tracky makes it easy to log workouts and meals, keeping users focused on progress while simplifying their path to achieving fitness goals.
 
-![Open graph image of Chatify](/public/gh.webp)
+![Open graph image of Tracky](/public/gh.webp)
 
 ## 📦 Technologies
 - `Next.js`
@@ -18,8 +18,8 @@ A smart, minimalist fitness tracking web app built with `T3 Stack`. It helps use
 - ✅ **`Landing Page`**
 - ✅ **`Login/Registration`**
 - ✅ **`Onboarding`**
-- 🚧 **`Dashboard Page`**
-- 💡 **`Food Page`**
+- ✅ **`Dashboard Page`**
+- 🚧 **`Food Page`**
 - 💡 **`Exercise Page`**
 - 💡 **`Diary Page`**
 
