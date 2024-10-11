@@ -19,7 +19,7 @@ export default function RegisterFoodDialog() {
 					<PlusCircle className='mr-2 h-4 w-4' /> Register Food
 				</Button>
 			</DialogTrigger>
-			<DialogContent className='sm:max-w-[425px]'>
+			<DialogContent className='max-w-[95%] md:max-w-md lg:max-w-lg rounded-lg'>
 				<DialogHeader>
 					<DialogTitle>Register New Food</DialogTitle>
 					<DialogDescription>
