@@ -32,13 +32,15 @@ export const food = createTable(
 		carbs: decimal('carbs', { precision: 7, scale: 2 }).notNull(),
 		servingSize: decimal('serving_size', { precision: 7, scale: 2 }).notNull(),
 		unit: unitEnum('unit').notNull(),
+		userId: varchar('user_id', { length: 50 }),
 		createdAt: timestamp('created_at', { withTimezone: true })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
 		updatedAt: timestamp('updatedAt', { withTimezone: true })
 	},
 	food => ({
-		nameIndex: index('food_name_idx').on(food.name)
+		nameIndex: index('food_name_idx').on(food.name),
+		userIdIndex: index('food_user_idx').on(food.userId)
 	})
 )
 
