@@ -90,7 +90,7 @@ export default function ExerciseForm({
 							<p className='mt-2 text-sm text-red-500'>{state.message}</p>
 						)}
 					</header>
-					<div className='grid grid-cols-2 gap-x-16 gap-y-5 pt-10'>
+					<div className='grid grid-cols-2 gap-x-16 gap-y-5 md:pt-10 pt-5'>
 						<input
 							type='hidden'
 							name='categoryId'

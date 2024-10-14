@@ -108,7 +108,8 @@ export function DataTable<TData, TValue>({
 			servingSize: row.getValue('servingSize'),
 			unit: row.getValue('unit'),
 			createdAt: row.getValue('createdAt'),
-			updatedAt: row.getValue('updatedAt')
+			updatedAt: row.getValue('updatedAt'),
+			userId: row.getValue('userId')
 		}
 
 		setSelectedRow(foodData)
@@ -120,8 +121,8 @@ export function DataTable<TData, TValue>({
 	}
 
 	return (
-		<div>
-			<div className='flex items-center space-x-20 pb-4 '>
+		<section>
+			<div className='flex items-center space-x-10 pb-4 md:space-x-20'>
 				<Input
 					placeholder='Filter names...'
 					value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
@@ -221,7 +222,7 @@ export function DataTable<TData, TValue>({
 					</TableBody>
 				</Table>
 			</div>
-			<p className='lg:hidden col-span-5 text-nowrap text-xs font-light text-foreground/80 mt-3'>
+			<p className='col-span-5 mt-3 text-nowrap text-xs font-light text-foreground/80 lg:hidden'>
 				Nutritional values are based on a 100g serving size.
 			</p>
 
@@ -243,6 +244,6 @@ export function DataTable<TData, TValue>({
 					Next
 				</Button>
 			</div>
-		</div>
+		</section>
 	)
 }

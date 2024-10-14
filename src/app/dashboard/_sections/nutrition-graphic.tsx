@@ -48,7 +48,7 @@ export default function NutritionGraphic({
 	}
 
 	return (
-		<Card className='mx-auto h-fit w-full rounded-lg border p-2 sm:p-5 pr-1 dark:bg-slate-800/50 md:mx-0 lg:max-w-96 xl:max-w-[490px]'>
+		<Card className='mx-auto h-fit w-full rounded-lg border p-2 pr-1 dark:bg-slate-800/50 sm:p-5 md:mx-0 lg:max-w-96 xl:max-w-[490px]'>
 			<h2 className='mb-3 font-semibold'>Nutrition & Targets</h2>
 			<div className='mb-2 grid grid-cols-10 space-x-1 sm:space-x-5 lg:space-x-3 xl:space-x-5'>
 				<div className='col-span-8 grid grid-flow-row space-y-2'>
@@ -78,29 +78,29 @@ export default function NutritionGraphic({
 						</div>
 					))}
 				</div>
-				<aside className='col-span-2 flex flex-col sm:place-content-center sm:justify-between text-sm space-y-4 sm:space-y-0'>
+				<aside className='col-span-2 flex flex-col space-y-4 text-center text-sm sm:place-content-center sm:justify-between sm:space-y-0'>
 					<p className='font-bold leading-tight'>
 						{round(tdayCalories).toLocaleString()}
 						<Flame className='inline h-6 w-6 pb-1' />
-						<small className='block font-xs sm:text-sm font-normal text-gray-500 dark:text-gray-400'>
+						<small className='font-xs block font-normal text-gray-500 dark:text-gray-400 sm:text-sm'>
 							of {calories.needed.toLocaleString()}
 						</small>
 					</p>
 					<p className='font-bold leading-tight'>
 						{round(tdayProtein).toLocaleString()} P
-						<small className='block font-xs sm:text-sm font-normal text-gray-500 dark:text-gray-400'>
+						<small className='font-xs block font-normal text-gray-500 dark:text-gray-400 sm:text-sm'>
 							of {protein.needed.toLocaleString()}
 						</small>
 					</p>
 					<p className='font-bold leading-tight'>
 						{round(tdayFats).toLocaleString()} F
-						<small className='block font-xs sm:text-sm font-normal text-gray-500 dark:text-gray-400'>
+						<small className='font-xs block font-normal text-gray-500 dark:text-gray-400 sm:text-sm'>
 							of {fats.needed.toLocaleString()}
 						</small>
 					</p>
 					<p className='font-bold leading-tight'>
 						{round(tdayCarbs).toLocaleString()} C
-						<small className='block font-xs sm:text-sm font-normal text-gray-500 dark:text-gray-400'>
+						<small className='font-xs block font-normal text-gray-500 dark:text-gray-400 sm:text-sm'>
 							of {carbs.needed.toLocaleString()}
 						</small>
 					</p>

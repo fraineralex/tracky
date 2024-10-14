@@ -35,7 +35,7 @@ export default function RootLayout({
 			<html lang='en' suppressHydrationWarning>
 				<body
 					className={cn(
-						'min-h-screen bg-background font-sans antialiased',
+						'min-h-screen bg-background font-sans antialiased md:max-w-screen-xl mx-auto pb-5',
 						fontSans.variable,
 						fontSerif.variable
 					)}
@@ -46,9 +46,9 @@ export default function RootLayout({
 						enableSystem
 						disableTransitionOnChange
 					>
-						<div className='grid min-h-screen grid-rows-[auto,1fr] overflow-y-auto'>
+						<div className='md:grid min-h-screen md:grid-rows-[auto,1fr] overflow-y-auto'>
 							<Header />
-							<main className='px-10 md:flex'>
+							<main className='px-5 md:px-10 md:flex'>
 								<SideNav />
 								{children}
 							</main>
