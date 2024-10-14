@@ -23,18 +23,20 @@ export default async function FoodDialog() {
 		.where(or(isNull(food.userId), eq(food.userId, user?.id)))
 
 	return (
-		<Dialog >
+		<Dialog>
 			<DialogTrigger asChild>
 				<Button size='sm' className='flex-grow sm:flex-grow-0'>
 					<ClipboardList className='mr-2 h-4 w-4' /> Add Meal
 				</Button>
 			</DialogTrigger>
-			<DialogContent className='max-w-[95%] px-0 md:max-w-3xl lg:max-w-4xl lg:px-5 xl:max-w-6xl rounded-lg'>
+			<DialogContent className='max-w-[95%] rounded-lg px-0 md:max-w-3xl lg:max-w-4xl lg:px-5 xl:max-w-6xl'>
 				<DialogHeader>
-					<DialogTitle className='ps-4 md:ps-8 pt-2 text-start'>Add Meal to Diary</DialogTitle>
+					<DialogTitle className='ps-4 pt-2 text-start md:ps-8'>
+						Add Meal to Diary
+					</DialogTitle>
 				</DialogHeader>
 
-				<div className='px-2 md:container mx-auto'>
+				<div className='mx-auto px-2 md:container'>
 					<DataTable columns={columns} data={foodData} />
 				</div>
 			</DialogContent>
