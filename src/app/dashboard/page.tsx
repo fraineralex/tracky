@@ -6,6 +6,11 @@ import DataAndHabits from './_sections/data-habits'
 import { currentUser } from '@clerk/nextjs/server'
 import { PublicMetadata } from '~/types'
 import { getUserNutritionMetrics } from '~/server/utils/nutrition'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+	title: 'Dashboard | Tracky'
+}
 
 export default async function DashboardPage() {
 	const user = await currentUser()

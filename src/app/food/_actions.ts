@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { db } from '~/server/db'
 import { consumption, diaryGroupEnum, food, unitEnum } from '~/server/db/schema'
-import { generateObject, streamObject, streamText } from 'ai'
+import { generateObject } from 'ai'
 import { openai } from '@ai-sdk/openai'
 import { desc, sql } from 'drizzle-orm'
 import { NewConsumption } from '../dashboard/_actions'
@@ -115,9 +115,7 @@ const ConsumptionSchema = z.object({
 	)
 })
 
-export async function logFoodConsumption(
-	messages: Message[]
-): Promise<Message[]> {
+export async function logMealAI(messages: Message[]): Promise<Message[]> {
 	const { userId } = auth()
 
 	if (!userId) {

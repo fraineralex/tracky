@@ -7,6 +7,7 @@ export const fakeLogMealAI = async (conversation: Message[]) => {
 			role: 'assistant',
 			content: 'I have generated the food consumption data.'
 		}
-	]
+	] satisfies Message[]
+
 	return response
 }

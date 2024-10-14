@@ -6,7 +6,7 @@ import { DialogFooter } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
 import { ScrollArea } from '~/components/ui/scroll-area'
 import { Bot, Loader, Send } from 'lucide-react'
-import { logFoodConsumption as logMealAI, Message } from '../_actions'
+import { logMealAI, Message } from '../_actions'
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { useUser } from '@clerk/nextjs'
 

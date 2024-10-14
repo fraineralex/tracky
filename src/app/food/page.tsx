@@ -5,6 +5,11 @@ import { currentUser } from '@clerk/nextjs/server'
 import { NutritionMetrics, PublicMetadata } from '~/types'
 import { getUserNutritionMetrics } from '~/server/utils/nutrition'
 import { getAdjustedDay } from '~/lib/utils'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+	title: 'Food | Tracky'
+}
 
 export default async function FoodPage() {
 	const user = await currentUser()
