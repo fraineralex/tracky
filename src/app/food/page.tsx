@@ -8,7 +8,7 @@ import { getAdjustedDay } from '~/lib/utils'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-	title: 'Food | Tracky'
+	title: 'Food'
 }
 
 export default async function FoodPage() {
@@ -20,7 +20,7 @@ export default async function FoodPage() {
 	const todayNutrition = nutritionMeatrics[today] as NutritionMetrics
 
 	return (
-		<section className='container mx-auto px-0 lg:px-4 py-5 xl:ms-5'>
+		<section className='container mx-auto px-0 py-5 lg:px-4 xl:ms-5'>
 			<Header />
 			<NutritionCards nutrition={todayNutrition} />
 			<NutritionGraphic

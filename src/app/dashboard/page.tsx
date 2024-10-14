@@ -9,7 +9,7 @@ import { getUserNutritionMetrics } from '~/server/utils/nutrition'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-	title: 'Dashboard | Tracky'
+	title: 'Dashboard'
 }
 
 export default async function DashboardPage() {
