@@ -22,8 +22,8 @@ export default async function ExerciseDialog() {
 					<Dumbbell className='mr-2 h-4 w-4' /> Add Exercise
 				</Button>
 			</DialogTrigger>
-			<DialogContent className='max-w-lg sm:max-w-xl md:max-w-3xl'>
-				<DialogHeader className='px-5'>
+			<DialogContent className='max-w-[95%] md:max-w-3xl rounded-lg px-3 md:px-5'>
+				<DialogHeader className='md:px-5 text-start'>
 					<DialogTitle>Register Exercise</DialogTitle>
 				</DialogHeader>
 				<ExerciseCategories categories={categories} />

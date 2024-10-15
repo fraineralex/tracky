@@ -19,14 +19,14 @@ const Footer = ({
 				className
 			)}
 		>
-			<div className={cn('container flex items-center space-x-5')}>
-				<div className='group flex items-center space-x-2 hover:text-neutral-800 group-hover:scale-105 hover:dark:text-neutral-200'>
+			<div className={cn('container flex items-center justify-between')}>
+				<div className='group flex items-center space-x-2 backdrop-blur-md hover:text-neutral-800 group-hover:scale-105 hover:dark:text-neutral-200'>
 					<Heart
 						size={14}
 						className='text-green-600 group-hover:fill-green-600'
 					/>
 					<ExternalLink
-						href='https://create.t3.gg'
+						href='https://fraineralex.dev'
 						className='flex items-center space-x-1'
 					>
 						<p>Made by Frainer using</p>
@@ -35,7 +35,7 @@ const Footer = ({
 					</ExternalLink>
 				</div>
 				<div
-					className={`${showTwitter ? 'flex' : 'hidden'} group items-center space-x-2`}
+					className={`${showTwitter ? 'flex' : 'hidden'} group items-center space-x-2 hover:text-neutral-800 group-hover:scale-105 hover:dark:text-neutral-200`}
 				>
 					<XLogo className='h-3 w-3' />
 					<ExternalLink
@@ -43,7 +43,7 @@ const Footer = ({
 						className='flex items-center space-x-1'
 					>
 						<p className='hidden md:block'>Twitter</p>
-						<ArrowUpRight size={14} />
+						<ArrowUpRight size={14} className='group-hover:scale-125' />
 					</ExternalLink>
 				</div>
 			</div>

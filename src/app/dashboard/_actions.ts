@@ -13,7 +13,7 @@ import {
 } from '~/server/db/schema'
 import { createInsertSchema } from 'drizzle-zod'
 
-type NewConsumption = typeof consumption.$inferInsert
+export type NewConsumption = typeof consumption.$inferInsert
 
 const ConsumptionSchema = createInsertSchema(consumption, {
 	userId: z.string({ required_error: 'You must be logged in to consume food' }),

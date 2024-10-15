@@ -5,6 +5,12 @@ import { currentUser } from '@clerk/nextjs/server'
 import { NutritionMetrics, PublicMetadata } from '~/types'
 import { getUserNutritionMetrics } from '~/server/utils/nutrition'
 import { getAdjustedDay } from '~/lib/utils'
+import { Metadata } from 'next'
+import Footer from '~/components/layout/footer'
+
+export const metadata: Metadata = {
+	title: 'Food'
+}
 
 export default async function FoodPage() {
 	const user = await currentUser()
@@ -15,13 +21,16 @@ export default async function FoodPage() {
 	const todayNutrition = nutritionMeatrics[today] as NutritionMetrics
 
 	return (
-		<section className='container mx-auto px-0 lg:px-4 py-5 xl:ms-5'>
-			<Header />
-			<NutritionCards nutrition={todayNutrition} />
-			<NutritionGraphic
-				nutritionMeatrics={nutritionMeatrics}
-				weightsChanges={userMetadata.weights}
-			/>
-		</section>
+		<>
+			<section className='container mx-auto px-0 py-5 lg:px-4 xl:ms-5'>
+				<Header />
+				<NutritionCards nutrition={todayNutrition} />
+				<NutritionGraphic
+					nutritionMeatrics={nutritionMeatrics}
+					weightsChanges={userMetadata.weights}
+				/>
+			</section>
+			<Footer className='-left-4 bottom-0 hidden w-full py-3 backdrop-blur-none sm:fixed sm:block' />
+		</>
 	)
 }

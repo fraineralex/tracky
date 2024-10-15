@@ -11,9 +11,16 @@ import {
 import { columns } from './columns'
 import { db } from '~/server/db'
 import { food } from '~/server/db/schema'
+import { and, eq, isNull, or } from 'drizzle-orm'
+import { currentUser } from '@clerk/nextjs/server'
 
 export default async function FoodDialog() {
-	const foodData = await db.select().from(food)
+	const user = await currentUser()
+	if (!user) return null
+	const foodData = await db
+		.select()
+		.from(food)
+		.where(or(isNull(food.userId), eq(food.userId, user?.id)))
 
 	return (
 		<Dialog>
@@ -22,12 +29,14 @@ export default async function FoodDialog() {
 					<ClipboardList className='mr-2 h-4 w-4' /> Add Meal
 				</Button>
 			</DialogTrigger>
-			<DialogContent className='max-w-lg px-0 sm:max-w-xl md:max-w-3xl lg:max-w-5xl lg:px-5 xl:max-w-6xl'>
+			<DialogContent className='max-w-[95%] rounded-lg px-0 md:max-w-3xl lg:max-w-4xl lg:px-5 xl:max-w-6xl'>
 				<DialogHeader>
-					<DialogTitle className='ps-8 pt-2'>Add Meal to Diary</DialogTitle>
+					<DialogTitle className='ps-4 pt-2 text-start md:ps-8'>
+						Add Meal to Diary
+					</DialogTitle>
 				</DialogHeader>
 
-				<div className='container mx-auto'>
+				<div className='mx-auto px-2 md:container'>
 					<DataTable columns={columns} data={foodData} />
 				</div>
 			</DialogContent>

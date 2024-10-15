@@ -105,7 +105,7 @@ export const columns: ColumnDef<Food>[] = [
 					variant='ghost'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
-					Kilocalories
+					Calories
 					<ArrowUpDown className='ml-2 h-4 w-4' />
 				</Button>
 			)

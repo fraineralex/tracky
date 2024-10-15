@@ -42,7 +42,7 @@ export default function ExerciseCategories({
 	}
 
 	return (
-		<section className='sm:px-5'>
+		<section className='md:px-5'>
 			{selectedCategory && (
 				<Breadcrumb className='py-2'>
 					<BreadcrumbList>

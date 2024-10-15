@@ -136,7 +136,7 @@ export default function NutritionGraphic({
 	return (
 		<Tabs
 			defaultValue='weekly'
-			className='space-y-16 sm:space-y-12 md:space-y-8 lg:space-y-2'
+			className='space-y-16 sm:space-y-12 md:space-y-8 xl:space-y-2'
 		>
 			<TabsList className='flex w-fit flex-wrap justify-start bg-background lg:bg-primary/5'>
 				<TabsTrigger
@@ -161,13 +161,13 @@ export default function NutritionGraphic({
 					value='goalsToday'
 					className='flex-grow data-[state=active]:bg-muted sm:flex-grow-0'
 				>
-					Goal Completion (Today)
+					Goal (Today)
 				</TabsTrigger>
 				<TabsTrigger
 					value='goalsWeek'
 					className='flex-grow data-[state=active]:bg-muted sm:flex-grow-0'
 				>
-					Goal Completion (Week)
+					Goal (Week)
 				</TabsTrigger>
 			</TabsList>
 			<TabsContent value='weekly' className='mt-4 space-y-4'>

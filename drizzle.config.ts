@@ -1,5 +1,4 @@
 import { type Config } from 'drizzle-kit'
-
 import { env } from '~/env'
 
 export default {
@@ -8,5 +7,6 @@ export default {
 	dbCredentials: {
 		url: env.POSTGRES_URL
 	},
-	tablesFilter: ['tracky_*']
+	tablesFilter: ['tracky_*'],
+	out: './drizzle'
 } satisfies Config

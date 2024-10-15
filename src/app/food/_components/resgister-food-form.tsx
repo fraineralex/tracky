@@ -32,7 +32,7 @@ export function RegisterFoodForm() {
 			toast.success(state.message)
 			cancelBtnRef.current?.click()
 		}
-	}, [state.success])
+	}, [state])
 
 	return (
 		<>
