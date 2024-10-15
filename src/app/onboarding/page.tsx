@@ -11,11 +11,6 @@ import { useRef, useState } from 'react'
 import { ONBOARDING_SECTIONS } from '~/constants'
 import { Sex } from '~/types'
 import confetti from 'canvas-confetti'
-import { Metadata } from 'next'
-
-export const metadata: Metadata = {
-	title: 'Onboarding'
-}
 
 export default function OnboardingPage() {
 	const { user } = useUser()
@@ -62,7 +57,7 @@ export default function OnboardingPage() {
 	}
 
 	return (
-		<section className='flex h-screen w-full flex-col place-content-center place-items-center'>
+		<section className='flex min-h-screen w-full flex-col place-content-center place-items-center'>
 			<form ref={formRef} action={handleSubmit}>
 				<PersonalInfo
 					setShowSection={setShowSection}

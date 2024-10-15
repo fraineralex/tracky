@@ -13,6 +13,8 @@ quickly log meals and exercises. It helps users follow their fitness journey eve
 - `Clerk`
 - `Drizzle`
 - `Postgres`
+- `Framer Motion`
+- `shadcn/ui`
 
 ## 🛠️ Development Progress
 
@@ -46,8 +48,12 @@ To run the project in your local environment, follow these steps:
 3. Fill in the values of the environment variables with your own data.
 4. Ensure you have [Node.js](https://nodejs.org/) installed on your machine.
 5. Navigate to the root directory of the project and install dependencies by running `bun install`.
-6. Once the dependencies are installed, start the project by running `bun dev`.
-7. You can access the app at: [http://localhost:3000](http://localhost:3000).
+6. Prepare the database by running the following commands:
+   - `bun db:generate`
+   - `bun db:push`
+   - `bun db:seed`
+7. Once the dependencies are installed, start the project by running `bun dev`.
+8. You can access the app at: [http://localhost:3000](http://localhost:3000).
 
 That's it! Your project should now be up and running locally.
 

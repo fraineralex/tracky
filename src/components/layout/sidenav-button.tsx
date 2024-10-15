@@ -36,7 +36,7 @@ export default function SidenavButton({
 				{!enabled && (
 					<Badge
 						variant='secondary'
-						className='hidden md:iniline bg-inherit text-[10px] font-light'
+						className='hidden md:inline bg-inherit text-[10px] font-light'
 					>
 						Soon
 					</Badge>
