@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 			'Fitness tracking web app with AI-powered features to quickly log meals and exercises,',
 		images: [
 			{
-				url: '/og.png',
+				url: '/og.jpg',
 				width: 1920,
 				height: 675
 			}
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
 			'Fitness tracking web app with AI-powered features to quickly log meals and exercises,',
 		images: [
 			{
-				url: '/og.png',
+				url: '/og.jpg',
 				width: 1920,
 				height: 675
 			}

@@ -12,9 +12,9 @@ export default function RootLayout({
 }: {
 	children: React.ReactNode
 }) {
-	/* if (auth().sessionClaims?.metadata?.onboardingCompleted === true) {
+	if (auth().sessionClaims?.metadata?.onboardingCompleted === true) {
 		redirect('/dashboard')
-	} */
+	}
 
 	return (
 		<>

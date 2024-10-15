@@ -79,7 +79,7 @@ export default function HomePage() {
 				<div className='hidden flex-col place-content-center lg:flex'>
 					<figure className='z-10 max-w-96 items-center p-3 pb-0 md:p-0 lg:max-w-128'>
 						<Image
-							src='/home/banner.png'
+							src='/home/banner.webp'
 							alt='banner image'
 							height={534}
 							width={845}
