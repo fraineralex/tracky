@@ -3,14 +3,16 @@ import { getPercentage, round } from '~/lib/utils'
 import { NutritionMetrics } from '~/types'
 
 export function NutritionCard({
-	nutrient
+	nutrient,
+	name
 }: {
 	nutrient: NutritionMetrics[keyof NutritionMetrics]
+	name: string
 }) {
 	return (
-		<Card className='dark:bg-slate-800/50'>
+		<Card className='transition-shadow hover:shadow-lg dark:bg-slate-800/50'>
 			<CardHeader className='pb-2'>
-				<CardTitle className='text-sm font-medium'>Calories</CardTitle>
+				<CardTitle className='text-sm font-medium capitalize'>{name}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div className='text-2xl font-bold'>
