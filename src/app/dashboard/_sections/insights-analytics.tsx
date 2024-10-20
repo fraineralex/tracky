@@ -1,7 +1,6 @@
 import { Circle, Square } from 'lucide-react'
 import { Progress } from '~/components/ui/progress'
-import InsightsCard from '../_components/insights-card'
-import { GOAL_FACTORS } from '~/constants'
+import InsightsCard from '../_components/analytics/insights-card'
 import { Goal, Weights } from '~/types'
 
 export default function InsightsAndAnalitics({

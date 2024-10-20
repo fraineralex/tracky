@@ -1,6 +1,6 @@
 import { Circle, Square } from 'lucide-react'
-import InsightsCard from '../_components/insights-card'
-import ResumeStreak from '../_components/resume-streak'
+import InsightsCard from '../_components/analytics/insights-card'
+import ResumeStreak from '../_components/analytics/resume-streak'
 import { PublicMetadata, Weights } from '~/types'
 import { calculateNutritionalNeeds } from '~/lib/utils'
 
@@ -32,13 +32,13 @@ export default async function DataAndHabits({
 		nutritionMeatrics.calories.needed - expenditure
 	)
 	return (
-		<section className='mx-auto mt-3 grid sm:max-w-[460px] grid-cols-2 gap-3 md:flex md:max-w-full md:gap-0 md:space-x-2 lg:justify-between'>
+		<section className='mx-auto mt-3 grid grid-cols-2 gap-3 sm:max-w-[460px] md:flex md:max-w-full md:gap-0 md:space-x-2 lg:justify-between'>
 			<InsightsCard
 				title='Nutrition'
 				dateRange={dateRange}
 				value={caloriesChanges}
 				valueUnit='kcal'
-				className='w-full sm:w-56 rounded-lg border p-4 pb-1 dark:bg-slate-800/50 md:w-full md:max-w-xs'
+				className='w-full rounded-lg border p-4 pb-1 dark:bg-slate-800/50 sm:w-56 md:w-full md:max-w-xs'
 			>
 				<div className='mb-3 mt-3 flex place-content-end'>
 					<Square className='h-4 w-4 text-yellow-400' strokeWidth={4} />
@@ -50,7 +50,7 @@ export default async function DataAndHabits({
 				dateRange={dateRange}
 				value={currentWeight}
 				valueUnit={userMetadata.weightUnit}
-				className='w-full sm:w-56 rounded-lg border p-4 pb-1 dark:bg-slate-800/50 md:w-full md:max-w-xs'
+				className='w-full rounded-lg border p-4 pb-1 dark:bg-slate-800/50 sm:w-56 md:w-full md:max-w-xs'
 			>
 				<div className='mb-3 mt-3 flex place-content-end'>
 					<Circle className='h-4 w-4 text-green-400' strokeWidth={4} />
