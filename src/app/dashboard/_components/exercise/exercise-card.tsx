@@ -1,4 +1,3 @@
-import { ComponentType } from 'react'
 import { Card, CardContent, CardTitle } from '~/components/ui/card'
 
 export function ExerciseCard({

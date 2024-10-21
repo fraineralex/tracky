@@ -50,3 +50,10 @@ export interface WeeklyNutrition {
 	fats: number
 	calories: number
 }
+
+export interface ExerciseMetricsData {
+	totalEnergyBurned: number 
+	totalDuration: number 
+	exercisesThisWeek: number 
+	avgDuration: number 
+}
