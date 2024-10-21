@@ -1,3 +1,4 @@
+import { CakeSlice, EggFried, Flame, Ham } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { getPercentage, round } from '~/lib/utils'
 import { NutritionMetrics } from '~/types'
@@ -9,10 +10,20 @@ export function NutritionCard({
 	nutrient: NutritionMetrics[keyof NutritionMetrics]
 	name: string
 }) {
+	const nutritionIcons: { [nutrient: string]: typeof Flame } = {
+		calories: Flame,
+		protein: Ham,
+		fats: EggFried,
+		carbs: CakeSlice
+	}
+
+	const Icon = nutritionIcons[name] as typeof Flame
+
 	return (
 		<Card className='transition-shadow hover:shadow-lg dark:bg-slate-800/50'>
-			<CardHeader className='pb-2'>
+			<CardHeader className='flex flex-row items-center justify-between pb-2'>
 				<CardTitle className='text-sm font-medium capitalize'>{name}</CardTitle>
+				<Icon className='h-4 w-4 text-muted-foreground' />
 			</CardHeader>
 			<CardContent>
 				<div className='text-2xl font-bold'>
