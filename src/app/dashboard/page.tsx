@@ -20,7 +20,7 @@ export default async function DashboardPage() {
 	const nutritionMeatrics = await getUserNutritionMetrics(user.id, userMetadata)
 	const expenditure = nutritionMeatrics[0]?.calories.needed ?? 0
 
-	const todayLong = new Date().toLocaleDateString('en-US', {
+	const today = new Date().toLocaleDateString('en-US', {
 		weekday: 'long',
 		month: 'long',
 		day: 'numeric'
@@ -30,8 +30,8 @@ export default async function DashboardPage() {
 		<>
 			<section className='h-full w-full overflow-auto pt-5 sm:mb-0 sm:pb-5 xl:ms-5 xl:px-5'>
 				<div className='flex flex-wrap-reverse gap-x-2 gap-y-2 pb-2 md:justify-between'>
-					<h1 className='order-last h-full w-full text-center align-bottom text-xl font-semibold uppercase md:order-first md:h-fit md:w-fit'>
-						{todayLong}
+					<h1 className='order-last h-full w-full text-center align-bottom text-2xl font-bold uppercase md:order-first md:h-fit md:w-fit'>
+						{today}
 					</h1>
 
 					<header className='contents md:float-end md:flex md:space-x-5'>
@@ -45,7 +45,7 @@ export default async function DashboardPage() {
 				</div>
 				<DataAndHabits userMetadata={userMetadata} expenditure={expenditure} />
 			</section>
-			<Footer className='hidden sm:fixed bottom-0 -left-4 sm:block w-full py-3 backdrop-blur-none' />
+			<Footer className='-left-4 bottom-0 hidden w-full py-3 backdrop-blur-none sm:fixed sm:block' />
 		</>
 	)
 }

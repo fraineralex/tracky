@@ -12,7 +12,7 @@ export function ExerciseCard({
 }) {
 	return (
 		<Card
-			className='flex h-[120px] w-[120px] sm:w-36 sm:h-w-36 cursor-pointer flex-col place-items-center bg-primary/10 hover:bg-primary/15 md:h-40 md:w-40'
+			className='flex h-[100px] w-[100px] sm:w-36 sm:h-36 cursor-pointer flex-col place-items-center bg-primary/10 hover:bg-primary/15 md:h-40 md:w-40'
 			onClick={handleCategorySelect}
 		>
 			<CardContent className='my-auto md:pt-5 pt-3'>
