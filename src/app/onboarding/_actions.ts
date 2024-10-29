@@ -40,7 +40,7 @@ const OnboardingSchema = z.object({
 })
 
 export const completeOnboarding = async (formData: FormData) => {
-	const { userId } = auth()
+	const { userId } = await auth()
 
 	if (!userId)
 		return {
@@ -93,7 +93,7 @@ export const completeOnboarding = async (formData: FormData) => {
 			born: validatedFields.data.born.toISOString().split('T')[0] as string,
 			updatedAt: new Date().toISOString().split('T')[0] as string
 		}
-		await clerkClient().users.updateUser(userId, { publicMetadata })
+		await (await clerkClient()).users.updateUser(userId, { publicMetadata })
 
 		return { message: 'Onboarding completed succesfuly', success: true }
 	} catch (err) {
