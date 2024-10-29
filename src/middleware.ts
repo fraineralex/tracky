@@ -4,8 +4,8 @@ import { NextResponse } from 'next/server'
 const isPublicRoute = createRouteMatcher(['/', '/sign-in(.*)', '/sign-up(.*)'])
 const isOnboardingRoute = createRouteMatcher(['/onboarding'])
 
-export default clerkMiddleware((auth, req) => {
-	const { userId, sessionClaims, redirectToSignIn } = auth()
+export default clerkMiddleware(async (auth, req) => {
+	const { userId, sessionClaims, redirectToSignIn } = await auth()
 
 	if (userId && isOnboardingRoute(req)) return NextResponse.next()
 
