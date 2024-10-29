@@ -59,7 +59,7 @@ export const registerFood = async (
 	prevState: FoodState | undefined,
 	formData: FormData
 ) => {
-	const { userId } = auth()
+	const { userId } = await auth()
 
 	if (!userId) {
 		return {
@@ -116,7 +116,7 @@ const ConsumptionSchema = z.object({
 })
 
 export async function logMealAI(messages: Message[]): Promise<Message[]> {
-	const { userId } = auth()
+	const { userId } = await auth()
 
 	if (!userId) {
 		return [

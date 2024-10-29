@@ -44,7 +44,7 @@ export const addConsumption = async (
 	prevState: ConsumptionState | undefined,
 	formData: FormData
 ) => {
-	const { userId } = auth()
+	const { userId } = await auth()
 
 	if (!userId)
 		return { message: 'You must be logged in to consume food', success: false }
@@ -109,7 +109,7 @@ export const addExercise = async (
 	prevState: ExerciseState,
 	formData: FormData
 ) => {
-	const { userId } = auth()
+	const { userId } = await auth()
 
 	if (!userId)
 		return {
