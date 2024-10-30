@@ -41,7 +41,7 @@ export async function getUserNutritionMetrics(
 		const fatsConsumed = (Number(portion) / Number(servingSize)) * Number(fat)
 
 		const day = getAdjustedDay(createdAt)
-		let nutrition = nutritionMeatricsPerDay[day] ?? structuredClone(nutritionMeatrics)
+		const nutrition = nutritionMeatricsPerDay[day] ?? structuredClone(nutritionMeatrics)
 
 		nutrition.calories.consumed += calories
 		nutrition.protein.consumed += proteinConsumed

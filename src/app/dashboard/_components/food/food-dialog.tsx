@@ -1,4 +1,4 @@
-import { ClipboardList, Plus } from 'lucide-react'
+import { ClipboardList } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import { DataTable } from '~/components/ui/data-table'
 import {
@@ -11,7 +11,7 @@ import {
 import { columns } from './columns'
 import { db } from '~/server/db'
 import { food } from '~/server/db/schema'
-import { and, eq, isNull, or } from 'drizzle-orm'
+import { eq, isNull, or } from 'drizzle-orm'
 import { currentUser } from '@clerk/nextjs/server'
 
 export default async function FoodDialog() {

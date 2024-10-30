@@ -1,7 +1,8 @@
 import type { Config } from 'tailwindcss'
 import { fontFamily } from 'tailwindcss/defaultTheme'
+import tailwindcssAnimate from 'tailwindcss-animate'
 
-const config = {
+const config: Config = {
 	darkMode: ['class'],
 	content: [
 		'./pages/**/*.{ts,tsx}',
@@ -105,11 +106,11 @@ const config = {
 			},
 			spacing: {
 				'128': '32rem',
-				'144': '36rem',
+				'144': '36rem'
 			}
 		}
 	},
-	plugins: [require('tailwindcss-animate')]
-} satisfies Config
+	plugins: [tailwindcssAnimate]
+}
 
 export default config

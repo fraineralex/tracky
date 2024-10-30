@@ -73,8 +73,9 @@ export function FoodDrawer({
 			toast.error('The portion exceeds the limit of 10,000 grams')
 		}
 	}
-
-	if (state.success) handleDrawerClose()
+	React.useEffect(() => {
+		if (state.success) handleDrawerClose()
+	}, [state, handleDrawerClose])
 
 	return (
 		<DrawerContent>
