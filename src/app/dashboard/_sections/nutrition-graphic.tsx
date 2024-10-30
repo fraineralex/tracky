@@ -16,7 +16,6 @@ export default function NutritionGraphic({
 
 	const dayOfWeek = getAdjustedDay(new Date())
 	const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
-	const colors = ['#60a5fa', '#ffffff', '#facc15', '#4ade80']
 	const { calories, protein, fats, carbs } = nutrition[
 		dayOfWeek as keyof NutritionMetricsPerDay
 	] as NutritionMetrics

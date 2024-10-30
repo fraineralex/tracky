@@ -87,32 +87,32 @@ export default function RootLayout({
 	children: React.ReactNode
 }) {
 	return (
-		<ClerkProvider afterSignOutUrl='/'>
-			<html lang='en' suppressHydrationWarning>
-				<body
-					className={cn(
-						'mx-auto min-h-screen bg-background pb-5 font-sans antialiased md:max-w-screen-xl',
-						fontSans.variable,
-						fontSerif.variable
-					)}
+		<html lang='en' suppressHydrationWarning>
+			<body
+				className={cn(
+					'mx-auto min-h-screen bg-background pb-5 font-sans antialiased md:max-w-screen-xl',
+					fontSans.variable,
+					fontSerif.variable
+				)}
+			>
+				<ThemeProvider
+					attribute='class'
+					defaultTheme='system'
+					enableSystem
+					disableTransitionOnChange
 				>
-					<ThemeProvider
-						attribute='class'
-						defaultTheme='system'
-						enableSystem
-						disableTransitionOnChange
-					>
-						<div className='min-h-screen overflow-y-auto md:grid md:grid-rows-[auto,1fr]'>
+					<div className='min-h-screen overflow-y-auto md:grid md:grid-rows-[auto,1fr]'>
+						<ClerkProvider afterSignOutUrl='/' dynamic>
 							<Header />
 							<main className='px-5 md:flex md:px-10'>
 								<SideNav />
 								{children}
 							</main>
-						</div>
-						<Toaster richColors />
-					</ThemeProvider>
-				</body>
-			</html>
-		</ClerkProvider>
+						</ClerkProvider>
+					</div>
+					<Toaster richColors />
+				</ThemeProvider>
+			</body>
+		</html>
 	)
 }

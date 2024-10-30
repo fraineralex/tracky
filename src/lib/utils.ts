@@ -157,3 +157,9 @@ export const getMacroPercentage = (
 	if (caloriesConsumed === 0) return 0
 	return round((macroConsumed / caloriesConsumed) * 100)
 }
+
+export function getDuration(minutes: number) {
+	const hours = minutes >= 60 ? `${Math.floor(minutes / 60)}h` : ''
+	const mins = minutes % 60 !== 0 ? `${minutes % 60}` : ''
+	return `${hours} ${mins}`
+}

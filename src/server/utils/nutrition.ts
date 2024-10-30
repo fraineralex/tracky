@@ -14,7 +14,15 @@ export async function getUserNutritionMetrics(
 	const dayOfWeek = new Date()
 	dayOfWeek.setDate(dayOfWeek.getDate() - getAdjustedDay(dayOfWeek) - 1)
 	const result = await db
-		.select()
+		.select({
+			portion: consumption.portion,
+			createdAt: consumption.createdAt,
+			servingSize: food.servingSize,
+			kcal: food.kcal,
+			protein: food.protein,
+			carbs: food.carbs,
+			fat: food.fat
+		})
 		.from(consumption)
 		.innerJoin(food, eq(consumption.foodId, food.id))
 		.where(
@@ -26,27 +34,19 @@ export async function getUserNutritionMetrics(
 		nutritionMeatricsPerDay[index] = structuredClone(nutritionMeatrics)
 	})
 
-	result.forEach(({ consumption, food }) => {
-		const calories =
-			(Number(consumption.portion) / Number(food.servingSize)) *
-			Number(food.kcal)
-		const protein =
-			(Number(consumption.portion) / Number(food.servingSize)) *
-			Number(food.protein)
-		const carbs =
-			(Number(consumption.portion) / Number(food.servingSize)) *
-			Number(food.carbs)
-		const fats =
-			(Number(consumption.portion) / Number(food.servingSize)) *
-			Number(food.fat)
+	result.forEach(({ portion, createdAt, servingSize, kcal, protein, carbs, fat }) => {
+		const calories = (Number(portion) / Number(servingSize)) * Number(kcal)
+		const proteinConsumed = (Number(portion) / Number(servingSize)) * Number(protein)
+		const carbsConsumed = (Number(portion) / Number(servingSize)) * Number(carbs)
+		const fatsConsumed = (Number(portion) / Number(servingSize)) * Number(fat)
 
-		const day = getAdjustedDay(consumption.createdAt)
-		let nutrition = nutritionMeatricsPerDay[day] ?? structuredClone(nutritionMeatrics)
+		const day = getAdjustedDay(createdAt)
+		const nutrition = nutritionMeatricsPerDay[day] ?? structuredClone(nutritionMeatrics)
 
 		nutrition.calories.consumed += calories
-		nutrition.protein.consumed += protein
-		nutrition.carbs.consumed += carbs
-		nutrition.fats.consumed += fats
+		nutrition.protein.consumed += proteinConsumed
+		nutrition.carbs.consumed += carbsConsumed
+		nutrition.fats.consumed += fatsConsumed
 	})
 
 	return nutritionMeatricsPerDay
