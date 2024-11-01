@@ -28,144 +28,12 @@ import {
 	ChartTooltip,
 	ChartTooltipContent
 } from '~/components/ui/chart'
-
-const weeklyEnergyBurned = [
-	{ name: 'Mon', calories: 350 },
-	{ name: 'Tue', calories: 280 },
-	{ name: 'Wed', calories: 420 },
-	{ name: 'Thu', calories: 380 },
-	{ name: 'Fri', calories: 400 },
-	{ name: 'Sat', calories: 500 },
-	{ name: 'Sun', calories: 300 }
-]
+import { ExerciseGraphicsData } from '~/types'
 
 const weeklyEnergyConfig: ChartConfig = {
 	calories: {
 		label: 'Calories Burned',
 		color: 'hsl(var(--chart-1))'
-	}
-}
-
-const exerciseFrequency = [
-	{
-		date: '2023-10-01',
-		gym: 60,
-		walk: 30,
-		run: 0,
-		gymCal: 300,
-		walkCal: 100,
-		runCal: 0,
-		gymIntensity: 'High',
-		walkIntensity: 'Low',
-		runIntensity: 'N/A',
-		gymCategory: 'Strength',
-		walkCategory: 'Cardio',
-		runCategory: 'N/A'
-	},
-	{
-		date: '2023-10-02',
-		gym: 0,
-		walk: 45,
-		run: 30,
-		gymCal: 0,
-		walkCal: 150,
-		runCal: 300,
-		gymIntensity: 'N/A',
-		walkIntensity: 'Medium',
-		runIntensity: 'High',
-		gymCategory: 'N/A',
-		walkCategory: 'Cardio',
-		runCategory: 'Cardio'
-	},
-	{
-		date: '2023-10-03',
-		gym: 75,
-		walk: 0,
-		run: 0,
-		gymCal: 400,
-		walkCal: 0,
-		runCal: 0,
-		gymIntensity: 'High',
-		walkIntensity: 'N/A',
-		runIntensity: 'N/A',
-		gymCategory: 'Strength',
-		walkCategory: 'N/A',
-		runCategory: 'N/A'
-	},
-	{
-		date: '2023-10-04',
-		gym: 45,
-		walk: 60,
-		run: 0,
-		gymCal: 250,
-		walkCal: 200,
-		runCal: 0,
-		gymIntensity: 'Medium',
-		walkIntensity: 'Medium',
-		runIntensity: 'N/A',
-		gymCategory: 'Strength',
-		walkCategory: 'Cardio',
-		runCategory: 'N/A'
-	},
-	{
-		date: '2023-10-05',
-		gym: 0,
-		walk: 30,
-		run: 45,
-		gymCal: 0,
-		walkCal: 100,
-		runCal: 450,
-		gymIntensity: 'N/A',
-		walkIntensity: 'Low',
-		runIntensity: 'High',
-		gymCategory: 'N/A',
-		walkCategory: 'Cardio',
-		runCategory: 'Cardio'
-	},
-	{
-		date: '2023-10-06',
-		gym: 90,
-		walk: 0,
-		run: 0,
-		gymCal: 500,
-		walkCal: 0,
-		runCal: 0,
-		gymIntensity: 'High',
-		walkIntensity: 'N/A',
-		runIntensity: 'N/A',
-		gymCategory: 'Strength',
-		walkCategory: 'N/A',
-		runCategory: 'N/A'
-	},
-	{
-		date: '2023-10-07',
-		gym: 0,
-		walk: 90,
-		run: 0,
-		gymCal: 0,
-		walkCal: 300,
-		runCal: 0,
-		gymIntensity: 'N/A',
-		walkIntensity: 'High',
-		runIntensity: 'N/A',
-		gymCategory: 'N/A',
-		walkCategory: 'Cardio',
-		runCategory: 'N/A'
-	}
-]
-
-const exerciseFrequencyConfig: ChartConfig = {
-	gym: {
-		label: 'Gym',
-		color: 'hsl(var(--chart-1))'
-	},
-	walk: {
-		label: 'Walk',
-		color: 'hsl(var(--chart-2))'
-	},
-	run: {
-		label: 'Run',
-		color: 'hsl(var(--chart-3))'
 	}
 }
 
@@ -194,7 +62,26 @@ const monthlyProgressConfig: ChartConfig = {
 	}
 }
 
-export function ExerciseGraphics() {
+export function ExerciseGraphics({
+	exerciseData
+}: {
+	exerciseData: ExerciseGraphicsData
+}) {
+	const exerciseCategories = Object.keys(
+		exerciseData.exerciseFrequency[0]!
+	).filter(key => key !== 'date')
+	const exerciseFrequencyConfig = [...exerciseCategories].reduce(
+		(acc, key, index) => {
+			acc[key] = {
+				label: key.at(0)?.toUpperCase() + key.slice(1),
+				color: `hsl(var(--chart-${index + 1}))`
+			}
+			return acc
+		},
+		{} as ChartConfig
+	)
+
+	console.log(exerciseData.exerciseFrequency)
 	return (
 		<Tabs defaultValue='energy' className='space-y-8 sm:space-y-4 md:space-y-2'>
 			<TabsList className='flex w-fit flex-wrap justify-start bg-background lg:bg-primary/5'>
@@ -232,10 +119,10 @@ export function ExerciseGraphics() {
 					<CardContent>
 						<ChartContainer config={weeklyEnergyConfig}>
 							<ResponsiveContainer width='100%' height={350}>
-								<BarChart data={weeklyEnergyBurned}>
-									<XAxis dataKey='name' />
+								<BarChart data={exerciseData.weeklyEnergyBurned}>
+									<XAxis dataKey='day' />
 									<YAxis />
-									<Bar dataKey='calories' fill='var(--color-calories)' />
+									<Bar dataKey='value' fill='var(--color-calories)' />
 									<ChartTooltip
 										cursor={false}
 										content={<ChartTooltipContent />}
@@ -267,7 +154,7 @@ export function ExerciseGraphics() {
 						<ChartContainer config={exerciseFrequencyConfig}>
 							<AreaChart
 								accessibilityLayer
-								data={exerciseFrequency}
+								data={exerciseData.exerciseFrequency}
 								margin={{
 									left: 12,
 									right: 12,
@@ -292,7 +179,7 @@ export function ExerciseGraphics() {
 									tickLine={false}
 									axisLine={false}
 									tickMargin={8}
-									tickFormatter={value => `${value}min`}
+									tickFormatter={value => `${value} min`}
 								/>
 								<ChartTooltip
 									cursor={false}
@@ -300,67 +187,39 @@ export function ExerciseGraphics() {
 								/>
 
 								<defs>
-									<linearGradient id='fillGym' x1='0' y1='0' x2='0' y2='1'>
-										<stop
-											offset='5%'
-											stopColor='var(--color-gym)'
-											stopOpacity={0.8}
-										/>
-										<stop
-											offset='95%'
-											stopColor='var(--color-gym)'
-											stopOpacity={0.1}
-										/>
-									</linearGradient>
-									<linearGradient id='fillWalk' x1='0' y1='0' x2='0' y2='1'>
-										<stop
-											offset='5%'
-											stopColor='var(--color-walk)'
-											stopOpacity={0.8}
-										/>
-										<stop
-											offset='95%'
-											stopColor='var(--color-walk)'
-											stopOpacity={0.1}
-										/>
-									</linearGradient>
-									<linearGradient id='fillRun' x1='0' y1='0' x2='0' y2='1'>
-										<stop
-											offset='5%'
-											stopColor='var(--color-run)'
-											stopOpacity={0.8}
-										/>
-										<stop
-											offset='95%'
-											stopColor='var(--color-run)'
-											stopOpacity={0.1}
-										/>
-									</linearGradient>
+									{exerciseCategories.map(category => (
+										<linearGradient
+											id='fillGym'
+											x1='0'
+											y1='0'
+											x2='0'
+											y2='1'
+											key={category}
+										>
+											<stop
+												offset='5%'
+												stopColor={`var(--color-${category})`}
+												stopOpacity={0.8}
+											/>
+											<stop
+												offset='95%'
+												stopColor={`var(--color-${category})`}
+												stopOpacity={0.1}
+											/>
+										</linearGradient>
+									))}
 								</defs>
-								<Area
-									dataKey='walk'
-									type='monotone'
-									fill='url(#fillWalk)'
-									fillOpacity={0.4}
-									stroke='var(--color-walk)'
-									stackId='1'
-								/>
-								<Area
-									dataKey='gym'
-									type='monotone'
-									fill='url(#fillGym)'
-									fillOpacity={0.4}
-									stroke='var(--color-gym)'
-									stackId='1'
-								/>
-								<Area
-									dataKey='run'
-									type='monotone'
-									fill='url(#fillRun)'
-									fillOpacity={0.4}
-									stroke='var(--color-run)'
-									stackId='1'
-								/>
+								{exerciseCategories.map(category => (
+									<Area
+										key={category}
+										dataKey={category}
+										type='monotone'
+										fill={`url(#fill-${category})`}
+										fillOpacity={0.4}
+										stroke={`var(--color-${category})`}
+										stackId='1'
+									/>
+								))}
 							</AreaChart>
 						</ChartContainer>
 					</CardContent>
