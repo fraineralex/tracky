@@ -3,10 +3,10 @@ import { Header } from '~/app/exercise/_sections/header'
 import { ExerciseGraphics } from '~/app/exercise/_sections/exercise-graphics'
 import { db } from '~/server/db'
 import { exercise, exerciseCategory } from '~/server/db/schema'
-import { eq } from 'drizzle-orm'
+import { asc, eq } from 'drizzle-orm'
 import { currentUser } from '@clerk/nextjs/server'
-import { getAdjustedDay } from '~/lib/utils'
-import { ExerciseMetricsData } from '~/types'
+import { daysOfWeek, getAdjustedDay } from '~/lib/utils'
+import { ExerciseGraphicsData, ExerciseMetricsData } from '~/types'
 
 export default async function ExercisePage() {
 	const user = await currentUser()
@@ -23,6 +23,7 @@ export default async function ExercisePage() {
 		.from(exercise)
 		.innerJoin(exerciseCategory, eq(exercise.categoryId, exerciseCategory.id))
 		.where(eq(exercise.userId, user.id))
+		.orderBy(asc(exercise.createdAt))
 
 	const exerciseMetrics: ExerciseMetricsData = {
 		totalEnergyBurned: 0,
@@ -31,14 +32,83 @@ export default async function ExercisePage() {
 		avgDuration: 0
 	}
 
+	const exerciseGraphicsData: ExerciseGraphicsData = {
+		weeklyEnergyBurned: daysOfWeek
+			.filter((_, index) => index <= getAdjustedDay(new Date()))
+			.map(day => ({
+				day,
+				value: 0
+			})),
+		exerciseFrequency: []
+	}
+
 	const dayOfWeek = new Date()
 	dayOfWeek.setDate(dayOfWeek.getDate() - getAdjustedDay(dayOfWeek) - 1)
 
 	for (const exercise of exercises) {
 		exerciseMetrics.totalEnergyBurned += Number(exercise.burned)
 		exerciseMetrics.totalDuration += Number(exercise.duration)
-		if (new Date(exercise.createdAt) >= dayOfWeek)
-			exerciseMetrics.exercisesThisWeek++
+
+		if (exercise.createdAt >= dayOfWeek) exerciseMetrics.exercisesThisWeek++
+
+		const exerciseDay = getAdjustedDay(exercise.createdAt)
+		if (exerciseGraphicsData.weeklyEnergyBurned[exerciseDay]) {
+			exerciseGraphicsData.weeklyEnergyBurned[exerciseDay].value += Number(
+				exercise.burned
+			)
+		} else {
+			exerciseGraphicsData.weeklyEnergyBurned[exerciseDay] = {
+				day: daysOfWeek[exerciseDay]!,
+				value: Number(exercise.burned)
+			}
+		}
+
+		const formatedDate = exercise.createdAt.toLocaleDateString('en-US', {
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric'
+		})
+
+		let exerciseDayObj = exerciseGraphicsData.exerciseFrequency.find(
+			exerciseDay => exerciseDay.date === formatedDate
+		)
+
+		if (exerciseDayObj) {
+			if (!exerciseDayObj[exercise.name]) {
+				const updatedExerciseFrequency =
+					exerciseGraphicsData.exerciseFrequency.map(item => {
+						if (item.date === formatedDate) {
+							return {
+								...item,
+								[exercise.name]: exercise.duration
+							}
+						}
+
+						return {
+							...item,
+							[exercise.name]: 0
+						}
+					})
+
+				exerciseGraphicsData.exerciseFrequency = updatedExerciseFrequency
+			} else {
+				exerciseDayObj[exercise.name] =
+					exerciseDayObj[exercise.name] + exercise.duration
+
+				const index = exerciseGraphicsData.exerciseFrequency.findIndex(
+					value => value.date === exerciseDayObj?.date
+				)
+				exerciseGraphicsData.exerciseFrequency[index] = exerciseDayObj
+			}
+		}
+
+		if (!exerciseDayObj) {
+			exerciseDayObj = {
+				date: formatedDate,
+				[exercise.name]: exercise.duration
+			}
+			exerciseGraphicsData.exerciseFrequency.push(exerciseDayObj)
+		}
 	}
 
 	exerciseMetrics.avgDuration = exerciseMetrics.totalDuration / exercises.length
@@ -47,7 +117,7 @@ export default async function ExercisePage() {
 		<section className='mx-auto min-h-screen w-full bg-background px-0 py-5 text-foreground lg:px-4 xl:ms-5'>
 			<Header />
 			<ExerciseMetrics metrics={exerciseMetrics} />
-			<ExerciseGraphics />
+			<ExerciseGraphics exerciseData={exerciseGraphicsData} />
 		</section>
 	)
 }
