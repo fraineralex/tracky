@@ -9,7 +9,7 @@ import {
 	CardFooter
 } from '~/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
-import { Utensils, Sun, Coffee, Moon, TrendingUp } from 'lucide-react'
+import { TrendingUp } from 'lucide-react'
 import {
 	Area,
 	AreaChart,
@@ -29,6 +29,7 @@ import {
 	ChartTooltipContent
 } from '~/components/ui/chart'
 import { ExerciseGraphicsData } from '~/types'
+import { DAILY_MEAL_ICONS } from '~/constants'
 
 const weeklyEnergyConfig: ChartConfig = {
 	calories: {
@@ -36,13 +37,6 @@ const weeklyEnergyConfig: ChartConfig = {
 		color: 'hsl(var(--chart-1))'
 	}
 }
-
-const timeCategories = [
-	{ category: 'Morning', sessions: 8, icon: Sun },
-	{ category: 'Lunch', sessions: 5, icon: Utensils },
-	{ category: 'Snack', sessions: 3, icon: Coffee },
-	{ category: 'Dinner', sessions: 7, icon: Moon }
-]
 
 const monthlyProgress = [
 	{ week: 'Week 1', energyBurned: 1500, time: 240 },
@@ -244,21 +238,24 @@ export function ExerciseGraphics({
 					</CardHeader>
 					<CardContent>
 						<div className='grid grid-cols-2 gap-4 md:grid-cols-4'>
-							{timeCategories.map(category => (
-								<Card
-									key={category.category}
-									className='bg-slate-200 transition-shadow hover:shadow-md dark:bg-slate-500'
-								>
-									<CardContent className='flex flex-col items-center justify-center p-6'>
-										<category.icon className='mb-2 h-8 w-8 text-primary' />
-										<h3 className='text-lg font-semibold'>
-											{category.category}
-										</h3>
-										<p className='text-2xl font-bold'>{category.sessions}</p>
-										<p className='text-sm text-muted-foreground'>sessions</p>
-									</CardContent>
-								</Card>
-							))}
+							{exerciseData.timeCategories.map(category => {
+								const Icon = DAILY_MEAL_ICONS[category.name]
+								return (
+									<Card
+										key={category.name}
+										className='bg-slate-200 transition-shadow hover:shadow-md dark:bg-slate-500'
+									>
+										<CardContent className='flex flex-col items-center justify-center p-6'>
+											<Icon className='mb-2 h-8 w-8 text-primary' />
+											<h3 className='text-lg font-semibold'>
+												{category.name.at(0)?.toUpperCase() + category.name.slice(1)}
+											</h3>
+											<p className='text-2xl font-bold'>{category.sessions}</p>
+											<p className='text-sm text-muted-foreground'>sessions</p>
+										</CardContent>
+									</Card>
+								)
+							})}
 						</div>
 					</CardContent>
 					<CardFooter className='flex-col items-start gap-2 text-sm'>

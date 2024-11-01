@@ -1,5 +1,5 @@
 import { daysOfWeek } from '~/lib/utils'
-import { exerciseCategory } from '~/server/db/schema'
+import { diaryGroupEnum, exerciseCategory } from '~/server/db/schema'
 
 export type Sex = 'male' | 'female'
 export type Goal = 'gain' | 'maintain' | 'lose'
@@ -63,7 +63,14 @@ export type ExerciseDay = {
 	date: string
 	[key: string]: string | number
 }
+
+export interface TimeCategory {
+	name: (typeof diaryGroupEnum.enumValues)[number]
+	sessions: number
+}
+
 export interface ExerciseGraphicsData {
 	weeklyEnergyBurned: Array<{ day: (typeof daysOfWeek)[number]; value: number }>
 	exerciseFrequency: ExerciseDay[]
+	timeCategories: TimeCategory[]
 }

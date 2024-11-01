@@ -1,3 +1,4 @@
+import { CircleDot, Coffee, Moon, Sun, Utensils } from 'lucide-react'
 import {
 	Cleaner,
 	Contruction,
@@ -79,4 +80,12 @@ export const ACTIVITY_FACTORS = {
 	sedentary: 1.2,
 	moderate: 1.55,
 	active: 1.9
+}
+
+export const DAILY_MEAL_ICONS = {
+	breakfast: Sun,
+	lunch: Utensils,
+	snack: Coffee,
+	dinner: Moon,
+	uncategorized: CircleDot
 }

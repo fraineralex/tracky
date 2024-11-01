@@ -2,7 +2,7 @@ import ExerciseMetrics from '~/app/exercise/_sections/exercise-metrics'
 import { Header } from '~/app/exercise/_sections/header'
 import { ExerciseGraphics } from '~/app/exercise/_sections/exercise-graphics'
 import { db } from '~/server/db'
-import { exercise, exerciseCategory } from '~/server/db/schema'
+import { diaryGroupEnum, exercise, exerciseCategory } from '~/server/db/schema'
 import { asc, eq } from 'drizzle-orm'
 import { currentUser } from '@clerk/nextjs/server'
 import { daysOfWeek, getAdjustedDay } from '~/lib/utils'
@@ -39,7 +39,13 @@ export default async function ExercisePage() {
 				day,
 				value: 0
 			})),
-		exerciseFrequency: []
+		exerciseFrequency: [],
+		timeCategories: diaryGroupEnum.enumValues
+			.filter(name => name !== 'uncategorized')
+			.map(name => ({
+				name,
+				sessions: 0
+			}))
 	}
 
 	const dayOfWeek = new Date()
@@ -94,7 +100,9 @@ export default async function ExercisePage() {
 					})
 
 				exerciseGraphicsData.exerciseFrequency = updatedExerciseFrequency
-			} else {
+			}
+
+			if (exerciseDayObj[exercise.name]) {
 				exerciseDayObj[exercise.name] =
 					exerciseDayObj[exercise.name] + exercise.duration
 
@@ -112,15 +120,29 @@ export default async function ExercisePage() {
 			}
 			exerciseGraphicsData.exerciseFrequency.push(exerciseDayObj)
 		}
+
+		const timeCategory = exerciseGraphicsData.timeCategories.find(
+			category => category.name === exercise.group
+		)
+
+		if (timeCategory) {
+			timeCategory.sessions++
+			const index = exerciseGraphicsData.timeCategories.findIndex(
+				value => value.name === timeCategory?.name
+			)
+
+			exerciseGraphicsData.timeCategories[index] = timeCategory
+		}
+
+		exerciseMetrics.avgDuration =
+			exerciseMetrics.totalDuration / exercises.length
+
+		return (
+			<section className='mx-auto min-h-screen w-full bg-background px-0 py-5 text-foreground lg:px-4 xl:ms-5'>
+				<Header />
+				<ExerciseMetrics metrics={exerciseMetrics} />
+				<ExerciseGraphics exerciseData={exerciseGraphicsData} />
+			</section>
+		)
 	}
-
-	exerciseMetrics.avgDuration = exerciseMetrics.totalDuration / exercises.length
-
-	return (
-		<section className='mx-auto min-h-screen w-full bg-background px-0 py-5 text-foreground lg:px-4 xl:ms-5'>
-			<Header />
-			<ExerciseMetrics metrics={exerciseMetrics} />
-			<ExerciseGraphics exerciseData={exerciseGraphicsData} />
-		</section>
-	)
 }
