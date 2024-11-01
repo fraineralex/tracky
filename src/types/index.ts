@@ -69,8 +69,15 @@ export interface TimeCategory {
 	sessions: number
 }
 
+export interface MonthlyProgress {
+	week: string
+	energyBurned: number
+	time: number
+}
+
 export interface ExerciseGraphicsData {
 	weeklyEnergyBurned: Array<{ day: (typeof daysOfWeek)[number]; value: number }>
 	exerciseFrequency: ExerciseDay[]
 	timeCategories: TimeCategory[]
+	monthlyProgress: MonthlyProgress[]
 }

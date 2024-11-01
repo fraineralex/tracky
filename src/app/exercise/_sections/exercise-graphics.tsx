@@ -38,13 +38,6 @@ const weeklyEnergyConfig: ChartConfig = {
 	}
 }
 
-const monthlyProgress = [
-	{ week: 'Week 1', energyBurned: 1500, time: 240 },
-	{ week: 'Week 2', energyBurned: 1800, time: 300 },
-	{ week: 'Week 3', energyBurned: 2200, time: 360 },
-	{ week: 'Week 4', energyBurned: 2000, time: 330 }
-]
-
 const monthlyProgressConfig: ChartConfig = {
 	energyBurned: {
 		label: 'Energy Burned (kcal)',
@@ -248,7 +241,8 @@ export function ExerciseGraphics({
 										<CardContent className='flex flex-col items-center justify-center p-6'>
 											<Icon className='mb-2 h-8 w-8 text-primary' />
 											<h3 className='text-lg font-semibold'>
-												{category.name.at(0)?.toUpperCase() + category.name.slice(1)}
+												{category.name.at(0)?.toUpperCase() +
+													category.name.slice(1)}
 											</h3>
 											<p className='text-2xl font-bold'>{category.sessions}</p>
 											<p className='text-sm text-muted-foreground'>sessions</p>
@@ -281,7 +275,7 @@ export function ExerciseGraphics({
 						<ChartContainer config={monthlyProgressConfig}>
 							<LineChart
 								accessibilityLayer
-								data={monthlyProgress}
+								data={exerciseData.monthlyProgress}
 								margin={{
 									left: 0
 								}}

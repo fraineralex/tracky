@@ -7,6 +7,7 @@ import { asc, eq } from 'drizzle-orm'
 import { currentUser } from '@clerk/nextjs/server'
 import { daysOfWeek, getAdjustedDay } from '~/lib/utils'
 import { ExerciseGraphicsData, ExerciseMetricsData } from '~/types'
+import { addDays, format, startOfWeek } from 'date-fns'
 
 export default async function ExercisePage() {
 	const user = await currentUser()
@@ -45,7 +46,8 @@ export default async function ExercisePage() {
 			.map(name => ({
 				name,
 				sessions: 0
-			}))
+			})),
+		monthlyProgress: []
 	}
 
 	const dayOfWeek = new Date()
@@ -134,15 +136,39 @@ export default async function ExercisePage() {
 			exerciseGraphicsData.timeCategories[index] = timeCategory
 		}
 
-		exerciseMetrics.avgDuration =
-			exerciseMetrics.totalDuration / exercises.length
-
-		return (
-			<section className='mx-auto min-h-screen w-full bg-background px-0 py-5 text-foreground lg:px-4 xl:ms-5'>
-				<Header />
-				<ExerciseMetrics metrics={exerciseMetrics} />
-				<ExerciseGraphics exerciseData={exerciseGraphicsData} />
-			</section>
+		const startOfWeekDate = startOfWeek(exercise.createdAt, { weekStartsOn: 1 })
+		const endOfWeekDate = addDays(startOfWeekDate, 6)
+		const weekLabel = `${format(startOfWeekDate, 'dd MMM')} - ${format(endOfWeekDate, 'dd MMM')}`
+		const monthlyProgress = exerciseGraphicsData.monthlyProgress.find(
+			progress => progress.week === weekLabel
 		)
+
+		if (monthlyProgress) {
+			monthlyProgress.energyBurned += Number(exercise.burned)
+			monthlyProgress.time += Number(exercise.duration)
+			const index = exerciseGraphicsData.monthlyProgress.findIndex(
+				value => value.week === monthlyProgress?.week
+			)
+
+			exerciseGraphicsData.monthlyProgress[index] = monthlyProgress
+		}
+
+		if (!monthlyProgress) {
+			exerciseGraphicsData.monthlyProgress.push({
+				week: weekLabel,
+				energyBurned: Number(exercise.burned),
+				time: Number(exercise.duration)
+			})
+		}
 	}
+
+	exerciseMetrics.avgDuration = exerciseMetrics.totalDuration / exercises.length
+
+	return (
+		<section className='mx-auto min-h-screen w-full bg-background px-0 py-5 text-foreground lg:px-4 xl:ms-5'>
+			<Header />
+			<ExerciseMetrics metrics={exerciseMetrics} />
+			<ExerciseGraphics exerciseData={exerciseGraphicsData} />
+		</section>
+	)
 }
