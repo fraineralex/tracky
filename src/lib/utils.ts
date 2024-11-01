@@ -163,3 +163,5 @@ export function getDuration(minutes: number) {
 	const mins = minutes % 60 !== 0 ? `${minutes % 60}` : ''
 	return `${hours} ${mins}`
 }
+
+export const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
