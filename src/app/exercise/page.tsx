@@ -52,7 +52,10 @@ export default async function ExercisePage() {
 		if (exercise.createdAt >= dayOfWeek) exerciseMetrics.exercisesThisWeek++
 
 		const exerciseDay = getAdjustedDay(exercise.createdAt)
-		if (exerciseGraphicsData.weeklyEnergyBurned[exerciseDay]) {
+		if (
+			exerciseGraphicsData.weeklyEnergyBurned &&
+			exerciseGraphicsData.weeklyEnergyBurned[exerciseDay]
+		) {
 			exerciseGraphicsData.weeklyEnergyBurned[exerciseDay].value += Number(
 				exercise.burned
 			)

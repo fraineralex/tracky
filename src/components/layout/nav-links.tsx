@@ -36,10 +36,7 @@ export default function NavLinks() {
 				title='Contact developer'
 				aria-label='Contact developer'
 			>
-				<Link
-					href='mailto:frainerdeveloper@gmail.com'
-					className=''
-				>
+				<Link href='mailto:frainerdeveloper@gmail.com' className=''>
 					Contact
 				</Link>
 			</Button>

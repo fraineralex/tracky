@@ -26,7 +26,7 @@ export const columns: ColumnDef<Food>[] = [
 				</Button>
 			)
 		},
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'protein',

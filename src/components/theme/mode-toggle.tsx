@@ -21,7 +21,7 @@ export function ModeToggle() {
 				<Button
 					variant='ghost'
 					size='icon'
-					className='bg-background border-transparent relative me-1'
+					className='relative me-1 border-transparent bg-background'
 					title='Toggle theme'
 				>
 					<Sun className='h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />

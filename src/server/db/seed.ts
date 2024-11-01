@@ -343,10 +343,7 @@ async function seed() {
 	if (categoriesSelect.length === 0)
 		await db.insert(exerciseCategory).values(categories)
 
-	const foodSelect = await db
-		.select({ name: food.name })
-		.from(food)
-		.limit(1)
+	const foodSelect = await db.select({ name: food.name }).from(food).limit(1)
 	if (foodSelect.length === 0) await db.insert(food).values(foodItems)
 
 	console.log('Seed data inserted successfully')

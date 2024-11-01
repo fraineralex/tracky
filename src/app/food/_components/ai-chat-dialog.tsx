@@ -18,7 +18,7 @@ export default function AIChatDialog() {
 					<MessageSquare className='mr-2 h-4 w-4' /> AI Chat
 				</Button>
 			</DialogTrigger>
-			<DialogContent className='rounded-lg max-w-[90%] sm:max-w-xl'>
+			<DialogContent className='max-w-[90%] rounded-lg sm:max-w-xl'>
 				<DialogHeader>
 					<DialogTitle>Chat with AI</DialogTitle>
 					<DialogDescription>

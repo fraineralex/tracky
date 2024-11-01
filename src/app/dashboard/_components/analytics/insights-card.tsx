@@ -21,13 +21,15 @@ export default function InsightsCard({
 		<Card className={className}>
 			<header className='flex flex-col space-y-1'>
 				<h3 className='font-semibold'>{title}</h3>
-				<small className='dark:text-gray-400 text-gray-500'>{dateRange}</small>
+				<small className='text-gray-500 dark:text-gray-400'>{dateRange}</small>
 			</header>
 			{children}
 			<footer className='flex items-center justify-between border-t pt-1'>
 				<p className='font-normal'>
 					{value != 0 ? value.toLocaleString() : '----'}{' '}
-					<span className='text-sm font-normal dark:text-gray-400 text-gray-500'>{valueUnit}</span>
+					<span className='text-sm font-normal text-gray-500 dark:text-gray-400'>
+						{valueUnit}
+					</span>
 				</p>
 				<Button
 					variant='ghost'
