@@ -28,7 +28,7 @@ import {
 	ChartTooltip,
 	ChartTooltipContent
 } from '~/components/ui/chart'
-import { ExerciseGraphicsData } from '~/types'
+import { ExerciseGraphicsData, TimeCategory } from '~/types'
 import { DAILY_MEAL_ICONS } from '~/constants'
 
 const weeklyEnergyConfig: ChartConfig = {
@@ -68,7 +68,11 @@ export function ExerciseGraphics({
 		{} as ChartConfig
 	)
 
-	console.log(exerciseData.exerciseFrequency)
+	const topSessionCategory = exerciseData.timeCategories
+		.slice()
+		.sort((a, b) => b.sessions - a.sessions)
+		.at(0) as TimeCategory
+
 	return (
 		<Tabs defaultValue='energy' className='space-y-8 sm:space-y-4 md:space-y-2'>
 			<TabsList className='flex w-fit flex-wrap justify-start bg-background lg:bg-primary/5'>
@@ -119,13 +123,42 @@ export function ExerciseGraphics({
 						</ChartContainer>
 					</CardContent>
 					<CardFooter className='flex-col items-start gap-2 text-sm'>
-						<div className='flex gap-2 font-medium leading-none'>
-							Exceeded target by 10% this week{' '}
-							<TrendingUp className='h-4 w-4' />
-						</div>
-						<div className='leading-none text-muted-foreground'>
-							Keep up the good work to maintain your progress!
-						</div>
+						{(() => {
+							const totalWeeklyCalories =
+								exerciseData.weeklyEnergyBurned.reduce(
+									(sum, day) => sum + (day.value || 0),
+									0
+								)
+							const targetWeeklyCalories = 3000 //TODO: need to get this from user settings
+							const percentageAchieved =
+								(totalWeeklyCalories / targetWeeklyCalories) * 100
+
+							return (
+								<>
+									<div className='flex gap-2 font-medium leading-none'>
+										{percentageAchieved >= 100 ? (
+											<>
+												Exceeded target by{' '}
+												{Math.round(percentageAchieved - 100)}% this week{' '}
+												<TrendingUp className='h-4 w-4' />
+											</>
+										) : (
+											<>
+												Reached {Math.round(percentageAchieved)}% of weekly
+												target <TrendingUp className='h-4 w-4' />
+											</>
+										)}
+									</div>
+									<div className='leading-none text-muted-foreground'>
+										{percentageAchieved >= 100
+											? 'Outstanding work! Keep up this amazing energy!'
+											: percentageAchieved >= 70
+												? 'Getting closer to your goal! Keep pushing!'
+												: 'Every workout counts - keep moving forward!'}
+									</div>
+								</>
+							)
+						})()}
 					</CardFooter>
 				</Card>
 			</TabsContent>
@@ -210,15 +243,47 @@ export function ExerciseGraphics({
 							</AreaChart>
 						</ChartContainer>
 					</CardContent>
-					<CardFooter className='flex-col items-start gap-2 text-sm'>
-						<div className='flex gap-2 font-medium leading-none'>
-							Consistent exercise throughout the week{' '}
-							<TrendingUp className='h-4 w-4' />
-						</div>
-						<div className='leading-none text-muted-foreground'>
-							Great job maintaining a balanced exercise routine!
-						</div>
-					</CardFooter>
+					{(() => {
+						const lastWeekTotal = exerciseData.exerciseFrequency
+							.slice(-7)
+							.reduce((acc, day) => {
+								return (
+									acc +
+									exerciseCategories.reduce(
+										(sum, category) => sum + (Number(day[category]) || 0),
+										0
+									)
+								)
+							}, 0)
+
+						const avgTimePerDay = lastWeekTotal / 7
+
+						return (
+							<CardFooter className='flex-col items-start gap-2 text-sm'>
+								<div className='flex gap-2 font-medium leading-none'>
+									{avgTimePerDay > 30 ? (
+										<>
+											Excellent workout consistency!{' '}
+											<TrendingUp className='h-4 w-4' />
+										</>
+									) : avgTimePerDay > 15 ? (
+										<>
+											Making good progress! <TrendingUp className='h-4 w-4' />
+										</>
+									) : (
+										<>Room for improvement in workout frequency</>
+									)}
+								</div>
+								<div className='leading-none text-muted-foreground'>
+									{avgTimePerDay > 30
+										? 'Keep up this amazing dedication to your fitness!'
+										: avgTimePerDay > 15
+											? "You're building a solid fitness routine!"
+											: 'Try to increase your workout frequency gradually'}
+								</div>
+							</CardFooter>
+						)
+					})()}
 				</Card>
 			</TabsContent>
 			<TabsContent value='time'>
@@ -254,11 +319,23 @@ export function ExerciseGraphics({
 					</CardContent>
 					<CardFooter className='flex-col items-start gap-2 text-sm'>
 						<div className='flex gap-2 font-medium leading-none'>
-							Morning is your most active time{' '}
-							<TrendingUp className='h-4 w-4' />
+							{topSessionCategory.sessions > 0 && (
+								<>
+									{topSessionCategory.name.at(0)?.toUpperCase() +
+										topSessionCategory.name.slice(1)}
+									{' is your most active time '}
+									<TrendingUp className='h-4 w-4' />
+								</>
+							)}
+
+							{topSessionCategory.sessions === 0 && (
+								<>You have no active time yet</>
+							)}
 						</div>
 						<div className='leading-none text-muted-foreground'>
-							Great job starting your day with exercise!
+							{topSessionCategory.sessions > 0
+								? `Great job exercising during ${topSessionCategory.name}!`
+								: "Get up from that couch! Your fitness goals won't achieve themselves"}
 						</div>
 					</CardFooter>
 				</Card>
