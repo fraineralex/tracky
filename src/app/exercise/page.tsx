@@ -5,7 +5,7 @@ import { db } from '~/server/db'
 import { diaryGroupEnum, exercise, exerciseCategory } from '~/server/db/schema'
 import { asc, eq } from 'drizzle-orm'
 import { currentUser } from '@clerk/nextjs/server'
-import { daysOfWeek, getAdjustedDay } from '~/lib/utils'
+import { daysOfWeek, getAdjustedDay, round } from '~/lib/utils'
 import { ExerciseGraphicsData, ExerciseMetricsData } from '~/types'
 import { addDays, format, startOfWeek } from 'date-fns'
 
@@ -162,7 +162,7 @@ export default async function ExercisePage() {
 		}
 	}
 
-	exerciseMetrics.avgDuration = exerciseMetrics.totalDuration / exercises.length
+	exerciseMetrics.avgDuration = round(exerciseMetrics.totalDuration / exercises.length)
 
 	return (
 		<section className='mx-auto min-h-screen w-full bg-background px-0 py-5 text-foreground lg:px-4 xl:ms-5'>

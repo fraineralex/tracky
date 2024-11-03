@@ -160,7 +160,7 @@ export const getMacroPercentage = (
 
 export function getDuration(minutes: number) {
 	const hours = minutes >= 60 ? `${Math.floor(minutes / 60)}h` : ''
-	const mins = minutes % 60 !== 0 ? `${minutes % 60}` : ''
+	const mins = minutes % 60 !== 0 ? `${minutes % 60}m` : ''
 	return `${hours} ${mins}`
 }
 
