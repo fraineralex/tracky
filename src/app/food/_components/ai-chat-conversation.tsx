@@ -6,13 +6,23 @@ import { DialogFooter } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
 import { ScrollArea } from '~/components/ui/scroll-area'
 import { Bot, Loader, Send } from 'lucide-react'
-import { logMealAI, Message } from '../_actions'
+import { Message } from '../_actions'
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { useUser } from '@clerk/nextjs'
 
 export const maxDuration = 30
 
-export default function AIChatConversation() {
+interface AIChatConversationProps {
+	action: (messages: Message[]) => Promise<Message[]>
+	placeholder: string
+	instruction: string
+}
+
+export default function AIChatConversation({
+	action,
+	placeholder,
+	instruction
+}: AIChatConversationProps) {
 	const { user } = useUser()
 	const [conversation, setConversation] = useState<Message[]>([])
 	const [input, setInput] = useState('')
@@ -28,7 +38,7 @@ export default function AIChatConversation() {
 			{ role: 'user', content: input }
 		] satisfies Message[]
 		setConversation(newConversation)
-		const response = await logMealAI(newConversation)
+		const response = await action(newConversation)
 		setConversation(response)
 		setLoading(false)
 	}
@@ -76,7 +86,7 @@ export default function AIChatConversation() {
 						<Input
 							value={input}
 							onChange={e => setInput(e.target.value)}
-							placeholder='Log 100 g of chicken breast for lunch'
+							placeholder={placeholder}
 							onKeyDown={e => e.key === 'Enter' && handleSend()}
 							className='h-12 flex-grow'
 						/>
@@ -85,8 +95,7 @@ export default function AIChatConversation() {
 						</Button>
 					</article>
 					<small className='text-xs leading-tight tracking-tight text-muted-foreground'>
-						Please specify the <strong>food item</strong>,{' '}
-						<strong>portion size</strong>, and <strong>meal group</strong>.
+						{instruction}
 					</small>
 				</div>
 			</DialogFooter>

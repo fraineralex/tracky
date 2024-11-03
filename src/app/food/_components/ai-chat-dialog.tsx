@@ -9,8 +9,23 @@ import {
 	DialogTrigger
 } from '~/components/ui/dialog'
 import AIChatConversation from './ai-chat-conversation'
+import { Message } from '../_actions'
 
-export default function AIChatDialog() {
+interface AIChatDialogProps {
+	action: (messages: Message[]) => Promise<Message[]>
+	placeholder: string
+	title: string
+	description: string
+	instruction: string
+}
+
+export default function AIChatDialog({
+	action,
+	placeholder,
+	title,
+	description,
+	instruction
+}: AIChatDialogProps) {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -20,12 +35,14 @@ export default function AIChatDialog() {
 			</DialogTrigger>
 			<DialogContent className='max-w-[90%] rounded-lg sm:max-w-xl'>
 				<DialogHeader>
-					<DialogTitle>Chat with AI</DialogTitle>
-					<DialogDescription>
-						Tell the AI about your meals, and it will log them for you.
-					</DialogDescription>
+					<DialogTitle>{title}</DialogTitle>
+					<DialogDescription>{description}</DialogDescription>
 				</DialogHeader>
-				<AIChatConversation />
+				<AIChatConversation
+					action={action}
+					placeholder={placeholder}
+					instruction={instruction}
+				/>
 			</DialogContent>
 		</Dialog>
 	)
