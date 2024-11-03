@@ -103,7 +103,7 @@ export type ExerciseState = {
 	success?: boolean
 }
 
-type NewExercise = typeof exercise.$inferInsert
+export type NewExercise = typeof exercise.$inferInsert
 
 export const addExercise = async (
 	prevState: ExerciseState,
