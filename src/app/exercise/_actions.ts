@@ -18,7 +18,7 @@ import { Message } from '../food/_actions'
 import { EXERCISE_ICONS } from '~/constants'
 import { NewExercise } from '../dashboard/_actions'
 import { calculateEnergyBurned } from '~/lib/utils'
-import { PublicMetadata, Weights } from '~/types'
+import { PublicMetadata, SuccessLogData, Weights } from '~/types'
 
 const ExerciseSchema = z.object({
 	exercise: z.array(
@@ -63,9 +63,7 @@ export async function logExerciseAI(messages: Message[]): Promise<Message[]> {
 	try {
 		const result = await generateObject({
 			model: openai('gpt-4-turbo'),
-			system:
-				'You are an assistant in a fitness app that generates an array of exercise schemas to log user exercises in the database. Ensure the data is accurate and follows the provided schema. If the user does not provide a clear category, try to adjust it to the most applicable category option or set it to null if it is not possible. If the user does not provide a measurable duration, estimate the duration in minutes based on the average time typically spent on the exercise category provided.',
-
+			system: `You are a fitness app assistant generating exercise data to log in the database. Ensure the data follows the provided schema. Adjust unclear categories to the most applicable or set to null if not possible. Estimate duration in minutes if not provided. Adjust diary group based on time of day (e.g., morning to breakfast, afternoon to lunch, evening to dinner).`,
 			messages,
 			schema: ExerciseSchema
 		})
@@ -112,6 +110,7 @@ export async function logExerciseAI(messages: Message[]): Promise<Message[]> {
 		]
 	}
 
+	const successLogData: SuccessLogData[] = []
 	try {
 		await db.transaction(async trx => {
 			for (const item of response.data.exercise) {
@@ -160,8 +159,21 @@ export async function logExerciseAI(messages: Message[]): Promise<Message[]> {
 					userId: user.id
 				} as NewExercise
 
-				console.log('NewExercise:', newExercise)
 				await trx.insert(exercise).values(newExercise)
+				successLogData.push({
+					successMessage: 'Exercise logged successfully',
+					title: item.category!,
+					subTitle: item.diaryGroup,
+					items: [
+						{ name: 'Energy Burned', amount: energyBurned, unit: 'kcal' },
+						{
+							name: 'Duration',
+							amount: item.duration.toString(),
+							unit: 'minutes'
+						},
+						{ name: 'Effort', amount: item.effort }
+					]
+				})
 			}
 		})
 	} catch (error) {
@@ -172,6 +184,10 @@ export async function logExerciseAI(messages: Message[]): Promise<Message[]> {
 	revalidatePath('/exercise')
 	return [
 		...messages,
-		{ role: 'assistant', content: 'Exercise logged successfully' }
+		{
+			role: 'assistant',
+			content: 'Exercise logged successfully',
+			successLogData
+		}
 	]
 }
