@@ -9,6 +9,7 @@ import { Bot, Loader, Send } from 'lucide-react'
 import { Message } from '../_actions'
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { useUser } from '@clerk/nextjs'
+import { SuccessLogCard } from './success-log-card'
 
 export const maxDuration = 30
 
@@ -51,25 +52,33 @@ export default function AIChatConversation({
 			>
 				<>
 					{conversation.map((message, index) => (
-						<div
-							key={index}
-							className={`mb-4 flex items-start space-x-2 border-b border-muted-foreground/60 pb-4 ${
-								message.role === 'user' ? 'justify-end' : 'justify-start'
-							}`}
-						>
-							{message.role === 'assistant' && (
-								<Bot className='mt-1 h-6 w-6 text-green-500' />
+						<>
+							{message.successLogData &&
+								message.successLogData.map((data, index) => (
+									<SuccessLogCard key={index} {...data} />
+								))}
+							{!message.successLogData && (
+								<div
+									key={index}
+									className={`mb-4 flex items-start space-x-2 border-b border-muted-foreground/60 pb-4 ${
+										message.role === 'user' ? 'justify-end' : 'justify-start'
+									}`}
+								>
+									{message.role === 'assistant' && (
+										<Bot className='mt-1 h-6 w-6 text-green-500' />
+									)}
+									<div className={`max-w-[80%] rounded-lg p-2 text-sm`}>
+										{message.content}
+									</div>
+									{message.role === 'user' && (
+										<Avatar className='mt-1 h-7 w-7'>
+											<AvatarImage src={user.imageUrl} />
+											<AvatarFallback>{fullNameShort}</AvatarFallback>
+										</Avatar>
+									)}
+								</div>
 							)}
-							<div className={`max-w-[80%] rounded-lg p-2 text-sm`}>
-								{message.content}
-							</div>
-							{message.role === 'user' && (
-								<Avatar className='mt-1 h-7 w-7'>
-									<AvatarImage src={user.imageUrl} />
-									<AvatarFallback>{fullNameShort}</AvatarFallback>
-								</Avatar>
-							)}
-						</div>
+						</>
 					))}
 
 					{loading && (
@@ -80,6 +89,7 @@ export default function AIChatConversation({
 					)}
 				</>
 			</ScrollArea>
+
 			<DialogFooter>
 				<div className='w-full'>
 					<article className='flex items-center space-x-2 self-center'>
