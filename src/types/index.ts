@@ -81,3 +81,15 @@ export interface ExerciseGraphicsData {
 	timeCategories: TimeCategory[]
 	monthlyProgress: MonthlyProgress[]
 }
+
+export interface SuccessLogData {
+	successMessage: string
+	title: string
+	subTitle: string
+	subTitleUnit?: string
+	items: {
+		name: 'Calories' | 'Protein' | 'Carbs' | 'Fats' | string
+		amount: string
+		unit?: string
+	}[]
+}
