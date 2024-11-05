@@ -117,7 +117,8 @@ export function CaloriesChart() {
 			</CardContent>
 			<CardFooter className='-mt-3 flex-col gap-2 text-sm'>
 				<div className='flex items-center gap-2 font-medium leading-none tracking-tight'>
-					You have lost 4.2 kg of fat this month <TrendingDown className='h-4 w-4' />
+					You have lost 4.2 kg of fat this month{' '}
+					<TrendingDown className='h-4 w-4' />
 				</div>
 			</CardFooter>
 		</Card>

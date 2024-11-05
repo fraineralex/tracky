@@ -11,6 +11,7 @@ import { generateObject } from 'ai'
 import { openai } from '@ai-sdk/openai'
 import { desc, sql } from 'drizzle-orm'
 import { NewConsumption } from '../dashboard/_actions'
+import { SuccessLogData } from '~/types'
 
 type NewFood = typeof food.$inferInsert
 
@@ -103,6 +104,7 @@ export const registerFood = async (
 export interface Message {
 	role: 'user' | 'assistant'
 	content: string
+	successLogData?: SuccessLogData[]
 }
 
 const ConsumptionSchema = z.object({
@@ -110,7 +112,10 @@ const ConsumptionSchema = z.object({
 		z.object({
 			foodName: z.string().describe('Name of the food').nullable(),
 			portion: z.number().describe('Portion size in grams').nullable(),
-			mealGroup: z.enum(diaryGroupEnum.enumValues).describe('Meal group')
+			mealGroup: z
+				.enum(diaryGroupEnum.enumValues)
+				.describe('Meal group')
+				.default('uncategorized')
 		})
 	)
 })
@@ -133,12 +138,12 @@ export async function logMealAI(messages: Message[]): Promise<Message[]> {
 		const result = await generateObject({
 			model: openai('gpt-4-turbo'),
 			system:
-				'You are an assistant in a fitness app that generates an array of food consumption schemas to log the user food consumptions in the database. Ensure the data is accurate and follows the provided schema. If the user does not provide a food name, set it to null. If the user does not provide a measurable portion, estimate the portion in grams based on the quantity and type of food provided. Convert the portion to grams if it is not in grams. If the meal group is not specified, set it to "uncategorized".',
-
+				'Generate an array of food consumption entries. Ensure data accuracy and adherence to the schema. Set food name to null if missing. Convert portions to grams. Adjust meal group based on time of day (morning: breakfast, afternoon: lunch, evening: dinner).',
 			messages,
 			schema: ConsumptionSchema
 		})
 		object = result.object
+		console.log(object)
 	} catch (error) {
 		console.error('Error generating object:', error)
 		return [
@@ -182,18 +187,27 @@ export async function logMealAI(messages: Message[]): Promise<Message[]> {
 		]
 	}
 
+	const successLogData: SuccessLogData[] = []
 	try {
 		await db.transaction(async trx => {
 			for (const item of response.data.consumption) {
 				const result = await trx
-					.select({ id: food.id })
+					.select({
+						id: food.id,
+						name: food.name,
+						protein: food.protein,
+						kcal: food.kcal,
+						fat: food.fat,
+						carbs: food.carbs,
+						servingSize: food.servingSize
+					})
 					.from(food)
 					.where(sql`lower(${food.name}) = lower(${item.foodName})`)
 					.orderBy(desc(food.createdAt))
 					.limit(1)
 					.execute()
 
-				if (result.length === 0) {
+				if (!result || result.length === 0 || !result[0]) {
 					return [
 						...messages,
 						{
@@ -203,17 +217,49 @@ export async function logMealAI(messages: Message[]): Promise<Message[]> {
 					]
 				}
 
-				const foodId = result[0]?.id
+				const foodObj = result[0]
 
 				const newConsumption = {
 					userId,
-					foodId,
+					foodId: foodObj.id,
 					portion: item.portion?.toString(),
 					unit: 'g',
 					mealGroup: item.mealGroup
 				} as NewConsumption
 
 				await trx.insert(consumption).values(newConsumption)
+				successLogData.push({
+					successMessage: 'Food consumption logged successfully',
+					title: foodObj.name,
+					subTitle: (
+						(Number(foodObj.kcal) / Number(foodObj.servingSize)) *
+						item.portion!
+					).toFixed(),
+					subTitleUnit: 'Calories',
+					items: [
+						{
+							name: 'Protein',
+							amount: `${(
+								(Number(foodObj.protein) / Number(foodObj.servingSize)) *
+								item.portion!
+							).toFixed()} g`
+						},
+						{
+							name: 'Carbs',
+							amount: `${(
+								(Number(foodObj.carbs) / Number(foodObj.servingSize)) *
+								item.portion!
+							).toFixed()} g`
+						},
+						{
+							name: 'Fats',
+							amount: `${(
+								(Number(foodObj.fat) / Number(foodObj.servingSize)) *
+								item.portion!
+							).toFixed()} g`
+						}
+					]
+				})
 			}
 		})
 	} catch (error) {
@@ -224,6 +270,10 @@ export async function logMealAI(messages: Message[]): Promise<Message[]> {
 	revalidatePath('/food')
 	return [
 		...messages,
-		{ role: 'assistant', content: 'Food consumption logged successfully' }
+		{
+			role: 'assistant',
+			content: 'Food consumption logged successfully',
+			successLogData
+		}
 	]
 }

@@ -34,20 +34,25 @@ export async function getUserNutritionMetrics(
 		nutritionMeatricsPerDay[index] = structuredClone(nutritionMeatrics)
 	})
 
-	result.forEach(({ portion, createdAt, servingSize, kcal, protein, carbs, fat }) => {
-		const calories = (Number(portion) / Number(servingSize)) * Number(kcal)
-		const proteinConsumed = (Number(portion) / Number(servingSize)) * Number(protein)
-		const carbsConsumed = (Number(portion) / Number(servingSize)) * Number(carbs)
-		const fatsConsumed = (Number(portion) / Number(servingSize)) * Number(fat)
+	result.forEach(
+		({ portion, createdAt, servingSize, kcal, protein, carbs, fat }) => {
+			const calories = (Number(portion) / Number(servingSize)) * Number(kcal)
+			const proteinConsumed =
+				(Number(portion) / Number(servingSize)) * Number(protein)
+			const carbsConsumed =
+				(Number(portion) / Number(servingSize)) * Number(carbs)
+			const fatsConsumed = (Number(portion) / Number(servingSize)) * Number(fat)
 
-		const day = getAdjustedDay(createdAt)
-		const nutrition = nutritionMeatricsPerDay[day] ?? structuredClone(nutritionMeatrics)
+			const day = getAdjustedDay(createdAt)
+			const nutrition =
+				nutritionMeatricsPerDay[day] ?? structuredClone(nutritionMeatrics)
 
-		nutrition.calories.consumed += calories
-		nutrition.protein.consumed += proteinConsumed
-		nutrition.carbs.consumed += carbsConsumed
-		nutrition.fats.consumed += fatsConsumed
-	})
+			nutrition.calories.consumed += calories
+			nutrition.protein.consumed += proteinConsumed
+			nutrition.carbs.consumed += carbsConsumed
+			nutrition.fats.consumed += fatsConsumed
+		}
+	)
 
 	return nutritionMeatricsPerDay
 }

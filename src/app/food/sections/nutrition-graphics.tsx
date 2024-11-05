@@ -20,6 +20,7 @@ import {
 	Weights
 } from '~/types'
 import {
+	daysOfWeek,
 	getAdjustedDay,
 	getMacroPercentage,
 	getPercentage,
@@ -33,7 +34,6 @@ export default function NutritionGraphic({
 	nutritionMeatrics: NutritionMetricsPerDay
 	weightsChanges: Weights
 }) {
-	const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 	const nutritionWeek: WeeklyNutrition[] = Object.entries(
 		nutritionMeatrics
 	).map(([key, nutritients]) => {

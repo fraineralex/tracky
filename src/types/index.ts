@@ -1,4 +1,5 @@
-import { exerciseCategory } from '~/server/db/schema'
+import { daysOfWeek } from '~/lib/utils'
+import { diaryGroupEnum, exerciseCategory } from '~/server/db/schema'
 
 export type Sex = 'male' | 'female'
 export type Goal = 'gain' | 'maintain' | 'lose'
@@ -52,8 +53,43 @@ export interface WeeklyNutrition {
 }
 
 export interface ExerciseMetricsData {
-	totalEnergyBurned: number 
-	totalDuration: number 
-	exercisesThisWeek: number 
-	avgDuration: number 
+	totalEnergyBurned: number
+	totalDuration: number
+	exercisesThisWeek: number
+	avgDuration: number
+}
+
+export type ExerciseDay = {
+	date: string
+	[key: string]: string | number
+}
+
+export interface TimeCategory {
+	name: (typeof diaryGroupEnum.enumValues)[number]
+	sessions: number
+}
+
+export interface MonthlyProgress {
+	week: string
+	energyBurned: number
+	time: number
+}
+
+export interface ExerciseGraphicsData {
+	weeklyEnergyBurned: Array<{ day: (typeof daysOfWeek)[number]; value: number }>
+	exerciseFrequency: ExerciseDay[]
+	timeCategories: TimeCategory[]
+	monthlyProgress: MonthlyProgress[]
+}
+
+export interface SuccessLogData {
+	successMessage: string
+	title: string
+	subTitle: string
+	subTitleUnit?: string
+	items: {
+		name: 'Calories' | 'Protein' | 'Carbs' | 'Fats' | string
+		amount: string
+		unit?: string
+	}[]
 }

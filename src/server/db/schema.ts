@@ -112,7 +112,9 @@ export const exercise = createTable(
 		categoryId: uuid('category_id')
 			.references(() => exerciseCategory.id)
 			.notNull(),
-		diaryGroup: diaryGroupEnum('diary_group').notNull().default('uncategorized'),
+		diaryGroup: diaryGroupEnum('diary_group')
+			.notNull()
+			.default('uncategorized'),
 		userId: varchar('user_id', { length: 50 }).notNull(),
 		createdAt: timestamp('created_at', { withTimezone: true })
 			.default(sql`CURRENT_TIMESTAMP`)

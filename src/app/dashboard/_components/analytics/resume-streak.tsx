@@ -25,7 +25,9 @@ export default async function ResumeStreak() {
 		foodDates.map(({ createdAt }) => new Date(createdAt.setHours(0, 0, 0, 0)))
 	)
 	const exerciseStreak = getStreakNumber(
-		exerciseDates.map(({ createdAt }) => new Date(createdAt.setHours(0, 0, 0, 0)))
+		exerciseDates.map(
+			({ createdAt }) => new Date(createdAt.setHours(0, 0, 0, 0))
+		)
 	)
 	return (
 		<Card className='order-last col-span-2 w-full rounded-lg border py-1 dark:bg-slate-800/50 md:order-none md:max-w-xs'>

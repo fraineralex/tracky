@@ -20,14 +20,14 @@ export default function ExerciseMetrics({
 			icon: Clock
 		},
 		{
-			name: 'Exercises This Week',
-			value: metrics.exercisesThisWeek.toLocaleString(),
-			icon: Activity
-		},
-		{
 			name: 'Avg. Session Duration',
 			value: getDuration(metrics.avgDuration),
 			icon: TrendingUp
+		},
+		{
+			name: 'Exercises This Week',
+			value: metrics.exercisesThisWeek.toLocaleString(),
+			icon: Activity
 		}
 	]
 

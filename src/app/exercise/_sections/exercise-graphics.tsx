@@ -9,7 +9,7 @@ import {
 	CardFooter
 } from '~/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
-import { Utensils, Sun, Coffee, Moon, TrendingUp } from 'lucide-react'
+import { TrendingUp } from 'lucide-react'
 import {
 	Area,
 	AreaChart,
@@ -28,16 +28,8 @@ import {
 	ChartTooltip,
 	ChartTooltipContent
 } from '~/components/ui/chart'
-
-const weeklyEnergyBurned = [
-	{ name: 'Mon', calories: 350 },
-	{ name: 'Tue', calories: 280 },
-	{ name: 'Wed', calories: 420 },
-	{ name: 'Thu', calories: 380 },
-	{ name: 'Fri', calories: 400 },
-	{ name: 'Sat', calories: 500 },
-	{ name: 'Sun', calories: 300 }
-]
+import { ExerciseGraphicsData, TimeCategory } from '~/types'
+import { DAILY_MEAL_ICONS } from '~/constants'
 
 const weeklyEnergyConfig: ChartConfig = {
 	calories: {
@@ -45,143 +37,6 @@ const weeklyEnergyConfig: ChartConfig = {
 		color: 'hsl(var(--chart-1))'
 	}
 }
-
-const exerciseFrequency = [
-	{
-		date: '2023-10-01',
-		gym: 60,
-		walk: 30,
-		run: 0,
-		gymCal: 300,
-		walkCal: 100,
-		runCal: 0,
-		gymIntensity: 'High',
-		walkIntensity: 'Low',
-		runIntensity: 'N/A',
-		gymCategory: 'Strength',
-		walkCategory: 'Cardio',
-		runCategory: 'N/A'
-	},
-	{
-		date: '2023-10-02',
-		gym: 0,
-		walk: 45,
-		run: 30,
-		gymCal: 0,
-		walkCal: 150,
-		runCal: 300,
-		gymIntensity: 'N/A',
-		walkIntensity: 'Medium',
-		runIntensity: 'High',
-		gymCategory: 'N/A',
-		walkCategory: 'Cardio',
-		runCategory: 'Cardio'
-	},
-	{
-		date: '2023-10-03',
-		gym: 75,
-		walk: 0,
-		run: 0,
-		gymCal: 400,
-		walkCal: 0,
-		runCal: 0,
-		gymIntensity: 'High',
-		walkIntensity: 'N/A',
-		runIntensity: 'N/A',
-		gymCategory: 'Strength',
-		walkCategory: 'N/A',
-		runCategory: 'N/A'
-	},
-	{
-		date: '2023-10-04',
-		gym: 45,
-		walk: 60,
-		run: 0,
-		gymCal: 250,
-		walkCal: 200,
-		runCal: 0,
-		gymIntensity: 'Medium',
-		walkIntensity: 'Medium',
-		runIntensity: 'N/A',
-		gymCategory: 'Strength',
-		walkCategory: 'Cardio',
-		runCategory: 'N/A'
-	},
-	{
-		date: '2023-10-05',
-		gym: 0,
-		walk: 30,
-		run: 45,
-		gymCal: 0,
-		walkCal: 100,
-		runCal: 450,
-		gymIntensity: 'N/A',
-		walkIntensity: 'Low',
-		runIntensity: 'High',
-		gymCategory: 'N/A',
-		walkCategory: 'Cardio',
-		runCategory: 'Cardio'
-	},
-	{
-		date: '2023-10-06',
-		gym: 90,
-		walk: 0,
-		run: 0,
-		gymCal: 500,
-		walkCal: 0,
-		runCal: 0,
-		gymIntensity: 'High',
-		walkIntensity: 'N/A',
-		runIntensity: 'N/A',
-		gymCategory: 'Strength',
-		walkCategory: 'N/A',
-		runCategory: 'N/A'
-	},
-	{
-		date: '2023-10-07',
-		gym: 0,
-		walk: 90,
-		run: 0,
-		gymCal: 0,
-		walkCal: 300,
-		runCal: 0,
-		gymIntensity: 'N/A',
-		walkIntensity: 'High',
-		runIntensity: 'N/A',
-		gymCategory: 'N/A',
-		walkCategory: 'Cardio',
-		runCategory: 'N/A'
-	}
-]
-
-const exerciseFrequencyConfig: ChartConfig = {
-	gym: {
-		label: 'Gym',
-		color: 'hsl(var(--chart-1))'
-	},
-	walk: {
-		label: 'Walk',
-		color: 'hsl(var(--chart-2))'
-	},
-	run: {
-		label: 'Run',
-		color: 'hsl(var(--chart-3))'
-	}
-}
-
-const timeCategories = [
-	{ category: 'Morning', sessions: 8, icon: Sun },
-	{ category: 'Lunch', sessions: 5, icon: Utensils },
-	{ category: 'Snack', sessions: 3, icon: Coffee },
-	{ category: 'Dinner', sessions: 7, icon: Moon }
-]
-
-const monthlyProgress = [
-	{ week: 'Week 1', energyBurned: 1500, time: 240 },
-	{ week: 'Week 2', energyBurned: 1800, time: 300 },
-	{ week: 'Week 3', energyBurned: 2200, time: 360 },
-	{ week: 'Week 4', energyBurned: 2000, time: 330 }
-]
 
 const monthlyProgressConfig: ChartConfig = {
 	energyBurned: {
@@ -194,7 +49,85 @@ const monthlyProgressConfig: ChartConfig = {
 	}
 }
 
-export function ExerciseGraphics() {
+export function ExerciseGraphics({
+	exerciseData
+}: {
+	exerciseData: ExerciseGraphicsData
+}) {
+	const exerciseCategories = Object.keys(
+		exerciseData.exerciseFrequency[0]!
+	).filter(key => key !== 'date')
+	const exerciseFrequencyConfig = [...exerciseCategories].reduce(
+		(acc, key, index) => {
+			acc[key] = {
+				label: key.at(0)?.toUpperCase() + key.slice(1),
+				color: `hsl(var(--chart-${index + 1}))`
+			}
+			return acc
+		},
+		{} as ChartConfig
+	)
+
+	const topSessionCategory = exerciseData.timeCategories
+		.slice()
+		.sort((a, b) => b.sessions - a.sessions)
+		.at(0) as TimeCategory
+
+	const totalWeeklyCalories = exerciseData.weeklyEnergyBurned.reduce(
+		(sum, day) => sum + (day.value || 0),
+		0
+	)
+	const targetWeeklyCalories = 3000 //TODO: need to get this from user settings
+	const percentageAchieved = (totalWeeklyCalories / targetWeeklyCalories) * 100
+
+	const lastWeekTotal = exerciseData.exerciseFrequency
+		.slice(-7)
+		.reduce((acc, day) => {
+			return (
+				acc +
+				exerciseCategories.reduce(
+					(sum, category) => sum + (Number(day[category]) || 0),
+					0
+				)
+			)
+		}, 0)
+
+	const avgTimePerDay = lastWeekTotal / 7
+
+	const monthlyProgressMessage =
+		percentageAchieved >= 100
+			? 'Outstanding work! Keep up this amazing energy!'
+			: percentageAchieved >= 70
+				? 'Getting closer to your goal! Keep pushing!'
+				: 'Every workout counts - keep moving forward!'
+
+	const exerciseFrequencyMessage =
+		avgTimePerDay > 30
+			? 'Keep up this amazing dedication to your fitness!'
+			: avgTimePerDay > 15
+				? "You're building a solid fitness routine!"
+				: 'Try to increase your workout frequency gradually'
+
+	const topSessionMessage =
+		topSessionCategory.sessions > 0
+			? `Great job exercising during ${topSessionCategory.name}!`
+			: "Get up from that couch! Your fitness goals won't achieve themselves"
+
+	const totalMonthlyEnergyBurned = exerciseData.monthlyProgress.reduce(
+		(sum, week) => sum + (week.energyBurned || 0),
+		0
+	)
+	const targetMonthlyEnergyBurned = 12000 //TODO: need to get this from user settings
+	const monthlyPercentageAchieved =
+		(totalMonthlyEnergyBurned / targetMonthlyEnergyBurned) * 100
+
+	const monthlyProgressFooterMessage =
+		monthlyPercentageAchieved >= 100
+			? 'Outstanding monthly performance! Keep up the great work!'
+			: monthlyPercentageAchieved >= 70
+				? 'Great progress this month! Keep pushing!'
+				: 'Keep going, every bit of effort counts!'
+
 	return (
 		<Tabs defaultValue='energy' className='space-y-8 sm:space-y-4 md:space-y-2'>
 			<TabsList className='flex w-fit flex-wrap justify-start bg-background lg:bg-primary/5'>
@@ -232,10 +165,10 @@ export function ExerciseGraphics() {
 					<CardContent>
 						<ChartContainer config={weeklyEnergyConfig}>
 							<ResponsiveContainer width='100%' height={350}>
-								<BarChart data={weeklyEnergyBurned}>
-									<XAxis dataKey='name' />
+								<BarChart data={exerciseData.weeklyEnergyBurned}>
+									<XAxis dataKey='day' />
 									<YAxis />
-									<Bar dataKey='calories' fill='var(--color-calories)' />
+									<Bar dataKey='value' fill='var(--color-calories)' />
 									<ChartTooltip
 										cursor={false}
 										content={<ChartTooltipContent />}
@@ -246,11 +179,20 @@ export function ExerciseGraphics() {
 					</CardContent>
 					<CardFooter className='flex-col items-start gap-2 text-sm'>
 						<div className='flex gap-2 font-medium leading-none'>
-							Exceeded target by 10% this week{' '}
-							<TrendingUp className='h-4 w-4' />
+							{percentageAchieved >= 100 ? (
+								<>
+									Exceeded target by {Math.round(percentageAchieved - 100)}%
+									this week <TrendingUp className='h-4 w-4' />
+								</>
+							) : (
+								<>
+									Reached {Math.round(percentageAchieved)}% of weekly target{' '}
+									<TrendingUp className='h-4 w-4' />
+								</>
+							)}
 						</div>
 						<div className='leading-none text-muted-foreground'>
-							Keep up the good work to maintain your progress!
+							{monthlyProgressMessage}
 						</div>
 					</CardFooter>
 				</Card>
@@ -267,7 +209,7 @@ export function ExerciseGraphics() {
 						<ChartContainer config={exerciseFrequencyConfig}>
 							<AreaChart
 								accessibilityLayer
-								data={exerciseFrequency}
+								data={exerciseData.exerciseFrequency}
 								margin={{
 									left: 12,
 									right: 12,
@@ -292,7 +234,7 @@ export function ExerciseGraphics() {
 									tickLine={false}
 									axisLine={false}
 									tickMargin={8}
-									tickFormatter={value => `${value}min`}
+									tickFormatter={value => `${value} min`}
 								/>
 								<ChartTooltip
 									cursor={false}
@@ -300,77 +242,59 @@ export function ExerciseGraphics() {
 								/>
 
 								<defs>
-									<linearGradient id='fillGym' x1='0' y1='0' x2='0' y2='1'>
-										<stop
-											offset='5%'
-											stopColor='var(--color-gym)'
-											stopOpacity={0.8}
-										/>
-										<stop
-											offset='95%'
-											stopColor='var(--color-gym)'
-											stopOpacity={0.1}
-										/>
-									</linearGradient>
-									<linearGradient id='fillWalk' x1='0' y1='0' x2='0' y2='1'>
-										<stop
-											offset='5%'
-											stopColor='var(--color-walk)'
-											stopOpacity={0.8}
-										/>
-										<stop
-											offset='95%'
-											stopColor='var(--color-walk)'
-											stopOpacity={0.1}
-										/>
-									</linearGradient>
-									<linearGradient id='fillRun' x1='0' y1='0' x2='0' y2='1'>
-										<stop
-											offset='5%'
-											stopColor='var(--color-run)'
-											stopOpacity={0.8}
-										/>
-										<stop
-											offset='95%'
-											stopColor='var(--color-run)'
-											stopOpacity={0.1}
-										/>
-									</linearGradient>
+									{exerciseCategories.map(category => (
+										<linearGradient
+											id='fillGym'
+											x1='0'
+											y1='0'
+											x2='0'
+											y2='1'
+											key={category}
+										>
+											<stop
+												offset='5%'
+												stopColor={`var(--color-${category})`}
+												stopOpacity={0.8}
+											/>
+											<stop
+												offset='95%'
+												stopColor={`var(--color-${category})`}
+												stopOpacity={0.1}
+											/>
+										</linearGradient>
+									))}
 								</defs>
-								<Area
-									dataKey='walk'
-									type='monotone'
-									fill='url(#fillWalk)'
-									fillOpacity={0.4}
-									stroke='var(--color-walk)'
-									stackId='1'
-								/>
-								<Area
-									dataKey='gym'
-									type='monotone'
-									fill='url(#fillGym)'
-									fillOpacity={0.4}
-									stroke='var(--color-gym)'
-									stackId='1'
-								/>
-								<Area
-									dataKey='run'
-									type='monotone'
-									fill='url(#fillRun)'
-									fillOpacity={0.4}
-									stroke='var(--color-run)'
-									stackId='1'
-								/>
+								{exerciseCategories.map(category => (
+									<Area
+										key={category}
+										dataKey={category}
+										type='monotone'
+										fill={`url(#fill-${category})`}
+										fillOpacity={0.4}
+										stroke={`var(--color-${category})`}
+										stackId='1'
+									/>
+								))}
 							</AreaChart>
 						</ChartContainer>
 					</CardContent>
 					<CardFooter className='flex-col items-start gap-2 text-sm'>
 						<div className='flex gap-2 font-medium leading-none'>
-							Consistent exercise throughout the week{' '}
-							<TrendingUp className='h-4 w-4' />
+							{avgTimePerDay > 30 ? (
+								<>
+									Excellent workout consistency!{' '}
+									<TrendingUp className='h-4 w-4' />
+								</>
+							) : avgTimePerDay > 15 ? (
+								<>
+									Making good progress! <TrendingUp className='h-4 w-4' />
+								</>
+							) : (
+								<>Room for improvement in workout frequency</>
+							)}
 						</div>
 						<div className='leading-none text-muted-foreground'>
-							Great job maintaining a balanced exercise routine!
+							{exerciseFrequencyMessage}
 						</div>
 					</CardFooter>
 				</Card>
@@ -385,30 +309,44 @@ export function ExerciseGraphics() {
 					</CardHeader>
 					<CardContent>
 						<div className='grid grid-cols-2 gap-4 md:grid-cols-4'>
-							{timeCategories.map(category => (
-								<Card
-									key={category.category}
-									className='bg-slate-200 transition-shadow hover:shadow-md dark:bg-slate-500'
-								>
-									<CardContent className='flex flex-col items-center justify-center p-6'>
-										<category.icon className='mb-2 h-8 w-8 text-primary' />
-										<h3 className='text-lg font-semibold'>
-											{category.category}
-										</h3>
-										<p className='text-2xl font-bold'>{category.sessions}</p>
-										<p className='text-sm text-muted-foreground'>sessions</p>
-									</CardContent>
-								</Card>
-							))}
+							{exerciseData.timeCategories.map(category => {
+								const Icon = DAILY_MEAL_ICONS[category.name]
+								return (
+									<Card
+										key={category.name}
+										className='bg-slate-200 transition-shadow hover:shadow-md dark:bg-slate-500'
+									>
+										<CardContent className='flex flex-col items-center justify-center p-6'>
+											<Icon className='mb-2 h-8 w-8 text-primary' />
+											<h3 className='text-lg font-semibold'>
+												{category.name.at(0)?.toUpperCase() +
+													category.name.slice(1)}
+											</h3>
+											<p className='text-2xl font-bold'>{category.sessions}</p>
+											<p className='text-sm text-muted-foreground'>sessions</p>
+										</CardContent>
+									</Card>
+								)
+							})}
 						</div>
 					</CardContent>
 					<CardFooter className='flex-col items-start gap-2 text-sm'>
 						<div className='flex gap-2 font-medium leading-none'>
-							Morning is your most active time{' '}
-							<TrendingUp className='h-4 w-4' />
+							{topSessionCategory.sessions > 0 && (
+								<>
+									{topSessionCategory.name.at(0)?.toUpperCase() +
+										topSessionCategory.name.slice(1)}
+									{' is your most active time '}
+									<TrendingUp className='h-4 w-4' />
+								</>
+							)}
+
+							{topSessionCategory.sessions === 0 && (
+								<>You have no active time yet</>
+							)}
 						</div>
 						<div className='leading-none text-muted-foreground'>
-							Great job starting your day with exercise!
+							{topSessionMessage}
 						</div>
 					</CardFooter>
 				</Card>
@@ -425,7 +363,7 @@ export function ExerciseGraphics() {
 						<ChartContainer config={monthlyProgressConfig}>
 							<LineChart
 								accessibilityLayer
-								data={monthlyProgress}
+								data={exerciseData.monthlyProgress}
 								margin={{
 									left: 0
 								}}
@@ -451,11 +389,21 @@ export function ExerciseGraphics() {
 					</CardContent>
 					<CardFooter className='flex-col items-start gap-2 text-sm'>
 						<div className='flex gap-2 font-medium leading-none'>
-							Steady increase in energy burned{' '}
-							<TrendingUp className='h-4 w-4' />
+							{monthlyPercentageAchieved >= 100 ? (
+								<>
+									Exceeded monthly target by{' '}
+									{Math.round(monthlyPercentageAchieved - 100)}%{' '}
+									<TrendingUp className='h-4 w-4' />
+								</>
+							) : (
+								<>
+									Reached {Math.round(monthlyPercentageAchieved)}% of monthly
+									target <TrendingUp className='h-4 w-4' />
+								</>
+							)}
 						</div>
 						<div className='leading-none text-muted-foreground'>
-							Your consistency is paying off! Keep pushing your limits.
+							{monthlyProgressFooterMessage}
 						</div>
 					</CardFooter>
 				</Card>
