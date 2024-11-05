@@ -25,7 +25,9 @@ export function SuccessLogCard({
 				<div className='flex items-center justify-between'>
 					<h3 className='mb-1 text-lg font-semibold text-gray-800'>{title}</h3>
 					<div className='flex items-baseline'>
-						<span className='text-2xl font-bold text-gray-900 capitalize'>{subTitle}</span>
+						<span className='text-2xl font-bold capitalize text-gray-900'>
+							{subTitle}
+						</span>
 						{subTitleUnit && (
 							<span className='ml-1 text-sm text-gray-500'>{subTitleUnit}</span>
 						)}
@@ -39,7 +41,8 @@ export function SuccessLogCard({
 								style={{ backgroundColor: colors[index] }}
 							></div>
 							<span className='text-xs text-gray-600 md:text-sm'>
-								<span className='font-medium'>{nutrient.name}:</span> {nutrient.amount}
+								<span className='font-medium'>{nutrient.name}:</span>{' '}
+								{nutrient.amount}
 							</span>
 						</div>
 					))}

@@ -64,7 +64,7 @@ export default async function ExercisePage() {
 			exerciseGraphicsData.weeklyEnergyBurned &&
 			exerciseGraphicsData.weeklyEnergyBurned[exerciseDay]
 		) {
-			exerciseGraphicsData.weeklyEnergyBurned[exerciseDay].value += Number(
+			exerciseGraphicsData.weeklyEnergyBurned[exerciseDay]!.value += Number(
 				exercise.burned
 			)
 		} else {
@@ -162,7 +162,9 @@ export default async function ExercisePage() {
 		}
 	}
 
-	exerciseMetrics.avgDuration = round(exerciseMetrics.totalDuration / exercises.length)
+	exerciseMetrics.avgDuration = round(
+		exerciseMetrics.totalDuration / exercises.length
+	)
 
 	return (
 		<section className='mx-auto min-h-screen w-full bg-background px-0 py-5 text-foreground lg:px-4 xl:ms-5'>
