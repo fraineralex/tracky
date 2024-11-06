@@ -1,11 +1,11 @@
 import { Circle, Square } from 'lucide-react'
 import InsightsCard from '../_components/analytics/insights-card'
 import ResumeStreak from '../_components/analytics/resume-streak'
-import { PublicMetadata, Weights } from '~/types'
+import { Weights } from '~/types'
 import { calculateNutritionalNeeds } from '~/lib/utils'
 
 interface Props {
-	userMetadata: PublicMetadata
+	userMetadata: UserPublicMetadata
 	expenditure: number
 }
 

@@ -4,7 +4,6 @@ import NutritionGraphic from './_sections/nutrition-graphic'
 import InsightsAndAnalitics from './_sections/insights-analytics'
 import DataAndHabits from './_sections/data-habits'
 import { currentUser } from '@clerk/nextjs/server'
-import { PublicMetadata } from '~/types'
 import { getUserNutritionMetrics } from '~/server/utils/nutrition'
 import { Metadata } from 'next'
 import Footer from '~/components/layout/footer'
@@ -16,7 +15,7 @@ export const metadata: Metadata = {
 export default async function DashboardPage() {
 	const user = await currentUser()
 	if (!user) return null
-	const userMetadata = user.publicMetadata as PublicMetadata
+	const userMetadata = user.publicMetadata
 	const nutritionMeatrics = await getUserNutritionMetrics(user.id, userMetadata)
 	const expenditure = nutritionMeatrics[0]?.calories.needed ?? 0
 

@@ -1,3 +1,6 @@
+import { JSX } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import { daysOfWeek } from '~/lib/utils'
 import { diaryGroupEnum, exerciseCategory } from '~/server/db/schema'
 
@@ -26,20 +29,6 @@ export interface NutritionMetrics {
 		needed: number
 		consumed: number
 	}
-}
-
-export type PublicMetadata = {
-	onboardingCompleted: boolean
-	sex: Sex
-	born: string
-	goal: Goal
-	height: number
-	weights: Weights
-	activity: ActivityLevel
-	heightUnit: string
-	updatedAt: string
-	goalWeight: number
-	weightUnit: string
 }
 
 export type NutritionMetricsPerDay = { [key: number]: NutritionMetrics }
@@ -92,4 +81,15 @@ export interface SuccessLogData {
 		amount: string
 		unit?: string
 	}[]
+}
+
+export interface SettingsMenuItem {
+	icon: React.ElementType
+	label: string
+	description: string
+	schema: z.ZodTypeAny
+	formFields: (form: ReturnType<typeof useForm>) => JSX.Element
+	defaultValue: string | number | Date
+	formatValue: (value: string | number | Date) => string
+	group: string
 }

@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { ACTIVITY_FACTORS, EFFORT_LEVELS, GOAL_FACTORS } from '~/constants'
-import { NutritionMetrics, PublicMetadata } from '~/types'
+import { NutritionMetrics } from '~/types'
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
@@ -58,7 +58,7 @@ export function calculateNutritionalNeeds({
 	sex,
 	activity,
 	goal
-}: PublicMetadata): NutritionMetrics {
+}: UserPublicMetadata): NutritionMetrics {
 	let currentWeight = weights[weights.length - 1]?.value ?? 0
 	const age = new Date().getFullYear() - new Date(born).getFullYear()
 	currentWeight = weightUnit === 'kg' ? currentWeight : currentWeight * 0.453592

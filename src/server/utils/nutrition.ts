@@ -1,14 +1,14 @@
 import 'server-only'
 
 import { calculateNutritionalNeeds, getAdjustedDay } from '~/lib/utils'
-import { NutritionMetricsPerDay, PublicMetadata } from '~/types'
+import { NutritionMetricsPerDay } from '~/types'
 import { db } from '~/server/db'
 import { consumption, food } from '~/server/db/schema'
 import { eq, and, gte } from 'drizzle-orm'
 
 export async function getUserNutritionMetrics(
 	userId: string,
-	userMetadata: PublicMetadata
+	userMetadata: UserPublicMetadata
 ) {
 	const nutritionMeatrics = calculateNutritionalNeeds(userMetadata)
 	const dayOfWeek = new Date()
