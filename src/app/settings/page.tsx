@@ -1,8 +1,6 @@
 'use client'
 
-import { JSX, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
 import * as z from 'zod'
 import { format } from 'date-fns'
 import {
@@ -18,9 +16,7 @@ import {
 	Mail,
 	Info
 } from 'lucide-react'
-import { cn } from '~/lib/utils'
 import { Button } from '~/components/ui/button'
-import { Calendar } from '~/components/ui/calendar'
 import {
 	Dialog,
 	DialogContent,
@@ -28,43 +24,12 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '~/components/ui/dialog'
-import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage
-} from '~/components/ui/form'
-import { Input } from '~/components/ui/input'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from '~/components/ui/select'
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger
-} from '~/components/ui/popover'
-import { Slider } from '~/components/ui/slider'
-import { Progress } from '~/components/ui/progress'
+import { SettingsMenuItem } from '~/types'
+import { SettingsForm } from './_components/form'
+import { SettingsField } from './_components/settings-field'
+import { ACTIVITY_LEVELS } from '~/constants'
 
-type MenuItem = {
-	icon: React.ElementType
-	label: string
-	description: string
-	schema: z.ZodTypeAny
-	formFields: (form: ReturnType<typeof useForm>) => JSX.Element
-	defaultValue: string | number | Date
-	formatValue: (value: string | number | Date) => string
-	group: string
-}
-
-const menuItems: MenuItem[] = [
+const menuItems: SettingsMenuItem[] = [
 	{
 		icon: CalendarIcon,
 		label: 'Birthday',
@@ -74,47 +39,10 @@ const menuItems: MenuItem[] = [
 				required_error: 'Please select a date'
 			})
 		}),
-		formFields: (form: ReturnType<typeof useForm>) => (
-			<FormField
-				control={form.control}
-				name='birthday'
-				render={({ field }) => (
-					<FormItem className='flex flex-col'>
-						<FormLabel>Birthday</FormLabel>
-						<Popover>
-							<PopoverTrigger asChild>
-								<FormControl>
-									<Button
-										variant={'outline'}
-										className={cn(
-											'w-full pl-3 text-left font-normal',
-											!field.value && 'text-muted-foreground'
-										)}
-									>
-										{field.value ? (
-											format(field.value, 'PPP')
-										) : (
-											<span>Pick a date</span>
-										)}
-										<CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
-									</Button>
-								</FormControl>
-							</PopoverTrigger>
-							<PopoverContent className='w-auto p-0' align='start'>
-								<Calendar
-									mode='single'
-									selected={field.value}
-									onSelect={field.onChange}
-									disabled={date =>
-										date > new Date() || date < new Date('1900-01-01')
-									}
-									initialFocus
-								/>
-							</PopoverContent>
-						</Popover>
-						<FormMessage />
-					</FormItem>
-				)}
+		formFields: form => (
+			<SettingsField
+				form={form}
+				attr={{ name: 'birthday', label: 'Birthday', type: 'date' }}
 			/>
 		),
 		defaultValue: new Date(),
@@ -128,31 +56,18 @@ const menuItems: MenuItem[] = [
 		schema: z.object({
 			sex: z.enum(['male', 'female', 'other'])
 		}),
-		formFields: (form: ReturnType<typeof useForm>) => (
-			<FormField
-				control={form.control}
-				name='sex'
-				render={({ field }) => (
-					<FormItem>
-						<FormLabel>Sex</FormLabel>
-						<Select onValueChange={field.onChange} defaultValue={field.value}>
-							<FormControl>
-								<SelectTrigger>
-									<SelectValue placeholder='Select your sex' />
-								</SelectTrigger>
-							</FormControl>
-							<SelectContent>
-								<SelectItem value='male'>Male</SelectItem>
-								<SelectItem value='female'>Female</SelectItem>
-								<SelectItem value='other'>Other</SelectItem>
-							</SelectContent>
-						</Select>
-						<FormMessage />
-					</FormItem>
-				)}
+		formFields: form => (
+			<SettingsField
+				form={form}
+				attr={{
+					name: 'sex',
+					label: 'Sex',
+					type: 'select',
+					options: ['Male', 'Female']
+				}}
 			/>
 		),
-		defaultValue: 'other',
+		defaultValue: 'male',
 		formatValue: value =>
 			typeof value === 'string'
 				? value.charAt(0).toUpperCase() + value.slice(1)
@@ -166,23 +81,15 @@ const menuItems: MenuItem[] = [
 		schema: z.object({
 			height: z.number().min(100).max(250)
 		}),
-		formFields: (form: ReturnType<typeof useForm>) => (
-			<FormField
-				control={form.control}
-				name='height'
-				render={({ field }) => (
-					<FormItem>
-						<FormLabel>Height (cm)</FormLabel>
-						<FormControl>
-							<Input
-								type='number'
-								{...field}
-								onChange={e => field.onChange(+e.target.value)}
-							/>
-						</FormControl>
-						<FormMessage />
-					</FormItem>
-				)}
+		formFields: form => (
+			<SettingsField
+				form={form}
+				attr={{
+					name: 'height',
+					label: 'Height (ft)',
+					type: 'number',
+					placeholder: 'Enter your height'
+				}}
 			/>
 		),
 		defaultValue: 170,
@@ -197,23 +104,15 @@ const menuItems: MenuItem[] = [
 		schema: z.object({
 			weight: z.number().min(30).max(300)
 		}),
-		formFields: (form: ReturnType<typeof useForm>) => (
-			<FormField
-				control={form.control}
-				name='weight'
-				render={({ field }) => (
-					<FormItem>
-						<FormLabel>Weight (kg)</FormLabel>
-						<FormControl>
-							<Input
-								type='number'
-								{...field}
-								onChange={e => field.onChange(+e.target.value)}
-							/>
-						</FormControl>
-						<FormMessage />
-					</FormItem>
-				)}
+		formFields: form => (
+			<SettingsField
+				form={form}
+				attr={{
+					name: 'weight',
+					label: 'Weight (kg)',
+					type: 'number',
+					placeholder: 'Enter your weight'
+				}}
 			/>
 		),
 		defaultValue: 70,
@@ -228,23 +127,15 @@ const menuItems: MenuItem[] = [
 		schema: z.object({
 			goalWeight: z.number().min(30).max(300)
 		}),
-		formFields: (form: ReturnType<typeof useForm>) => (
-			<FormField
-				control={form.control}
-				name='goalWeight'
-				render={({ field }) => (
-					<FormItem>
-						<FormLabel>Goal Weight (kg)</FormLabel>
-						<FormControl>
-							<Input
-								type='number'
-								{...field}
-								onChange={e => field.onChange(+e.target.value)}
-							/>
-						</FormControl>
-						<FormMessage />
-					</FormItem>
-				)}
+		formFields: form => (
+			<SettingsField
+				form={form}
+				attr={{
+					name: 'goalWeight',
+					label: 'Goal Weight (kg)',
+					type: 'number',
+					placeholder: 'Enter your goal weight'
+				}}
 			/>
 		),
 		defaultValue: 65,
@@ -259,26 +150,16 @@ const menuItems: MenuItem[] = [
 		schema: z.object({
 			bodyFat: z.number().min(0).max(100)
 		}),
-		formFields: (form: ReturnType<typeof useForm>) => (
-			<FormField
-				control={form.control}
-				name='bodyFat'
-				render={({ field }) => (
-					<FormItem>
-						<FormLabel>Body Fat Percentage</FormLabel>
-						<FormControl>
-							<Slider
-								min={0}
-								max={100}
-								step={1}
-								value={[field.value]}
-								onValueChange={vals => field.onChange(vals[0])}
-							/>
-						</FormControl>
-						<FormDescription>Current value: {field.value}%</FormDescription>
-						<FormMessage />
-					</FormItem>
-				)}
+		formFields: form => (
+			<SettingsField
+				form={form}
+				attr={{
+					name: 'bodyFat',
+					label: 'Body Fat Percentage',
+					type: 'range',
+					min: 0,
+					max: 100
+				}}
 			/>
 		),
 		defaultValue: 20,
@@ -291,38 +172,20 @@ const menuItems: MenuItem[] = [
 		label: 'Activity',
 		description: 'Update your activity level',
 		schema: z.object({
-			activityLevel: z.enum([
-				'sedentary',
-				'light',
-				'moderate',
-				'active',
-				'very_active'
+			activityLevel: z.enum([...Object.keys(ACTIVITY_LEVELS)] as [
+				string,
+				...string[]
 			])
 		}),
-		formFields: (form: ReturnType<typeof useForm>) => (
-			<FormField
-				control={form.control}
-				name='activityLevel'
-				render={({ field }) => (
-					<FormItem>
-						<FormLabel>Activity Level</FormLabel>
-						<Select onValueChange={field.onChange} defaultValue={field.value}>
-							<FormControl>
-								<SelectTrigger>
-									<SelectValue placeholder='Select your activity level' />
-								</SelectTrigger>
-							</FormControl>
-							<SelectContent>
-								<SelectItem value='sedentary'>Sedentary</SelectItem>
-								<SelectItem value='light'>Light</SelectItem>
-								<SelectItem value='moderate'>Moderate</SelectItem>
-								<SelectItem value='active'>Active</SelectItem>
-								<SelectItem value='very_active'>Very Active</SelectItem>
-							</SelectContent>
-						</Select>
-						<FormMessage />
-					</FormItem>
-				)}
+		formFields: form => (
+			<SettingsField
+				form={form}
+				attr={{
+					name: 'activityLabel',
+					label: 'Activity Label',
+					type: 'select',
+					options: Object.keys(ACTIVITY_LEVELS)
+				}}
 			/>
 		),
 		defaultValue: 'moderate',
@@ -339,26 +202,16 @@ const menuItems: MenuItem[] = [
 		schema: z.object({
 			exerciseFrequency: z.number().min(0).max(7)
 		}),
-		formFields: (form: ReturnType<typeof useForm>) => (
-			<FormField
-				control={form.control}
-				name='exerciseFrequency'
-				render={({ field }) => (
-					<FormItem>
-						<FormLabel>Exercise Frequency (days per week)</FormLabel>
-						<FormControl>
-							<Slider
-								min={0}
-								max={7}
-								step={1}
-								value={[field.value]}
-								onValueChange={vals => field.onChange(vals[0])}
-							/>
-						</FormControl>
-						<FormDescription>Current value: {field.value} days</FormDescription>
-						<FormMessage />
-					</FormItem>
-				)}
+		formFields: form => (
+			<SettingsField
+				form={form}
+				attr={{
+					name: 'exerciseFrequency',
+					label: 'Exercise Frequency',
+					type: 'range',
+					min: 1,
+					max: 7
+				}}
 			/>
 		),
 		defaultValue: 3,
@@ -374,28 +227,15 @@ const menuItems: MenuItem[] = [
 		schema: z.object({
 			cardioPreference: z.enum(['low', 'medium', 'high'])
 		}),
-		formFields: (form: ReturnType<typeof useForm>) => (
-			<FormField
-				control={form.control}
-				name='cardioPreference'
-				render={({ field }) => (
-					<FormItem>
-						<FormLabel>Cardio Preference</FormLabel>
-						<Select onValueChange={field.onChange} defaultValue={field.value}>
-							<FormControl>
-								<SelectTrigger>
-									<SelectValue placeholder='Select cardio preference' />
-								</SelectTrigger>
-							</FormControl>
-							<SelectContent>
-								<SelectItem value='low'>Low</SelectItem>
-								<SelectItem value='medium'>Medium</SelectItem>
-								<SelectItem value='high'>High</SelectItem>
-							</SelectContent>
-						</Select>
-						<FormMessage />
-					</FormItem>
-				)}
+		formFields: form => (
+			<SettingsField
+				form={form}
+				attr={{
+					name: 'cardioPreference',
+					label: 'Cardio Preference',
+					type: 'select',
+					options: ['low', 'medium', 'high']
+				}}
 			/>
 		),
 		defaultValue: 'medium',
@@ -412,30 +252,18 @@ const menuItems: MenuItem[] = [
 		schema: z.object({
 			liftingPreference: z.enum(['low', 'medium', 'high'])
 		}),
-		formFields: (form: ReturnType<typeof useForm>) => (
-			<FormField
-				control={form.control}
-				name='liftingPreference'
-				render={({ field }) => (
-					<FormItem>
-						<FormLabel>Lifting Preference</FormLabel>
-						<Select onValueChange={field.onChange} defaultValue={field.value}>
-							<FormControl>
-								<SelectTrigger>
-									<SelectValue placeholder='Select lifting preference' />
-								</SelectTrigger>
-							</FormControl>
-							<SelectContent>
-								<SelectItem value='low'>Low</SelectItem>
-								<SelectItem value='medium'>Medium</SelectItem>
-								<SelectItem value='high'>High</SelectItem>
-							</SelectContent>
-						</Select>
-						<FormMessage />
-					</FormItem>
-				)}
+		formFields: form => (
+			<SettingsField
+				form={form}
+				attr={{
+					name: 'liftingPreference',
+					label: 'Lifting Preference',
+					type: 'select',
+					options: ['low', 'medium', 'high']
+				}}
 			/>
 		),
+
 		defaultValue: 'medium',
 		formatValue: value =>
 			typeof value === 'string'
@@ -448,33 +276,25 @@ const menuItems: MenuItem[] = [
 		label: 'Goal',
 		description: 'Set your fitness goal',
 		schema: z.object({
-			goal: z.enum(['lose_weight', 'maintain_weight', 'gain_weight'])
+			goal: z.enum(['lose', 'maintain', 'gain'])
 		}),
-		formFields: (form: ReturnType<typeof useForm>) => (
-			<FormField
-				control={form.control}
-				name='goal'
-				render={({ field }) => (
-					<FormItem>
-						<FormLabel>Fitness Goal</FormLabel>
-						<Select onValueChange={field.onChange} defaultValue={field.value}>
-							<FormControl>
-								<SelectTrigger>
-									<SelectValue placeholder='Select your goal' />
-								</SelectTrigger>
-							</FormControl>
-							<SelectContent>
-								<SelectItem value='lose_weight'>Lose Weight</SelectItem>
-								<SelectItem value='maintain_weight'>Maintain Weight</SelectItem>
-								<SelectItem value='gain_weight'>Gain Weight</SelectItem>
-							</SelectContent>
-						</Select>
-						<FormMessage />
-					</FormItem>
-				)}
+		formFields: form => (
+			<SettingsField
+				form={form}
+				attr={{
+					name: 'goal',
+					label: 'Fitnes Goal',
+					type: 'select',
+					placeholder: 'Select your goal',
+					options: [
+						{ key: 'lose', label: 'Lose Weight' },
+						{ key: 'maintain', label: 'Maintain Weight' },
+						{ key: 'gain', label: 'Gain Weight' }
+					]
+				}}
 			/>
 		),
-		defaultValue: 'maintain_weight',
+		defaultValue: 'maintain',
 		formatValue: value =>
 			typeof value === 'string'
 				? value.replace('_', ' ').charAt(0).toUpperCase() +
@@ -489,19 +309,14 @@ const menuItems: MenuItem[] = [
 		schema: z.object({
 			goalProgress: z.number().min(0).max(100)
 		}),
-		formFields: (form: ReturnType<typeof useForm>) => (
-			<FormField
-				control={form.control}
-				name='goalProgress'
-				render={({ field }) => (
-					<FormItem>
-						<FormLabel>Goal Progress</FormLabel>
-						<FormControl>
-							<Progress value={field.value} className='w-full' />
-						</FormControl>
-						<FormDescription>Current progress: {field.value}%</FormDescription>
-					</FormItem>
-				)}
+		formFields: form => (
+			<SettingsField
+				form={form}
+				attr={{
+					name: 'goalProgress',
+					label: 'Goal Progress',
+					type: 'range'
+				}}
 			/>
 		),
 		defaultValue: 0,
@@ -555,7 +370,7 @@ export default function SettingsPageWithModalsComponent() {
 			acc[item.group]?.push(item)
 			return acc
 		},
-		{} as Record<string, MenuItem[]>
+		{} as Record<string, SettingsMenuItem[]>
 	)
 
 	return (
@@ -652,41 +467,5 @@ export default function SettingsPageWithModalsComponent() {
 				Version 1.0.0
 			</p>
 		</div>
-	)
-}
-
-function SettingsForm({
-	item,
-	onClose,
-	onSave,
-	initialValue
-}: {
-	item: MenuItem
-	onClose: () => void
-	onSave: (value: string | number | Date) => void
-	initialValue: string | number | Date
-}) {
-	const form = useForm<z.infer<typeof item.schema>>({
-		resolver: zodResolver(item.schema),
-		defaultValues: {
-			[item.label.toLowerCase()]: initialValue
-		}
-	})
-
-	function onSubmit(values: z.infer<typeof item.schema>) {
-		console.log(values)
-		onSave(values[item.label.toLowerCase()])
-		onClose()
-	}
-
-	return (
-		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-				{item.formFields(form)}
-				{item.label !== 'Goal Progress' && (
-					<Button type='submit'>Save Changes</Button>
-				)}
-			</form>
-		</Form>
 	)
 }

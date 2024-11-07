@@ -93,3 +93,14 @@ export interface SettingsMenuItem {
 	formatValue: (value: string | number | Date) => string
 	group: string
 }
+
+export type SettingsFieldType = 'date' | 'select' | 'number' | 'range'
+export interface SettingsAttr {
+	name: string
+	type: SettingsFieldType
+	label?: string
+	placeholder?: string
+	options?: Array<{ key: string; label: string } | string>
+	min?: number
+	max?: number
+}
