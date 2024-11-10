@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import * as z from 'zod'
 import { format } from 'date-fns'
 import {
@@ -16,18 +15,10 @@ import {
 	Mail,
 	Info
 } from 'lucide-react'
-import { Button } from '~/components/ui/button'
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger
-} from '~/components/ui/dialog'
-import { SettingsMenuItem } from '~/types'
-import { SettingsForm } from './_components/form'
+import { AboutMenuItem, SettingsMenuItem } from '~/types'
 import { SettingsField } from './_components/settings-field'
 import { ACTIVITY_LEVELS } from '~/constants'
+import { MenuItem } from './_components/menu-item'
 
 const menuItems: SettingsMenuItem[] = [
 	{
@@ -326,7 +317,7 @@ const menuItems: SettingsMenuItem[] = [
 	}
 ]
 
-const otherItems = [
+const otherItems: AboutMenuItem[] = [
 	{
 		icon: Mail,
 		label: 'Contact Us',
@@ -355,12 +346,9 @@ const otherItems = [
 ]
 
 export default function SettingsPageWithModalsComponent() {
-	const [openModal, setOpenModal] = useState<string | null>(null)
-	const [settings, setSettings] = useState(() => {
-		return Object.fromEntries(
-			menuItems.map(item => [item.label.toLowerCase(), item.defaultValue])
-		)
-	})
+	const settingsDefaultValue = Object.fromEntries(
+		menuItems.map(item => [item.label.toLowerCase(), item.defaultValue])
+	)
 
 	const groupedMenuItems = menuItems.reduce(
 		(acc, item) => {
@@ -381,48 +369,11 @@ export default function SettingsPageWithModalsComponent() {
 					<h2 className='mb-4 text-xl font-semibold'>{group}</h2>
 					<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
 						{items.map(item => (
-							<Dialog
+							<MenuItem
+								menuItem={item}
+								settingsDefaultValue={settingsDefaultValue}
 								key={item.label}
-								open={openModal === item.label}
-								onOpenChange={isOpen =>
-									setOpenModal(isOpen ? item.label : null)
-								}
-							>
-								<DialogTrigger asChild>
-									<Button
-										variant='outline'
-										className='h-auto w-full justify-start px-4 py-4'
-									>
-										<item.icon className='mr-2 h-5 w-5' />
-										<div className='flex flex-col items-start'>
-											<span className='font-medium'>{item.label}</span>
-											<span className='text-sm text-muted-foreground'>
-												{item.formatValue(
-													settings[item.label.toLowerCase()] ?? ''
-												)}
-											</span>
-										</div>
-									</Button>
-								</DialogTrigger>
-								<DialogContent>
-									<DialogHeader>
-										<DialogTitle>{item.label}</DialogTitle>
-									</DialogHeader>
-									<SettingsForm
-										item={item}
-										onClose={() => setOpenModal(null)}
-										onSave={value => {
-											setSettings(prev => ({
-												...prev,
-												[item.label.toLowerCase()]: value
-											}))
-										}}
-										initialValue={
-											settings[item.label.toLowerCase()] ?? item.defaultValue
-										}
-									/>
-								</DialogContent>
-							</Dialog>
+							/>
 						))}
 					</div>
 				</div>
@@ -431,35 +382,11 @@ export default function SettingsPageWithModalsComponent() {
 				<h2 className='mb-4 text-xl font-semibold'>Other</h2>
 				<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
 					{otherItems.map(item => (
-						<Dialog
+						<MenuItem
+							aboutMenuItem={item}
+							settingsDefaultValue={settingsDefaultValue}
 							key={item.label}
-							open={openModal === item.label}
-							onOpenChange={isOpen => setOpenModal(isOpen ? item.label : null)}
-						>
-							<DialogTrigger asChild>
-								<Button
-									variant='outline'
-									className='h-auto w-full justify-start px-4 py-4'
-									onClick={item.action}
-								>
-									<item.icon className='mr-2 h-5 w-5' />
-									<div className='flex flex-col items-start'>
-										<span className='font-medium'>{item.label}</span>
-										<span className='text-sm text-muted-foreground'>
-											{item.description}
-										</span>
-									</div>
-								</Button>
-							</DialogTrigger>
-							{item.content && (
-								<DialogContent>
-									<DialogHeader>
-										<DialogTitle>{item.label}</DialogTitle>
-									</DialogHeader>
-									{item.content}
-								</DialogContent>
-							)}
-						</Dialog>
+						/>
 					))}
 				</div>
 			</div>

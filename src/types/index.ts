@@ -1,4 +1,5 @@
-import { JSX } from 'react'
+import { LucideProps } from 'lucide-react'
+import { ForwardRefExoticComponent, JSX, RefAttributes } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { daysOfWeek } from '~/lib/utils'
@@ -103,4 +104,14 @@ export interface SettingsAttr {
 	options?: Array<{ key: string; label: string } | string>
 	min?: number
 	max?: number
+}
+
+export interface AboutMenuItem {
+	icon: ForwardRefExoticComponent<
+		Omit<LucideProps, 'ref'> & RefAttributes<SVGSVGElement>
+	>
+	label: string
+	description: string
+	action?: () => string
+	content?: JSX.Element
 }

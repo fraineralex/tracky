@@ -32,7 +32,7 @@ export function SettingsForm({
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-				{item.formFields(form)}
+				{/* {item.formFields(form)} */}
 				{item.label !== 'Goal Progress' && (
 					<Button type='submit'>Save Changes</Button>
 				)}
