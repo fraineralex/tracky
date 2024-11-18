@@ -1,11 +1,3 @@
-import { ControllerRenderProps, FieldValues } from 'react-hook-form'
-import {
-	FormControl,
-	FormItem,
-	FormLabel,
-	FormMessage
-} from '~/components/ui/form'
-
 import {
 	Select,
 	SelectContent,
@@ -15,22 +7,13 @@ import {
 } from '~/components/ui/select'
 import { SettingsAttr } from '~/types'
 
-export function SelectField({
-	field,
-	attr
-}: {
-	field: ControllerRenderProps<FieldValues>
-	attr: SettingsAttr
-}) {
+export function SelectField({ attr }: { attr: SettingsAttr }) {
 	return (
-		<FormItem>
-			<FormLabel>{attr.label}</FormLabel>
-			<Select onValueChange={field.onChange} defaultValue={field.value}>
-				<FormControl>
-					<SelectTrigger>
-						<SelectValue placeholder={attr.placeholder} />
-					</SelectTrigger>
-				</FormControl>
+		<div>
+			<Select defaultValue={attr.value as string}>
+				<SelectTrigger className='capitalize'>
+					<SelectValue placeholder={attr.value as string} />
+				</SelectTrigger>
 				<SelectContent>
 					{attr.options?.map(option => (
 						<SelectItem
@@ -43,7 +26,6 @@ export function SelectField({
 					))}
 				</SelectContent>
 			</Select>
-			<FormMessage />
-		</FormItem>
+		</div>
 	)
 }

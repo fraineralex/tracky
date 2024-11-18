@@ -1,26 +1,14 @@
-import { ControllerRenderProps, FieldValues } from 'react-hook-form'
-import {
-	FormControl,
-	FormItem,
-	FormLabel,
-	FormMessage
-} from '~/components/ui/form'
+import { Input } from '~/components/ui/input'
 import { SettingsAttr } from '~/types'
 
-export function NumberField({
-	field,
-	attr
-}: {
-	field: ControllerRenderProps<FieldValues>
-	attr: SettingsAttr
-}) {
+export function NumberField({ attr }: { attr: SettingsAttr }) {
 	return (
-		<FormItem>
-			<FormLabel>{attr.label}</FormLabel>
-			<FormControl>
-				<input type='number' {...field} placeholder={attr.placeholder} />
-			</FormControl>
-			<FormMessage />
-		</FormItem>
+		<article>
+			<Input
+				type='number'
+				placeholder={attr.placeholder}
+				value={attr.value as number}
+			/>
+		</article>
 	)
 }

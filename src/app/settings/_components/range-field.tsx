@@ -1,40 +1,21 @@
-import { ControllerRenderProps, FieldValues } from 'react-hook-form'
-import {
-	FormControl,
-	FormDescription,
-	FormItem,
-	FormLabel,
-	FormMessage
-} from '~/components/ui/form'
 import { Progress } from '~/components/ui/progress'
 import { Slider } from '~/components/ui/slider'
 import { SettingsAttr } from '~/types'
 
-export function RangeField({
-	field,
-	attr
-}: {
-	field: ControllerRenderProps<FieldValues>
-	attr: SettingsAttr
-}) {
+export function RangeField({ attr }: { attr: SettingsAttr }) {
+	const value = attr.value as number
+	let progressValue = value
+	if (attr.name !== 'exercise' && attr.max) {
+		progressValue = (value / attr.max) * 100
+	}
 	return (
-		<FormItem>
-			<FormLabel>{attr.label}</FormLabel>
-			<FormControl>
-				{!attr.min && !attr.max ? (
-					<Progress value={field.value} className='w-full' />
-				) : (
-					<Slider
-						min={attr.min}
-						max={attr.max}
-						step={1}
-						value={[field.value]}
-						onValueChange={vals => field.onChange(vals[0])}
-					/>
-				)}
-			</FormControl>
-			<FormDescription>Current value: {field.value}%</FormDescription>
-			<FormMessage />
-		</FormItem>
+		<article>
+			{attr.name === 'exercise' ? (
+				<Slider min={attr.min} max={attr.max} step={1} defaultValue={[value]} />
+			) : (
+				<Progress value={progressValue} max={attr.max} />
+			)}
+			<small className='text-muted-foreground'>Current value: {value}%</small>
+		</article>
 	)
 }
