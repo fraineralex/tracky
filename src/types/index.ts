@@ -1,7 +1,4 @@
-import { LucideProps } from 'lucide-react'
-import { ForwardRefExoticComponent, JSX, RefAttributes } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { JSX } from 'react'
 import { daysOfWeek } from '~/lib/utils'
 import { diaryGroupEnum, exerciseCategory } from '~/server/db/schema'
 
@@ -85,13 +82,10 @@ export interface SuccessLogData {
 }
 
 export interface SettingsMenuItem {
-	icon: React.ElementType
+	name: string
 	label: string
 	description: string
-	schema: z.ZodTypeAny
-	formFields: (form: ReturnType<typeof useForm>) => JSX.Element
 	defaultValue: string | number | Date
-	formatValue: (value: string | number | Date) => string
 	group: string
 }
 
@@ -107,11 +101,8 @@ export interface SettingsAttr {
 }
 
 export interface AboutMenuItem {
-	icon: ForwardRefExoticComponent<
-		Omit<LucideProps, 'ref'> & RefAttributes<SVGSVGElement>
-	>
+	name: string
 	label: string
 	description: string
-	action?: () => string
 	content?: JSX.Element
 }

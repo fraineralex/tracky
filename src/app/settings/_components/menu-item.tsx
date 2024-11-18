@@ -9,24 +9,51 @@ import {
 	DialogTrigger
 } from '~/components/ui/dialog'
 import { AboutMenuItem, SettingsMenuItem } from '~/types'
-import { SettingsForm } from './form'
 import React from 'react'
+import {
+	Activity,
+	Calendar,
+	Dumbbell,
+	Flag,
+	Heart,
+	Info,
+	Mail,
+	Ruler,
+	Target,
+	User,
+	Weight
+} from 'lucide-react'
+
+const ICONS = {
+	birthday: Calendar,
+	sex: User,
+	height: Ruler,
+	weight: Weight,
+	goalweight: Target,
+	fat: Weight,
+	activity: Activity,
+	exercise: Dumbbell,
+	cardio: Heart,
+	lifting: Dumbbell,
+	goal: Flag,
+	progress: Target,
+	contact: Mail,
+	info: Info
+}
 
 export function MenuItem({
 	menuItem,
 	aboutMenuItem,
-	settingsDefaultValue
 }: {
 	menuItem?: SettingsMenuItem
-	settingsDefaultValue: Record<string, string | number | Date>
 	aboutMenuItem?: AboutMenuItem
 }) {
 	const [openModal, setOpenModal] = React.useState<string | null>(null)
-	const [settings, setSettings] = React.useState(settingsDefaultValue)
 
 	const isMenuItem = menuItem !== undefined
 	const item = isMenuItem ? menuItem : aboutMenuItem
 	if (!item) return null
+	const Icon = ICONS[item.name as keyof typeof ICONS]
 	return (
 		<Dialog
 			key={item.label}
@@ -38,15 +65,11 @@ export function MenuItem({
 					variant='outline'
 					className='h-auto w-full justify-start px-4 py-4'
 				>
-					<item.icon className='mr-2 h-5 w-5' />
+					<Icon className='mr-2 h-5 w-5' />
 					<div className='flex flex-col items-start'>
 						<span className='font-medium'>{item.label}</span>
 						<span className='text-sm text-muted-foreground'>
-							{isMenuItem
-								? (item as SettingsMenuItem).formatValue(
-										settings[item.label.toLowerCase()] ?? ''
-									)
-								: item.description}
+							{isMenuItem ? item.label : item.description}
 						</span>
 					</div>
 				</Button>
@@ -57,22 +80,6 @@ export function MenuItem({
 						{isMenuItem || ('content' in item && item.content && item.label)}
 					</DialogTitle>
 				</DialogHeader>
-				{isMenuItem && (
-					<SettingsForm
-						item={item as SettingsMenuItem}
-						onClose={() => setOpenModal(null)}
-						onSave={value => {
-							setSettings(prev => ({
-								...prev,
-								[item.label.toLowerCase()]: value
-							}))
-						}}
-						initialValue={
-							settings[item.label.toLowerCase()] ??
-							(item as SettingsMenuItem).defaultValue
-						}
-					/>
-				)}
 				{!isMenuItem && (item as AboutMenuItem).content}
 			</DialogContent>
 		</Dialog>
