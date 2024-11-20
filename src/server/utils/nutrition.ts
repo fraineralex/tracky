@@ -56,3 +56,46 @@ export async function getUserNutritionMetrics(
 
 	return nutritionMeatricsPerDay
 }
+
+export function calculateBodyFat({
+	sex,
+	born,
+	height,
+	weights
+}: UserPublicMetadata) {
+	const weightInKg = weights[weights.length - 1]?.value ?? 0
+	const heightInMeters = height * 0.3048
+	const bmi = weightInKg / (heightInMeters * heightInMeters)
+
+	const age = new Date().getFullYear() - parseInt(born, 10)
+
+	let bodyFatPercentage = 1.2 * bmi + 0.23 * age - 16.2
+
+	if (sex === 'female') {
+		bodyFatPercentage = 1.2 * bmi + 0.23 * age - 5.4
+	}
+
+	return bodyFatPercentage.toFixed(1)
+}
+
+export function calculateGoalProgress({
+	weights,
+	goalWeight
+}: UserPublicMetadata) {
+	const initialWeight = weights[0]?.value ?? 0
+	const currentWeight = weights[weights.length - 1]?.value ?? 0
+
+	if (initialWeight > goalWeight) {
+		const progress =
+			((initialWeight - currentWeight) / (initialWeight - goalWeight)) * 100
+		return progress.toFixed(1)
+	}
+
+	if (initialWeight < goalWeight) {
+		const progress =
+			((currentWeight - initialWeight) / (goalWeight - initialWeight)) * 100
+		return progress.toFixed(1)
+	}
+
+	return 100
+}

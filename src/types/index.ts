@@ -1,5 +1,3 @@
-import { LucideProps } from 'lucide-react'
-import { ForwardRefExoticComponent, JSX, RefAttributes } from 'react'
 import { daysOfWeek } from '~/lib/utils'
 import { diaryGroupEnum, exerciseCategory } from '~/server/db/schema'
 
@@ -100,18 +98,13 @@ export interface SettingsAttr {
 	min?: number
 	max?: number
 	value: Date | string | number
+	updateValue?: (value: Date | string | number) => void
 }
 
 export interface AboutMenuItem {
 	name: string
 	label: string
-	description: string
-	content?: JSX.Element | string
-	attr?: SettingsAttr
-	displayValue?: string
-	Icon: ForwardRefExoticComponent<
-		Omit<LucideProps, 'ref'> & RefAttributes<SVGSVGElement>
-	>
+	attr: SettingsAttr
 }
 
 export type FieldTypes = Record<
