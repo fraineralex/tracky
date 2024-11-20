@@ -1,25 +1,31 @@
-import { format } from 'date-fns'
 import { MenuItem } from './_components/menu-item'
 import { ACTIVITY_LEVELS } from '~/constants'
-import {
-	Activity,
-	CalendarIcon,
-	Dumbbell,
-	Flag,
-	Heart,
-	Info,
-	Mail,
-	Percent,
-	PersonStanding,
-	Ruler,
-	Target,
-	User,
-	Weight
-} from 'lucide-react'
+import { Info, Mail } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import Link from 'next/link'
+import { currentUser } from '@clerk/nextjs/server'
+import {
+	calculateBodyFat,
+	calculateGoalProgress
+} from '~/server/utils/nutrition'
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger
+} from '~/components/ui/dialog'
 
-export default function SettingsPageWithModalsComponent() {
+export default async function SettingsPageWithModalsComponent() {
+	const user = await currentUser()
+	if (!user) return null
+	const userMetadata = user?.publicMetadata
+
+	const currentWeight =
+		userMetadata.weights[userMetadata.weights.length - 1]?.value ?? 0
+	const bodyFat = calculateBodyFat(userMetadata)
+	const goalProgress = calculateGoalProgress(userMetadata)
+
 	return (
 		<div className='container mx-auto max-w-7xl p-6'>
 			<h1 className='mb-6 text-2xl font-bold'>Settings</h1>
@@ -30,75 +36,61 @@ export default function SettingsPageWithModalsComponent() {
 						<MenuItem
 							name='birthday'
 							label='Birthday'
-							description='Update your date of birth'
 							attr={{
 								name: 'birthday',
 								label: 'Birthday',
 								type: 'date',
-								value: new Date()
+								value: userMetadata.born
 							}}
-							displayValue={format(new Date(), 'PPP')}
-							Icon={CalendarIcon}
 						/>
 						<MenuItem
 							name='sex'
 							label='Sex'
-							description='Update your biological sex'
 							attr={{
 								name: 'sex',
 								label: 'Sex',
 								type: 'select',
 								options: ['male', 'female'],
-								value: 'male'
+								value: userMetadata.sex
 							}}
-							Icon={User}
 						/>
 						<MenuItem
 							name='activity'
 							label='Activity'
-							description='Update your activity level'
 							attr={{
 								name: 'activity',
 								label: 'Activity Level',
 								type: 'select',
 								options: Object.keys(ACTIVITY_LEVELS),
-								value: 'moderate'
+								value: userMetadata.activity
 							}}
-							Icon={Activity}
 						/>
 
 						<MenuItem
 							name='height'
 							label='Height'
-							description='Update your height'
 							attr={{
 								name: 'height',
 								label: 'Height (ft)',
 								type: 'number',
 								placeholder: 'Enter your height',
-								value: 170
+								value: userMetadata.height
 							}}
-							displayValue='6′2 ft'
-							Icon={Ruler}
 						/>
 						<MenuItem
 							name='weight'
 							label='Weight'
-							description='Update your weight'
 							attr={{
 								name: 'weight',
 								label: 'Weight (kg)',
 								type: 'number',
 								placeholder: 'Enter your weight',
-								value: 170
+								value: currentWeight
 							}}
-							displayValue='97.8 kg'
-							Icon={Weight}
 						/>
 						<MenuItem
 							name='fat'
 							label='Body Fat'
-							description='Update your body fat percentage'
 							attr={{
 								name: 'fat',
 								label: 'Body Fat Percentage (%)',
@@ -106,10 +98,8 @@ export default function SettingsPageWithModalsComponent() {
 								type: 'range',
 								min: 0,
 								max: 50,
-								value: 20
+								value: bodyFat
 							}}
-							displayValue='20%'
-							Icon={Percent}
 						/>
 					</div>
 				</div>
@@ -117,89 +107,38 @@ export default function SettingsPageWithModalsComponent() {
 					<h2 className='mb-4 text-lg font-semibold'>Preferences and Goals</h2>
 					<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
 						<MenuItem
-							name='exercise'
-							label='Exercise'
-							description='Update your exercise frequency'
-							attr={{
-								name: 'exercise',
-								label: 'Exercise Frequency',
-								placeholder: 'Enter your exercise frequency',
-								type: 'range',
-								min: 1,
-								max: 7,
-								value: 3
-							}}
-							displayValue='3 times per week'
-							Icon={PersonStanding}
-						/>
-						<MenuItem
-							name='cardio'
-							label='Cardio'
-							description='Update your cardio preference'
-							attr={{
-								name: 'cardio',
-								label: 'Cardio Preference',
-								type: 'select',
-								options: ['light', 'medium', 'heavy'],
-								value: 'medium'
-							}}
-							Icon={Heart}
-						/>
-						<MenuItem
-							name='lifting'
-							label='Lifting'
-							description='Update your lifting preference'
-							attr={{
-								name: 'lifting',
-								label: 'Lifting Preference',
-								type: 'select',
-								options: ['light', 'medium', 'heavy'],
-								value: 'medium'
-							}}
-							Icon={Dumbbell}
-						/>
-
-						<MenuItem
 							name='goal'
 							label='Goal'
-							description='Set your fitness goal'
 							attr={{
 								name: 'goal',
 								label: 'Fitness Goal',
 								type: 'select',
 								options: ['maintain', 'lose', 'gain'],
-								value: 'gain'
+								value: userMetadata.goal
 							}}
-							Icon={Flag}
 						/>
 						<MenuItem
 							name='goalweight'
 							label='Goal Weight'
-							description='Update your goal weight'
 							attr={{
 								name: 'goalweight',
 								label: 'Goal Weight (kg)',
 								type: 'number',
 								placeholder: 'Enter your goal weight',
-								value: 100
+								value: userMetadata.goalWeight
 							}}
-							displayValue='100 kg'
-							Icon={Weight}
 						/>
 						<MenuItem
 							name='progress'
 							label='Goal Progress'
-							description='View your goal progress'
 							attr={{
 								name: 'progress',
 								label: 'Goal Progress',
 								type: 'range',
 								min: 0,
 								max: 100,
-								value: 70
+								value: goalProgress
 							}}
-							displayValue='70%'
-							Icon={Target}
 						/>
 					</div>
 				</div>
@@ -223,11 +162,27 @@ export default function SettingsPageWithModalsComponent() {
 								</div>
 							</Link>
 						</Button>
-						<MenuItem
-							name='about'
-							label='About'
-							description='Learn more about the app'
-							content={
+
+						<Dialog>
+							<DialogTrigger asChild>
+								<Button
+									variant='outline'
+									className='h-auto w-full justify-start px-4 py-4'
+								>
+									<Info className='mr-2 h-5 w-5' />
+									<div className='flex flex-col items-start'>
+										<span className='font-medium'>About</span>
+										<span className='text-sm capitalize text-muted-foreground'>
+											Learn more about the app
+										</span>
+									</div>
+								</Button>
+							</DialogTrigger>
+							<DialogContent>
+								<DialogHeader>
+									<DialogTitle>About</DialogTitle>
+								</DialogHeader>
+
 								<div>
 									<p>
 										Tracky is your personal health and fitness companion.
@@ -244,9 +199,8 @@ export default function SettingsPageWithModalsComponent() {
 										Version 1.0.0
 									</p>
 								</div>
-							}
-							Icon={Info}
-						/>
+							</DialogContent>
+						</Dialog>
 					</div>
 				</div>
 			</form>
