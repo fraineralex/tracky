@@ -11,7 +11,17 @@ export function RangeField({ attr }: { attr: SettingsAttr }) {
 	return (
 		<article>
 			{attr.name === 'exercise' ? (
-				<Slider min={attr.min} max={attr.max} step={1} defaultValue={[value]} />
+				<Slider
+					min={attr.min}
+					max={attr.max}
+					step={1}
+					defaultValue={[value]}
+					onValueChange={value => {
+						if (value[0] !== undefined) {
+							attr.updateValue?.(value[0])
+						}
+					}}
+				/>
 			) : (
 				<Progress value={progressValue} max={attr.max} />
 			)}

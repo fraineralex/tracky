@@ -36,6 +36,7 @@ const ICONS = {
 }
 
 export function MenuItem({ name, label, attr }: AboutMenuItem) {
+	const [isOpen, setIsOpen] = React.useState(false)
 	const [value, setValue] = React.useState(attr.value)
 
 	const formatHeight = (height: number) => {
@@ -44,23 +45,28 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 		return `${feet}′${inches}"`
 	}
 
-	let displayValue = attr.value.toString()
+	let displayValue = value.toString()
 	if (attr.name === 'birthday')
-		displayValue = format(new Date(`${attr.value}T12:00`), 'PPP')
-	if (attr.name === 'height') displayValue = formatHeight(attr.value as number)
+		displayValue = format(new Date(`${value}T12:00`), 'PPP')
+	if (attr.name === 'height') displayValue = formatHeight(value as number)
 	if (attr.name === 'weight' || name === 'goalweight')
-		displayValue = `${attr.value} kg`
-	if (attr.name === 'fat' || name === 'progress')
-		displayValue = `${attr.value}%`
+		displayValue = `${value} kg`
+	if (attr.name === 'fat' || name === 'progress') displayValue = `${value}%`
 
 	const Icon = ICONS[name as keyof typeof ICONS]
 
+	const updateValue = (newValue: typeof value) => {
+		setIsOpen(false)
+		setValue(newValue)
+	}
+
 	return (
-		<Dialog>
+		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
 				<Button
 					variant='outline'
 					className='h-auto w-full justify-start px-4 py-4'
+					onClick={() => setIsOpen(true)}
 				>
 					<Icon className='mr-2 h-5 w-5' />
 					<div className='flex flex-col items-start'>
@@ -71,16 +77,11 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 					</div>
 				</Button>
 			</DialogTrigger>
-			<DialogContent>
+			<DialogContent aria-describedby={label}>
 				<DialogHeader>
 					<DialogTitle>{label}</DialogTitle>
 				</DialogHeader>
-				<SettingsField
-					attr={{ ...attr, value, updateValue: setValue }}
-				/>
-				{name !== 'fat' && name !== 'progress' && (
-					<Button type='submit'>Save Changes</Button>
-				)}
+				<SettingsField attr={{ ...attr, value, updateValue }} />
 			</DialogContent>
 		</Dialog>
 	)
