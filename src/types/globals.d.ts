@@ -17,8 +17,9 @@ declare global {
 		weights: Weights
 		activity: ActivityLevel
 		heightUnit: string
-		updatedAt: string
 		goalWeight: number
 		weightUnit: string
+		fat?: number
+		updatedAt: string
 	}
 }
