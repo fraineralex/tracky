@@ -19,7 +19,7 @@ declare global {
 		heightUnit: string
 		goalWeight: number
 		weightUnit: string
-		fat?: number
+		fat: number
 		updatedAt: string
 	}
 }

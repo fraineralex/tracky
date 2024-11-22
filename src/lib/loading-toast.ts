@@ -11,5 +11,5 @@ export function loadingToast(loading: string, id: string) {
 		id
 	})
 
-  return () => toast.dismiss(id)
+	return () => toast.dismiss(id)
 }
