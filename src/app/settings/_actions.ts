@@ -1,14 +1,15 @@
 'use server'
 
 import 'server-only'
-import { auth, clerkClient, currentUser } from '@clerk/nextjs/server'
+import { clerkClient, currentUser } from '@clerk/nextjs/server'
+import { calculateBodyFat } from '~/server/utils/nutrition'
 
 export const updatePublicMetadata = async (
 	metadata: Partial<UserPublicMetadata>
 ) => {
-	const { userId } = await auth()
+	const user = await currentUser()
 
-	if (!userId)
+	if (!user)
 		return {
 			message: 'You must be logged in to update your information',
 			success: false
@@ -16,14 +17,23 @@ export const updatePublicMetadata = async (
 
 	try {
 		const client = await clerkClient()
-		if (metadata.weights) {
-			const user = await currentUser()
-			const weights = user?.publicMetadata.weights
-			weights?.push(metadata.weights[0]!)
-			metadata.weights = weights
+		if (metadata.born || metadata.height || metadata.sex || metadata.weights) {
+			const publicMetadata = user.publicMetadata
+			if (metadata.weights) {
+				const weights = publicMetadata.weights
+				weights.push(metadata.weights[0]!)
+				metadata.weights = weights
+				publicMetadata.weights = weights
+			}
+
+			if (metadata.born) publicMetadata.born = metadata.born
+			if (metadata.height) publicMetadata.height = metadata.height
+			if (metadata.sex) publicMetadata.sex = metadata.sex
+
+			metadata.fat = calculateBodyFat(publicMetadata)
 		}
 
-		await client.users.updateUserMetadata(userId, {
+		await client.users.updateUserMetadata(user.id, {
 			publicMetadata: metadata as UserPublicMetadata
 		})
 

@@ -49,10 +49,10 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 	}
 
 	let displayValue = value.toString()
-	if (attr.name === 'birthday')
+	if (attr.name === 'born')
 		displayValue = format(new Date(`${value}T12:00`), 'PPP')
 	if (attr.name === 'height') displayValue = formatHeight(value as number)
-	if (attr.name === 'weight' || name === 'goalweight')
+	if (attr.name === 'weights' || name === 'goalWeight')
 		displayValue = `${value} kg`
 	if (attr.name === 'fat' || name === 'progress') displayValue = `${value}%`
 
@@ -84,6 +84,7 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 		}
 
 		toast.success(`Your ${label} has been updated successfully.`)
+		window.location.reload() // TODO: Manage state instead of reloading the page
 	}
 
 	return (
@@ -97,7 +98,9 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 					<Icon className='mr-2 h-5 w-5' />
 					<div className='flex flex-col items-start'>
 						<span className='font-medium'>{label}</span>
-						<span className='text-sm capitalize text-muted-foreground'>
+						<span
+							className={`text-sm text-muted-foreground ${!displayValue.includes('kg') ? 'capitalize' : ''}`}
+						>
 							{displayValue}
 						</span>
 					</div>
