@@ -75,7 +75,7 @@ export function calculateBodyFat({
 		bodyFatPercentage = 1.2 * bmi + 0.23 * age - 5.4
 	}
 
-	return bodyFatPercentage.toFixed(1)
+	return bodyFatPercentage
 }
 
 export function calculateGoalProgress({

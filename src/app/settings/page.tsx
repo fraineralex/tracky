@@ -1,13 +1,10 @@
 import { MenuItem } from './_components/menu-item'
 import { ACTIVITY_LEVELS } from '~/constants'
-import { Info, Mail } from 'lucide-react'
+import { BriefcaseMedical, Info, Mail } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import Link from 'next/link'
 import { currentUser } from '@clerk/nextjs/server'
-import {
-	calculateBodyFat,
-	calculateGoalProgress
-} from '~/server/utils/nutrition'
+import { calculateGoalProgress } from '~/server/utils/nutrition'
 import {
 	Dialog,
 	DialogContent,
@@ -23,12 +20,16 @@ export default async function SettingsPageWithModalsComponent() {
 
 	const currentWeight =
 		userMetadata.weights[userMetadata.weights.length - 1]?.value ?? 0
-	const bodyFat = calculateBodyFat(userMetadata)
 	const goalProgress = calculateGoalProgress(userMetadata)
 
 	return (
 		<div className='container mx-auto max-w-7xl p-6'>
-			<h1 className='mb-6 text-2xl font-bold'>Settings</h1>
+			<header className='mb-8 flex flex-col gap-1'>
+				<h1 className='text-2xl font-bold'>Settings</h1>
+				<h2 className='text-sm text-muted-foreground'>
+					Configure the settings for this application
+				</h2>
+			</header>
 			<div className='mb-8'>
 				<h2 className='mb-4 text-lg font-semibold'>Personal Information</h2>
 				<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
@@ -97,7 +98,7 @@ export default async function SettingsPageWithModalsComponent() {
 							type: 'range',
 							min: 0,
 							max: 50,
-							value: bodyFat
+							value: userMetadata.fat.toFixed(1)
 						}}
 					/>
 				</div>
@@ -159,7 +160,6 @@ export default async function SettingsPageWithModalsComponent() {
 							</div>
 						</Link>
 					</Button>
-
 					<Dialog>
 						<DialogTrigger asChild>
 							<Button
@@ -194,6 +194,44 @@ export default async function SettingsPageWithModalsComponent() {
 								</p>
 								<p className='mt-8 text-center text-sm text-muted-foreground'>
 									Version 1.0.0
+								</p>
+							</div>
+						</DialogContent>
+					</Dialog>
+					<Dialog>
+						<DialogTrigger asChild>
+							<Button
+								variant='outline'
+								className='h-auto w-full justify-start px-4 py-4'
+							>
+								<BriefcaseMedical className='mr-2 h-5 w-5' />
+								<div className='flex flex-col items-start'>
+									<span className='font-medium'>Health Disclaimer</span>
+									<span className='text-sm capitalize text-muted-foreground'>
+										Understand the health guidelines
+									</span>
+								</div>
+							</Button>
+						</DialogTrigger>
+						<DialogContent>
+							<DialogHeader>
+								<DialogTitle>Health Disclaimer</DialogTitle>
+							</DialogHeader>
+
+							<div>
+								<p>
+									Tracky provides health and fitness tracking for informational
+									purposes only. It is not a substitute for professional medical
+									advice, diagnosis, or treatment.
+								</p>
+								<p className='mt-4'>
+									Always consult with a healthcare provider before starting any
+									new fitness or health regimen. Discontinue use immediately if
+									you experience discomfort or adverse effects, and seek medical
+									attention.
+								</p>
+								<p className='mt-8 text-center text-sm text-muted-foreground'>
+									Stay safe while using Tracky. 💚
 								</p>
 							</div>
 						</DialogContent>
