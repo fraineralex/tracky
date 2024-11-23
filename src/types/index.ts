@@ -1,4 +1,4 @@
-import { daysOfWeek } from '~/lib/utils'
+import { daysOfWeek } from '~/constants'
 import { diaryGroupEnum, exerciseCategory } from '~/server/db/schema'
 
 export type Sex = 'male' | 'female'
