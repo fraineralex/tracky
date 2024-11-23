@@ -49,7 +49,7 @@ export function BornDatePicker({
 						initialFocus
 						disabled={{
 							before: new Date('1924-01-01'),
-							after: new Date('2016-01-01')
+							after: new Date()
 						}}
 						defaultMonth={date || new Date('2000-01-31')}
 					/>

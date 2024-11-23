@@ -2,7 +2,7 @@ import { currentUser } from '@clerk/nextjs/server'
 import { desc, eq } from 'drizzle-orm'
 import { Dumbbell, HandPlatter } from 'lucide-react'
 import { Card } from '~/components/ui/card'
-import { getStreakNumber } from '~/lib/utils'
+import { calculateStreak } from '~/lib/calculations'
 import { db } from '~/server/db'
 import { consumption, exercise } from '~/server/db/schema'
 
@@ -21,10 +21,10 @@ export default async function ResumeStreak() {
 		.where(eq(exercise.userId, user.id))
 		.orderBy(desc(exercise.createdAt))
 
-	const foodStreak = getStreakNumber(
+	const foodStreak = calculateStreak(
 		foodDates.map(({ createdAt }) => new Date(createdAt.setHours(0, 0, 0, 0)))
 	)
-	const exerciseStreak = getStreakNumber(
+	const exerciseStreak = calculateStreak(
 		exerciseDates.map(
 			({ createdAt }) => new Date(createdAt.setHours(0, 0, 0, 0))
 		)

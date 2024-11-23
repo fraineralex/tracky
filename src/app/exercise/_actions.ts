@@ -17,8 +17,8 @@ import { desc, sql } from 'drizzle-orm'
 import { Message } from '../food/_actions'
 import { EXERCISE_ICONS } from '~/constants'
 import { NewExercise } from '../dashboard/_actions'
-import { calculateEnergyBurned } from '~/lib/utils'
-import { PublicMetadata, SuccessLogData, Weights } from '~/types'
+import { calculateEnergyBurned } from '~/lib/calculations'
+import { SuccessLogData, Weights } from '~/types'
 
 const ExerciseSchema = z.object({
 	exercise: z.array(
@@ -54,7 +54,7 @@ export async function logExerciseAI(messages: Message[]): Promise<Message[]> {
 	}
 
 	const { weights, weightUnit, height, heightUnit, born, sex } =
-		user?.publicMetadata as PublicMetadata
+		user?.publicMetadata
 
 	const currentWeight = weights[weights.length - 1] as Weights[number]
 	const age = new Date().getFullYear() - new Date(born as string).getFullYear()

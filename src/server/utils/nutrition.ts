@@ -1,18 +1,21 @@
 import 'server-only'
 
-import { calculateNutritionalNeeds, getAdjustedDay } from '~/lib/utils'
-import { NutritionMetricsPerDay, PublicMetadata } from '~/types'
+import { NutritionMetricsPerDay } from '~/types'
 import { db } from '~/server/db'
 import { consumption, food } from '~/server/db/schema'
 import { eq, and, gte } from 'drizzle-orm'
+import {
+	calculateAdjustedDay,
+	calculateNutritionalNeeds
+} from '~/lib/calculations'
 
 export async function getUserNutritionMetrics(
 	userId: string,
-	userMetadata: PublicMetadata
+	userMetadata: UserPublicMetadata
 ) {
 	const nutritionMeatrics = calculateNutritionalNeeds(userMetadata)
 	const dayOfWeek = new Date()
-	dayOfWeek.setDate(dayOfWeek.getDate() - getAdjustedDay(dayOfWeek) - 1)
+	dayOfWeek.setDate(dayOfWeek.getDate() - calculateAdjustedDay(dayOfWeek) - 1)
 	const result = await db
 		.select({
 			portion: consumption.portion,
@@ -43,7 +46,7 @@ export async function getUserNutritionMetrics(
 				(Number(portion) / Number(servingSize)) * Number(carbs)
 			const fatsConsumed = (Number(portion) / Number(servingSize)) * Number(fat)
 
-			const day = getAdjustedDay(createdAt)
+			const day = calculateAdjustedDay(createdAt)
 			const nutrition =
 				nutritionMeatricsPerDay[day] ?? structuredClone(nutritionMeatrics)
 

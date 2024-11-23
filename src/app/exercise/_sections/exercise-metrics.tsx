@@ -1,6 +1,6 @@
 import { Activity, Clock, Flame, TrendingUp } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
-import { getDuration } from '~/lib/utils'
+import { calculateDuration } from '~/lib/calculations'
 import { ExerciseMetricsData } from '~/types'
 
 export default function ExerciseMetrics({
@@ -16,12 +16,12 @@ export default function ExerciseMetrics({
 		},
 		{
 			name: 'Total Exercise Time',
-			value: getDuration(metrics.totalDuration),
+			value: calculateDuration(metrics.totalDuration),
 			icon: Clock
 		},
 		{
 			name: 'Avg. Session Duration',
-			value: getDuration(metrics.avgDuration),
+			value: calculateDuration(metrics.avgDuration),
 			icon: TrendingUp
 		},
 		{

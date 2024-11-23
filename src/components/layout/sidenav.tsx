@@ -25,7 +25,7 @@ export default function SideNav() {
 				<SidenavButton label='Diary' href='/diary'>
 					<NotepadText className='h-6 w-6 md:h-5 md:w-5' />
 				</SidenavButton>
-				<SidenavButton label='Settings' href='/settings'>
+				<SidenavButton label='Settings' href='/settings' enabled>
 					<Settings className='h-6 w-6 md:h-5 md:w-5' />
 				</SidenavButton>
 			</article>

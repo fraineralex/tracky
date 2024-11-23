@@ -1,7 +1,6 @@
 # 🥗 [Tracky](/) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-004DFF.svg)](https://github.com/fraineralex/tracky/blob/main/LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](https://legacy.reactjs.org/docs/how-to-contribute.html#your-first-pull-request) [![PRs Welcome](https://img.shields.io/badge/state-development-FF0065.svg)](https://legacy.reactjs.org/docs/how-to-contribute.html#your-first-pull-request) ![Website](https://img.shields.io/website-running-stopped-7B2EFF-red/https/tracky.fraineralex.dev.svg)
 
-A smart, robust and minimalist fitness tracking web app built with `T3 Stack` with AI-powered features to
-quickly log meals and exercises. It helps users follow their fitness journey every step of the way, without overwhelming them with unnecessary features. With a modern interface, Tracky makes it easy to log workouts and meals, keeping users focused on progress while simplifying their path to achieving fitness goals.
+A smart, robust and minimalist fitness tracking web app built with `T3 Stack` with AI-powered features to quickly log meals and exercises. It helps users follow their fitness journey every step of the way, without overwhelming them with unnecessary features. With a modern interface, Tracky makes it easy to log workouts and meals, keeping users focused on progress while simplifying their path to achieving fitness goals.
 
 ![Open graph image of Tracky](/public/gh.webp)
 
@@ -23,8 +22,9 @@ quickly log meals and exercises. It helps users follow their fitness journey eve
 - ✅ **`Onboarding`**
 - ✅ **`Dashboard Page`**
 - ✅ **`Food Page`**
-- 🚧 **`Exercise Page`**
-- 💡 **`Diary Page`**
+- ✅ **`Exercise Page`**
+- ✅ **`Settings Page`**
+- 🚧 **`Diary Page`**
 
 ## 🚀 Features
 

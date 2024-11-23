@@ -20,12 +20,12 @@ import {
 	Weights
 } from '~/types'
 import {
-	daysOfWeek,
-	getAdjustedDay,
-	getMacroPercentage,
-	getPercentage,
+	calculateAdjustedDay,
+	calculateMacroPercentage,
+	calculatePercentage,
 	round
-} from '~/lib/utils'
+} from '~/lib/calculations'
+import { daysOfWeek } from '~/constants'
 
 export default function NutritionGraphic({
 	nutritionMeatrics,
@@ -46,24 +46,24 @@ export default function NutritionGraphic({
 		}
 	})
 
-	const weekDay = getAdjustedDay(new Date())
+	const weekDay = calculateAdjustedDay(new Date())
 	const todayNutrition = nutritionMeatrics[weekDay] as NutritionMetrics
 	const todayGoalData = [
 		{
 			name: 'Calories',
-			value: getPercentage(todayNutrition.calories)
+			value: calculatePercentage(todayNutrition.calories)
 		},
 		{
 			name: 'Protein',
-			value: getPercentage(todayNutrition.protein)
+			value: calculatePercentage(todayNutrition.protein)
 		},
 		{
 			name: 'Carbs',
-			value: getPercentage(todayNutrition.carbs)
+			value: calculatePercentage(todayNutrition.carbs)
 		},
 		{
 			name: 'Fat',
-			value: getPercentage(todayNutrition.fats)
+			value: calculatePercentage(todayNutrition.fats)
 		}
 	]
 
@@ -85,40 +85,40 @@ export default function NutritionGraphic({
 	const weekGoalData = [
 		{
 			name: 'Calories',
-			value: getPercentage(weekGoalNutrition.calories)
+			value: calculatePercentage(weekGoalNutrition.calories)
 		},
 		{
 			name: 'Protein',
-			value: getPercentage(weekGoalNutrition.protein)
+			value: calculatePercentage(weekGoalNutrition.protein)
 		},
 		{
 			name: 'Carbs',
-			value: getPercentage(weekGoalNutrition.carbs)
+			value: calculatePercentage(weekGoalNutrition.carbs)
 		},
 		{
 			name: 'Fat',
-			value: getPercentage(weekGoalNutrition.fats)
+			value: calculatePercentage(weekGoalNutrition.fats)
 		}
 	]
 
 	const macroData = [
 		{
 			name: 'Protein',
-			value: getMacroPercentage(
+			value: calculateMacroPercentage(
 				todayNutrition.protein.consumed,
 				todayNutrition.calories.consumed
 			)
 		},
 		{
 			name: 'Carbs',
-			value: getMacroPercentage(
+			value: calculateMacroPercentage(
 				todayNutrition.carbs.consumed,
 				todayNutrition.calories.consumed
 			)
 		},
 		{
 			name: 'Fat',
-			value: getMacroPercentage(
+			value: calculateMacroPercentage(
 				todayNutrition.fats.consumed,
 				todayNutrition.calories.consumed
 			)

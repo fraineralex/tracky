@@ -2,11 +2,11 @@ import NutritionGraphic from './sections/nutrition-graphics'
 import { NutritionCards } from './sections/nutrition-cards'
 import { Header } from './sections/header'
 import { currentUser } from '@clerk/nextjs/server'
-import { NutritionMetrics, PublicMetadata } from '~/types'
+import { NutritionMetrics } from '~/types'
 import { getUserNutritionMetrics } from '~/server/utils/nutrition'
-import { getAdjustedDay } from '~/lib/utils'
 import { Metadata } from 'next'
 import Footer from '~/components/layout/footer'
+import { calculateAdjustedDay } from '~/lib/calculations'
 
 export const metadata: Metadata = {
 	title: 'Food'
@@ -15,9 +15,9 @@ export const metadata: Metadata = {
 export default async function FoodPage() {
 	const user = await currentUser()
 	if (!user) return null
-	const userMetadata = user.publicMetadata as PublicMetadata
+	const userMetadata = user.publicMetadata
 	const nutritionMeatrics = await getUserNutritionMetrics(user.id, userMetadata)
-	const today = getAdjustedDay(new Date())
+	const today = calculateAdjustedDay(new Date())
 	const todayNutrition = nutritionMeatrics[today] as NutritionMetrics
 
 	return (

@@ -3,8 +3,7 @@
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import { z } from 'zod'
 import { GOAL_FACTORS } from '~/constants'
-import { round } from '~/lib/utils'
-import { PublicMetadata } from '~/types'
+import { calculateBodyFat, round } from '~/lib/calculations'
 
 const OnboardingSchema = z.object({
 	sex: z.enum(['male', 'female'], { required_error: 'Please select a sex' }),
@@ -77,7 +76,7 @@ export const completeOnboarding = async (formData: FormData) => {
 	}
 
 	try {
-		const publicMetadata: PublicMetadata = {
+		const publicMetadata: UserPublicMetadata = {
 			onboardingCompleted: true,
 			...validatedFields.data,
 			weights: [
@@ -91,8 +90,11 @@ export const completeOnboarding = async (formData: FormData) => {
 				validatedFields.data.weights * GOAL_FACTORS[validatedFields.data.goal]
 			),
 			born: validatedFields.data.born.toISOString().split('T')[0] as string,
-			updatedAt: new Date().toISOString().split('T')[0] as string
+			updatedAt: new Date().toISOString().split('T')[0] as string,
+			fat: 0
 		}
+
+		publicMetadata.fat = calculateBodyFat(publicMetadata)
 		await (await clerkClient()).users.updateUser(userId, { publicMetadata })
 
 		return { message: 'Onboarding completed succesfuly', success: true }
