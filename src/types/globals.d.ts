@@ -1,6 +1,6 @@
 export {}
 
-import { Weights, Goal, ActivityLevel, Sex } from './index'
+import { Weights, Goal, ActivityLevel, Sex, Unit } from './index'
 
 declare global {
 	interface CustomJwtSessionClaims {
@@ -16,9 +16,9 @@ declare global {
 		height: number
 		weights: Weights
 		activity: ActivityLevel
-		heightUnit: string
+		heightUnit: Unit
 		goalWeight: number
-		weightUnit: string
+		weightUnit: Unit
 		fat: number
 		updatedAt: string
 	}

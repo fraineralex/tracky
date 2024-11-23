@@ -4,7 +4,7 @@ import { BriefcaseMedical, Info, Mail } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import Link from 'next/link'
 import { currentUser } from '@clerk/nextjs/server'
-import { calculateGoalProgress } from '~/server/utils/nutrition'
+import { calculateGoalProgress } from '~/server/utils/calculations'
 import {
 	Dialog,
 	DialogContent,
@@ -71,7 +71,8 @@ export default async function SettingsPageWithModalsComponent() {
 						label='Height'
 						attr={{
 							name: 'height',
-							label: 'Height (ft)',
+							label: 'Height',
+							unit: userMetadata.heightUnit,
 							type: 'number',
 							placeholder: 'Enter your height',
 							value: userMetadata.height
@@ -82,7 +83,8 @@ export default async function SettingsPageWithModalsComponent() {
 						label='Weight'
 						attr={{
 							name: 'weights',
-							label: 'Weight (kg)',
+							label: 'Weight',
+							unit: userMetadata.weightUnit,
 							type: 'number',
 							placeholder: 'Enter your weight',
 							value: currentWeight
@@ -122,7 +124,8 @@ export default async function SettingsPageWithModalsComponent() {
 						label='Goal Weight'
 						attr={{
 							name: 'goalWeight',
-							label: 'Goal Weight (kg)',
+							label: 'Goal Weight',
+							unit: userMetadata.weightUnit,
 							type: 'number',
 							placeholder: 'Enter your goal weight',
 							value: userMetadata.goalWeight

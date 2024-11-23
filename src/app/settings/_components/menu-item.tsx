@@ -8,7 +8,7 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '~/components/ui/dialog'
-import { AboutMenuItem, Weights } from '~/types'
+import { AboutMenuItem, Unit, Weights } from '~/types'
 import { SettingsField } from './settings-field'
 import React from 'react'
 import { format } from 'date-fns'
@@ -42,18 +42,23 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 	const [isOpen, setIsOpen] = React.useState(false)
 	const [value, setValue] = React.useState(attr.value)
 
-	const formatHeight = (height: number) => {
-		const feet = Math.floor(height)
-		const inches = Math.round((height - feet) * 12)
-		return `${feet}′${inches}"`
+	function formatHeight(height: number, unit: Unit | undefined) {
+		if (unit === 'ft, in') {
+			const feet = Math.floor(height)
+			const inches = Math.round((height - feet) * 12)
+			return `${feet}′${inches}"`
+		}
+
+		return `${height.toFixed(1)} ${unit}`
 	}
 
 	let displayValue = value.toString()
 	if (attr.name === 'born')
 		displayValue = format(new Date(`${value}T12:00`), 'PPP')
-	if (attr.name === 'height') displayValue = formatHeight(value as number)
+	if (attr.name === 'height')
+		displayValue = formatHeight(value as number, attr.unit)
 	if (attr.name === 'weights' || name === 'goalWeight')
-		displayValue = `${value} kg`
+		displayValue = `${value} ${attr.unit}`
 	if (attr.name === 'fat' || name === 'progress') displayValue = `${value}%`
 
 	const Icon = ICONS[name as keyof typeof ICONS]
@@ -99,7 +104,7 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 					<div className='flex flex-col items-start'>
 						<span className='font-medium'>{label}</span>
 						<span
-							className={`text-sm text-muted-foreground ${!displayValue.includes('kg') ? 'capitalize' : ''}`}
+							className={`text-sm text-muted-foreground ${!attr.unit ? 'capitalize' : ''}`}
 						>
 							{displayValue}
 						</span>
@@ -108,7 +113,9 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 			</DialogTrigger>
 			<DialogContent aria-describedby={label}>
 				<DialogHeader>
-					<DialogTitle>{label}</DialogTitle>
+					<DialogTitle>
+						{label} {attr.unit && `(${attr.unit})`}
+					</DialogTitle>
 				</DialogHeader>
 				<SettingsField attr={{ ...attr, value, updateValue }} />
 			</DialogContent>
