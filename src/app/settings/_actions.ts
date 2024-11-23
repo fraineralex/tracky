@@ -2,7 +2,7 @@
 
 import 'server-only'
 import { clerkClient, currentUser } from '@clerk/nextjs/server'
-import { calculateBodyFat } from '~/server/utils/nutrition'
+import { calculateBodyFat } from '~/lib/calculations'
 
 export const updatePublicMetadata = async (
 	metadata: Partial<UserPublicMetadata>

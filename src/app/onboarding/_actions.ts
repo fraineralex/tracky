@@ -3,8 +3,7 @@
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import { z } from 'zod'
 import { GOAL_FACTORS } from '~/constants'
-import { round } from '~/lib/utils'
-import { calculateBodyFat } from '~/server/utils/nutrition'
+import { calculateBodyFat, round } from '~/lib/calculations'
 
 const OnboardingSchema = z.object({
 	sex: z.enum(['male', 'female'], { required_error: 'Please select a sex' }),

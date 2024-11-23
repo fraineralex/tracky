@@ -4,9 +4,9 @@ import { Header } from './sections/header'
 import { currentUser } from '@clerk/nextjs/server'
 import { NutritionMetrics } from '~/types'
 import { getUserNutritionMetrics } from '~/server/utils/nutrition'
-import { getAdjustedDay } from '~/lib/utils'
 import { Metadata } from 'next'
 import Footer from '~/components/layout/footer'
+import { calculateAdjustedDay } from '~/lib/calculations'
 
 export const metadata: Metadata = {
 	title: 'Food'
@@ -17,7 +17,7 @@ export default async function FoodPage() {
 	if (!user) return null
 	const userMetadata = user.publicMetadata
 	const nutritionMeatrics = await getUserNutritionMetrics(user.id, userMetadata)
-	const today = getAdjustedDay(new Date())
+	const today = calculateAdjustedDay(new Date())
 	const todayNutrition = nutritionMeatrics[today] as NutritionMetrics
 
 	return (

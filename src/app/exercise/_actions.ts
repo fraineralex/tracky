@@ -17,7 +17,7 @@ import { desc, sql } from 'drizzle-orm'
 import { Message } from '../food/_actions'
 import { EXERCISE_ICONS } from '~/constants'
 import { NewExercise } from '../dashboard/_actions'
-import { calculateEnergyBurned } from '~/lib/utils'
+import { calculateEnergyBurned } from '~/lib/calculations'
 import { SuccessLogData, Weights } from '~/types'
 
 const ExerciseSchema = z.object({

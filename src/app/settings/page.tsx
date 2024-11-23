@@ -4,7 +4,7 @@ import { BriefcaseMedical, Info, Mail } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import Link from 'next/link'
 import { currentUser } from '@clerk/nextjs/server'
-import { calculateGoalProgress } from '~/server/utils/calculations'
+import { calculateGoalProgress } from '~/lib/calculations'
 import {
 	Dialog,
 	DialogContent,

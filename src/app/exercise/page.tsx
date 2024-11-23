@@ -5,9 +5,10 @@ import { db } from '~/server/db'
 import { diaryGroupEnum, exercise, exerciseCategory } from '~/server/db/schema'
 import { asc, eq } from 'drizzle-orm'
 import { currentUser } from '@clerk/nextjs/server'
-import { daysOfWeek, getAdjustedDay, round } from '~/lib/utils'
+import { calculateAdjustedDay, round } from '~/lib/calculations'
 import { ExerciseGraphicsData, ExerciseMetricsData } from '~/types'
 import { addDays, format, startOfWeek } from 'date-fns'
+import { daysOfWeek } from '~/constants'
 
 export default async function ExercisePage() {
 	const user = await currentUser()
@@ -35,7 +36,7 @@ export default async function ExercisePage() {
 
 	const exerciseGraphicsData: ExerciseGraphicsData = {
 		weeklyEnergyBurned: daysOfWeek
-			.filter((_, index) => index <= getAdjustedDay(new Date()))
+			.filter((_, index) => index <= calculateAdjustedDay(new Date()))
 			.map(day => ({
 				day,
 				value: 0
@@ -51,7 +52,7 @@ export default async function ExercisePage() {
 	}
 
 	const dayOfWeek = new Date()
-	dayOfWeek.setDate(dayOfWeek.getDate() - getAdjustedDay(dayOfWeek) - 1)
+	dayOfWeek.setDate(dayOfWeek.getDate() - calculateAdjustedDay(dayOfWeek) - 1)
 
 	for (const exercise of exercises) {
 		exerciseMetrics.totalEnergyBurned += Number(exercise.burned)
@@ -59,7 +60,7 @@ export default async function ExercisePage() {
 
 		if (exercise.createdAt >= dayOfWeek) exerciseMetrics.exercisesThisWeek++
 
-		const exerciseDay = getAdjustedDay(exercise.createdAt)
+		const exerciseDay = calculateAdjustedDay(exercise.createdAt)
 		if (
 			exerciseGraphicsData.weeklyEnergyBurned &&
 			exerciseGraphicsData.weeklyEnergyBurned[exerciseDay]

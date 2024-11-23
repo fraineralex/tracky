@@ -17,8 +17,8 @@ import { useFormState } from 'react-dom'
 import { ExerciseCategories, Weights } from '~/types'
 import { useUser } from '@clerk/nextjs'
 import { EFFORT_LEVELS } from '~/constants'
-import { calculateEnergyBurned } from '~/lib/utils'
 import { ShowErrors } from '~/components/forms/show-errors'
+import { calculateEnergyBurned } from '~/lib/calculations'
 
 const initialState: ExerciseState = {
 	errors: {},

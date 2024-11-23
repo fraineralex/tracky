@@ -89,3 +89,5 @@ export const DAILY_MEAL_ICONS = {
 	dinner: Moon,
 	uncategorized: CircleDot
 }
+
+export const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']

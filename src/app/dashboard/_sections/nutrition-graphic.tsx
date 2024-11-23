@@ -4,7 +4,7 @@ import { Flame } from 'lucide-react'
 import React from 'react'
 import { Button } from '~/components/ui/button'
 import { Card } from '~/components/ui/card'
-import { round, getAdjustedDay } from '~/lib/utils'
+import { round, calculateAdjustedDay } from '~/lib/calculations'
 import { NutritionMetrics, NutritionMetricsPerDay } from '~/types'
 
 export default function NutritionGraphic({
@@ -14,7 +14,7 @@ export default function NutritionGraphic({
 }) {
 	const [showConsumed, setShowConsumed] = React.useState(true)
 
-	const dayOfWeek = getAdjustedDay(new Date())
+	const dayOfWeek = calculateAdjustedDay(new Date())
 	const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
 	const { calories, protein, fats, carbs } = nutrition[
 		dayOfWeek as keyof NutritionMetricsPerDay
