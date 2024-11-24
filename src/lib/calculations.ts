@@ -26,19 +26,19 @@ export function calculateGoalProgress({
 	weights,
 	goalWeight
 }: UserPublicMetadata) {
-	const initialWeight = weights[0]?.value ?? 0
-	const currentWeight = weights[weights.length - 1]?.value ?? 0
+	const initialWeight = weights[0]?.value || 0
+	const currentWeight = weights[weights.length - 1]?.value || 0
 
 	if (initialWeight > goalWeight) {
 		const progress =
 			((initialWeight - currentWeight) / (initialWeight - goalWeight)) * 100
-		return progress.toFixed(1)
+		return round(progress, 1)
 	}
 
 	if (initialWeight < goalWeight) {
 		const progress =
 			((currentWeight - initialWeight) / (goalWeight - initialWeight)) * 100
-		return progress.toFixed(1)
+		return round(progress, 1)
 	}
 
 	return 100
