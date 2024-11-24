@@ -41,7 +41,7 @@ export function calculateGoalProgress({
 		return progress.toFixed(1)
 	}
 
-	return 100
+	return '100'
 }
 
 export function calculateDuration(minutes: number) {
