@@ -11,6 +11,7 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '~/components/ui/dialog'
+import { calculateBodyFat, round } from '~/lib/calculations'
 
 export function Settings({
 	userMetadata,
@@ -19,7 +20,7 @@ export function Settings({
 }: {
 	userMetadata: UserPublicMetadata
 	currentWeight: number
-	goalProgress: string
+	goalProgress: number
 }) {
 	return (
 		<div className='container mx-auto max-w-7xl p-6'>
@@ -99,7 +100,10 @@ export function Settings({
 							type: 'range',
 							min: 0,
 							max: 50,
-							value: userMetadata.fat.toFixed(1)
+							value: round(
+								userMetadata.fat || calculateBodyFat(userMetadata),
+								1
+							)
 						}}
 					/>
 				</div>

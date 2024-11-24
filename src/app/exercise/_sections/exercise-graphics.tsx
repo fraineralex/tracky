@@ -55,7 +55,7 @@ export function ExerciseGraphics({
 	exerciseData: ExerciseGraphicsData
 }) {
 	const exerciseCategories = Object.keys(
-		exerciseData.exerciseFrequency[0]!
+		exerciseData.exerciseFrequency[0] || {}
 	).filter(key => key !== 'date')
 	const exerciseFrequencyConfig = [...exerciseCategories].reduce(
 		(acc, key, index) => {
