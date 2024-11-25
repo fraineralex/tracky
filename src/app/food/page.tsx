@@ -22,7 +22,7 @@ export default async function FoodPage() {
 
 	return (
 		<>
-			<section className='container mx-auto px-0 py-5 lg:px-4 xl:ms-5'>
+			<section className='container mx-auto px-0 py-5'>
 				<Header />
 				<NutritionCards nutrition={todayNutrition} />
 				<NutritionGraphic

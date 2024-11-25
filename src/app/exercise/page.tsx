@@ -168,7 +168,7 @@ export default async function ExercisePage() {
 	)
 
 	return (
-		<section className='mx-auto min-h-screen w-full bg-background px-0 py-5 text-foreground lg:px-4 xl:ms-5'>
+		<section className='mx-auto min-h-screen w-full bg-background px-0 py-5 text-foreground'>
 			<Header />
 			<ExerciseMetrics metrics={exerciseMetrics} />
 			<ExerciseGraphics exerciseData={exerciseGraphicsData} />

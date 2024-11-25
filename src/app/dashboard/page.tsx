@@ -27,7 +27,7 @@ export default async function DashboardPage() {
 
 	return (
 		<>
-			<section className='h-full w-full overflow-auto pt-5 sm:mb-0 sm:pb-5 xl:ms-5 xl:px-5'>
+			<section className='h-full w-full overflow-auto pt-5 sm:mb-0 sm:pb-5'>
 				<div className='flex flex-wrap-reverse gap-x-2 gap-y-2 pb-2 md:justify-between'>
 					<h1 className='order-last h-full w-full text-center align-bottom text-2xl font-bold uppercase md:order-first md:h-fit md:w-fit'>
 						{today}
@@ -38,7 +38,7 @@ export default async function DashboardPage() {
 						<ExerciseDialog />
 					</header>
 				</div>
-				<div className='mt-4 flex-col space-x-3 space-y-3 sm:mt-0  md:flex-row md:pt-2 lg:flex lg:justify-between'>
+				<div className='mt-4 flex-col space-x-3 space-y-3 sm:mt-0 md:flex-row md:pt-2 lg:flex lg:justify-between'>
 					<NutritionGraphic nutritionMetrics={nutritionMeatrics} />
 					<InsightsAndAnalitics expenditure={expenditure} {...userMetadata} />
 				</div>
