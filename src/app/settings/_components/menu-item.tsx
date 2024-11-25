@@ -103,11 +103,11 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 					<Icon className='mr-2 h-5 w-5' />
 					<div className='flex flex-col items-start'>
 						<span className='font-medium'>{label}</span>
-						<span
-							className={`text-sm text-muted-foreground ${!attr.unit ? 'capitalize' : ''}`}
+						<p
+							className={`truncate text-xs tracking-tighter text-muted-foreground sm:text-sm sm:tracking-normal ${!attr.unit ? 'capitalize' : ''}`}
 						>
 							{displayValue}
-						</span>
+						</p>
 					</div>
 				</Button>
 			</DialogTrigger>

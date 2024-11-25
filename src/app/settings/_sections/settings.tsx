@@ -23,7 +23,7 @@ export function Settings({
 	goalProgress: number
 }) {
 	return (
-		<div className='container mx-auto max-w-7xl p-6'>
+		<div className='container mx-auto py-5'>
 			<header className='mb-8 flex flex-col gap-1'>
 				<h1 className='text-2xl font-bold'>Settings</h1>
 				<h2 className='text-sm text-muted-foreground'>
@@ -32,7 +32,7 @@ export function Settings({
 			</header>
 			<div className='mb-8'>
 				<h2 className='mb-4 text-lg font-semibold'>Personal Information</h2>
-				<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+				<div className='grid gap-4 grid-cols-2 lg:grid-cols-3'>
 					<MenuItem
 						name='born'
 						label='Born Date'
