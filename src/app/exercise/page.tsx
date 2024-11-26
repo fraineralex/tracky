@@ -163,9 +163,11 @@ export default async function ExercisePage() {
 		}
 	}
 
-	exerciseMetrics.avgDuration = round(
-		exerciseMetrics.totalDuration / exercises.length
-	)
+	if (exercises.length > 0) {
+		exerciseMetrics.avgDuration = round(
+			exerciseMetrics.totalDuration / exercises.length
+		)
+	}
 
 	return (
 		<section className='mx-auto min-h-screen w-full bg-background px-0 py-5 text-foreground'>

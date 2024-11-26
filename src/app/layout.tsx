@@ -104,7 +104,7 @@ export default function RootLayout({
 					<div className='min-h-screen w-full overflow-y-auto md:grid md:grid-rows-[auto,1fr] md:max-w-screen-xl mx-auto min-w-80'>
 						<ClerkProvider afterSignOutUrl='/' dynamic>
 							<Header />
-							<main className='px-5 md:flex md:px-10'>
+							<main className='px-4 md:flex md:px-10'>
 								<SideNav />
 								{children}
 							</main>

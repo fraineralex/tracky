@@ -46,7 +46,7 @@ export function calculateGoalProgress({
 
 export function calculateDuration(minutes: number) {
 	const hours = minutes >= 60 ? `${Math.floor(minutes / 60)}h` : ''
-	const mins = minutes % 60 !== 0 ? `${minutes % 60}m` : ''
+	const mins = minutes % 60 !== 0 || minutes === 0 ? `${minutes % 60}m` : ''
 	return `${hours} ${mins}`
 }
 

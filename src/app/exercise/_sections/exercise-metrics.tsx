@@ -26,7 +26,7 @@ export default function ExerciseMetrics({
 		},
 		{
 			name: 'Exercises This Week',
-			value: metrics.exercisesThisWeek.toLocaleString(),
+			value: `${metrics.exercisesThisWeek.toLocaleString()} times`,
 			icon: Activity
 		}
 	]
