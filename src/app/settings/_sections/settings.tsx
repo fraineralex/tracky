@@ -181,7 +181,7 @@ export function Settings({
 								</div>
 							</Button>
 						</DialogTrigger>
-						<DialogContent>
+						<DialogContent className='max-w-[95%] sm:max-w-96 md:max-w-128 rounded-lg'>
 							<DialogHeader>
 								<DialogTitle>About</DialogTitle>
 							</DialogHeader>
@@ -219,7 +219,7 @@ export function Settings({
 								</div>
 							</Button>
 						</DialogTrigger>
-						<DialogContent>
+						<DialogContent className='max-w-[95%] sm:max-w-96 md:max-w-128 rounded-lg'>
 							<DialogHeader>
 								<DialogTitle>Health Disclaimer</DialogTitle>
 							</DialogHeader>

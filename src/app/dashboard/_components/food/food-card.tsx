@@ -16,22 +16,22 @@ export default function FoodCardItem({
 			case 'well':
 				return {
 					color: 'bg-green-500 dark:bg-green-600',
-					text: 'Well Balanced'
+					text: 'Good'
 				}
 			case 'moderate':
 				return {
 					color: 'bg-yellow-500 dark:bg-yellow-600',
-					text: 'Moderately Balanced'
+					text: 'Fair'
 				}
 			case 'poor':
 				return {
 					color: 'bg-red-500 dark:bg-red-600',
-					text: 'Poorly Balanced'
+					text: 'Poor'
 				}
 			default:
 				return {
 					color: 'bg-gray-500 dark:bg-gray-600',
-					text: 'Unknown Balance'
+					text: 'Unknown'
 				}
 		}
 	}
@@ -46,12 +46,14 @@ export default function FoodCardItem({
 			<div className='flex flex-col items-center'>
 				{isCalories ? (
 					<Badge
-						className={`${getBalanceBadge(item.balance).color} mb-2 text-nowrap rounded-full text-white`}
+						className={`${getBalanceBadge(item.balance).color} mb-2 text-nowrap rounded-full text-xs tracking-tighter text-white sm:text-sm sm:tracking-normal`}
 					>
 						{getBalanceBadge(item.balance).text}
 					</Badge>
 				) : item.percent !== null ? (
-					<Badge className={`${item.color} mb-2 rounded-full text-white`}>
+					<Badge
+						className={`${item.color} mb-2 rounded-full text-xs tracking-tighter text-white sm:text-sm sm:tracking-normal`}
+					>
 						{item.percent}%
 					</Badge>
 				) : (

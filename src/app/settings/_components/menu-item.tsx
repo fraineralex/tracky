@@ -111,7 +111,10 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 					</div>
 				</Button>
 			</DialogTrigger>
-			<DialogContent aria-describedby={label}>
+			<DialogContent
+				aria-describedby={label}
+				className='max-w-[95%] sm:max-w-96 md:max-w-128 rounded-lg'
+			>
 				<DialogHeader>
 					<DialogTitle>
 						{label} {attr.unit && `(${attr.unit})`}

@@ -160,12 +160,18 @@ export function DataTable<TData, TValue>({
 				<Table>
 					<TableHeader>
 						{table.getHeaderGroups().map(headerGroup => (
-							<TableRow key={headerGroup.id}>
+							<TableRow
+								key={headerGroup.id}
+								className='text-xs tracking-tighter sm:text-sm sm:tracking-normal'
+							>
 								{headerGroup.headers
 									.filter(header => header.column.columnDef.header !== 'ID')
 									.map(header => {
 										return (
-											<TableHead key={header.id}>
+											<TableHead
+												key={header.id}
+												className='max-w-24 sm:max-w-fit'
+											>
 												{header.isPlaceholder
 													? null
 													: flexRender(
@@ -185,7 +191,7 @@ export function DataTable<TData, TValue>({
 									<DrawerTrigger asChild>
 										<TableRow
 											data-state={row.getIsSelected() && 'selected'}
-											className='cursor-pointer'
+											className='cursor-pointer text-xs tracking-tighter sm:text-sm sm:tracking-normal'
 											onClick={() => handleCellClick(row)}
 										>
 											{row

@@ -78,7 +78,7 @@ export function FoodDrawer({
 	}, [state, handleDrawerClose])
 
 	return (
-		<DrawerContent>
+		<DrawerContent className='min-w-80'>
 			<div className='mx-auto w-full max-w-xl'>
 				<DrawerHeader>
 					<DrawerTitle className='text-center'>{foodData.name}</DrawerTitle>
@@ -88,8 +88,8 @@ export function FoodDrawer({
 						</DrawerDescription>
 					)}
 				</DrawerHeader>
-				<div className='mx-auto w-full max-w-md p-4 pb-0'>
-					<Card className='mx-auto border-0 bg-transparent ps-7 shadow-none'>
+				<div className='mx-auto w-full max-w-md sm:p-4 pb-0 p-2'>
+					<Card className='mx-auto border-0 bg-transparent sm:ps-7 shadow-none'>
 						<div className='mx-auto grid grid-cols-4 space-x-5'>
 							<FoodCardItem
 								item={{
@@ -133,7 +133,7 @@ export function FoodDrawer({
 						</div>
 					</Card>
 					<form
-						className='mt-10 w-full items-center bg-transparent px-4 ps-5'
+						className='mt-10 w-full items-center bg-transparent sm:px-4 sm:ps-5 px-2'
 						action={formAction}
 					>
 						<input type='hidden' name='foodId' value={foodData.id} />
@@ -208,16 +208,16 @@ export function FoodDrawer({
 							</div>
 						</div>
 						<DrawerFooter className='mx-0 px-0'>
-							<div className='flex space-x-5 py-5'>
+							<div className='flex space-x-5 py-5 justify-between'>
 								<DrawerClose asChild>
 									<Button
 										variant='outline'
-										className='px-16 dark:border-gray-400'
+										className='px-10 sm:px-16 dark:border-gray-400'
 									>
 										Cancel
 									</Button>
 								</DrawerClose>
-								<Button className='px-16'>Add</Button>
+								<Button className='px-10 sm:px-16'>Add</Button>
 							</div>
 						</DrawerFooter>
 					</form>
