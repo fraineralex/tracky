@@ -101,7 +101,7 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<div className='min-h-screen w-full overflow-y-auto md:grid md:grid-rows-[auto,1fr] md:max-w-screen-xl mx-auto min-w-80'>
+					<div className='mx-auto min-h-screen w-full min-w-80 overflow-y-auto md:grid md:max-w-screen-xl md:grid-rows-[auto,1fr]'>
 						<ClerkProvider afterSignOutUrl='/' dynamic>
 							<Header />
 							<main className='px-4 md:flex md:px-10'>
