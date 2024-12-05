@@ -3,9 +3,16 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown } from 'lucide-react'
 import { Button } from '~/components/ui/button'
-import { food } from '~/server/db/schema'
 
-export type Food = typeof food.$inferSelect
+export interface Food {
+	id: string
+	name: string
+	protein: string
+	kcal: string
+	fat: string
+	carbs: string
+	servingSize: string
+}
 
 export const columns: ColumnDef<Food>[] = [
 	{

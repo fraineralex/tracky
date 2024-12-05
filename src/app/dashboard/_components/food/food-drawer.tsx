@@ -23,7 +23,6 @@ import {
 import { Input } from '~/components/ui/input'
 import { toast } from 'sonner'
 import { ConsumptionState, addConsumption } from '../../_actions'
-import { useFormState } from 'react-dom'
 import FoodCardItem from './food-card'
 import { ShowErrors } from '~/components/forms/show-errors'
 
@@ -44,7 +43,7 @@ export function FoodDrawer({
 	const [unit, setUnit] = React.useState<keyof typeof unitConversions>('g')
 	const [mealGroup, setMealGroup] = React.useState('uncategorized')
 
-	const [state, formAction] = useFormState(addConsumption, initialState)
+	const [state, formAction] = React.useActionState(addConsumption, initialState)
 
 	const unitConversions = {
 		g: 1,

@@ -13,7 +13,6 @@ import {
 import { DialogClose, DialogFooter } from '~/components/ui/dialog'
 import { Button } from '~/components/ui/button'
 import { ExerciseState, addExercise } from '../../_actions'
-import { useFormState } from 'react-dom'
 import { ExerciseCategories, Weights } from '~/types'
 import { useUser } from '@clerk/nextjs'
 import { EFFORT_LEVELS } from '~/constants'
@@ -35,7 +34,7 @@ export default function ExerciseForm({
 	handleFormClose: (message: string) => void
 	handleCategorySelect: (category: ExerciseCategories[number] | null) => void
 }) {
-	const [state, formAction] = useFormState(addExercise, initialState)
+	const [state, formAction] = React.useActionState(addExercise, initialState)
 	const [duration, setDuration] = React.useState(60)
 	const [energyBurned, setEnergyBurned] = React.useState<string | null>(null)
 	const [effort, setEffort] = React.useState<keyof typeof EFFORT_LEVELS>('easy')
@@ -200,7 +199,7 @@ export default function ExerciseForm({
 			)}
 			<DialogFooter className='pt-5 sm:flex sm:space-x-5'>
 				{!selectedCategory && (
-					<DialogClose>
+					<DialogClose asChild>
 						<CalcelButton />
 					</DialogClose>
 				)}

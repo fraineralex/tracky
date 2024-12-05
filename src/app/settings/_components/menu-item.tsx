@@ -89,7 +89,6 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 		}
 
 		toast.success(`Your ${label} has been updated successfully.`)
-		window.location.reload() // TODO: Manage state instead of reloading the page
 	}
 
 	return (
@@ -113,7 +112,7 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 			</DialogTrigger>
 			<DialogContent
 				aria-describedby={label}
-				className='max-w-[95%] sm:max-w-96 md:max-w-128 rounded-lg'
+				className='max-w-[95%] rounded-lg sm:max-w-96 md:max-w-128'
 			>
 				<DialogHeader>
 					<DialogTitle>
