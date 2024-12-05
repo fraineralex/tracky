@@ -32,7 +32,7 @@ export function Settings({
 			</header>
 			<div className='mb-8'>
 				<h2 className='mb-4 text-lg font-semibold'>Personal Information</h2>
-				<div className='grid gap-4 grid-cols-2 lg:grid-cols-3'>
+				<div className='grid grid-cols-2 gap-4 lg:grid-cols-3'>
 					<MenuItem
 						name='born'
 						label='Born Date'
@@ -181,7 +181,7 @@ export function Settings({
 								</div>
 							</Button>
 						</DialogTrigger>
-						<DialogContent className='max-w-[95%] sm:max-w-96 md:max-w-128 rounded-lg'>
+						<DialogContent className='max-w-[95%] rounded-lg sm:max-w-96 md:max-w-128'>
 							<DialogHeader>
 								<DialogTitle>About</DialogTitle>
 							</DialogHeader>
@@ -219,7 +219,7 @@ export function Settings({
 								</div>
 							</Button>
 						</DialogTrigger>
-						<DialogContent className='max-w-[95%] sm:max-w-96 md:max-w-128 rounded-lg'>
+						<DialogContent className='max-w-[95%] rounded-lg sm:max-w-96 md:max-w-128'>
 							<DialogHeader>
 								<DialogTitle>Health Disclaimer</DialogTitle>
 							</DialogHeader>

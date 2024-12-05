@@ -3,6 +3,7 @@
 import 'server-only'
 import { clerkClient, currentUser } from '@clerk/nextjs/server'
 import { calculateBodyFat } from '~/lib/calculations'
+import { revalidatePath } from 'next/cache'
 
 export const updatePublicMetadata = async (
 	metadata: Partial<UserPublicMetadata>
@@ -37,6 +38,7 @@ export const updatePublicMetadata = async (
 			publicMetadata: metadata as UserPublicMetadata
 		})
 
+		revalidatePath('/settings')
 		return {
 			message: 'Information updated successfully',
 			success: true
