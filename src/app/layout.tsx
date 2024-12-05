@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 	openGraph: {
 		title: 'Tracky',
 		description:
-			'Fitness tracking web app with AI-powered features to quickly log meals and exercises,',
+			'Fitness tracking web app with AI-powered features to quickly log meals and exercises.',
 		images: [
 			{
 				url: '/og.jpg',
@@ -70,14 +70,18 @@ export const metadata: Metadata = {
 		site: '@fraineralex',
 		title: 'Tracky',
 		description:
-			'Fitness tracking web app with AI-powered features to quickly log meals and exercises,',
+			'Fitness tracking web app with AI-powered features to quickly log meals and exercises.',
 		images: [
 			{
 				url: '/og.jpg',
-				width: 1920,
-				height: 675
+				width: 1200,
+				height: 675,
+				type: 'image/jpeg',
+				pathname: '/og.jpg',
+				hostname: process.env.DOMAIN ?? 'https://tracky.fraineralex.dev'
 			}
-		]
+		],
+		creatorId: 'fraineralex'
 	}
 }
 

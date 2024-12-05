@@ -12,7 +12,6 @@ import {
 	SelectValue
 } from '~/components/ui/select'
 import { FoodState, registerFood } from '../_actions'
-import { useFormState } from 'react-dom'
 import { ShowErrors } from '~/components/forms/show-errors'
 import { toast } from 'sonner'
 import React from 'react'
@@ -24,7 +23,7 @@ const initialState: FoodState = {
 }
 
 export function RegisterFoodForm() {
-	const [state, formAction] = useFormState(registerFood, initialState)
+	const [state, formAction] = React.useActionState(registerFood, initialState)
 	const cancelBtnRef = React.useRef<HTMLButtonElement>(null)
 
 	React.useEffect(() => {
@@ -117,7 +116,7 @@ export function RegisterFoodForm() {
 					</div>
 				</div>
 				<div className='flex justify-end space-x-2 pt-4'>
-					<DialogClose>
+					<DialogClose asChild>
 						<Button type='button' variant='outline' ref={cancelBtnRef}>
 							Cancel
 						</Button>

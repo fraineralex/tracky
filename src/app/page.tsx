@@ -84,6 +84,7 @@ export default function HomePage() {
 							height={534}
 							width={845}
 							className='h-auto w-full'
+							priority
 						/>
 					</figure>
 					<article className='z-10 mt-1 flex min-h-40 place-content-center ps-16'>
