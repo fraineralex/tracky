@@ -13,7 +13,8 @@
 		"dev": "next dev --turbopack",
 		"lint": "next lint",
 		"start": "next start",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"scan": "next dev && bunx react-scan@latest localhost:3000"
 	},
 	"dependencies": {
 		"@ai-sdk/openai": "0.0.66",
@@ -45,7 +46,7 @@
 		"framer-motion": "11.3.28",
 		"geist": "1.3.0",
 		"lucide-react": "0.453.0",
-		"next": "15.0.4-canary.27",
+		"next": "15.0.4-canary.45",
 		"next-themes": "0.3.0",
 		"postgres": "3.4.4",
 		"react": "19.0.0-rc-02c0e824-20241028",
@@ -69,7 +70,7 @@
 		"@typescript-eslint/parser": "7.1.1",
 		"drizzle-kit": "0.21.4",
 		"eslint": "8.57.0",
-		"eslint-config-next": "15.0.4-canary.27",
+		"eslint-config-next": "15.0.4-canary.45",
 		"eslint-plugin-drizzle": "0.2.3",
 		"postcss": "8.4.34",
 		"prettier": "3.2.5",

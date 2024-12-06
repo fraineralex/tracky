@@ -94,14 +94,15 @@ export function RegisterFoodForm() {
 							name='servingSize'
 							type='number'
 							step='0.1'
-							placeholder='e.g. 118'
+							placeholder='e.g. 100'
+							defaultValue={100}
 							required
 						/>
 						<ShowErrors errors={state.errors?.servingSize} />
 					</div>
 					<div className='space-y-2'>
 						<Label htmlFor='serving-unit'>Serving Unit</Label>
-						<Select required name='unit'>
+						<Select required name='unit' defaultValue='g'>
 							<SelectTrigger name='serving-unit'>
 								<SelectValue placeholder='Select unit' />
 							</SelectTrigger>

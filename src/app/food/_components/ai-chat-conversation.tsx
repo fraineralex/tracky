@@ -52,13 +52,13 @@ export default function AIChatConversation({
 			>
 				<>
 					{conversation.map((message, index) => (
-						<>
+						<div key={index}>
 							{message.successLogData &&
 								message.successLogData.map((data, index) => (
 									<SuccessLogCard key={index} {...data} />
 								))}
 							{!message.successLogData && (
-								<div
+								<article
 									key={index}
 									className={`mb-4 flex items-start space-x-2 border-b border-muted-foreground/60 pb-4 ${
 										message.role === 'user' ? 'justify-end' : 'justify-start'
@@ -76,9 +76,9 @@ export default function AIChatConversation({
 											<AvatarFallback>{fullNameShort}</AvatarFallback>
 										</Avatar>
 									)}
-								</div>
+								</article>
 							)}
-						</>
+						</div>
 					))}
 
 					{loading && (
