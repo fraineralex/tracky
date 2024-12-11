@@ -7,9 +7,9 @@ import { usePathname } from 'next/navigation'
 import React from 'react'
 
 export default function SideNav() {
-	const [pathname] = React.useState<string>(usePathname())
+	const pathname = usePathname()
 	if (pathname === '/' || pathname === '/onboarding') return null
-	
+
 	return (
 		<nav className='flex shrink-0 flex-col items-center pt-5 md:w-[215px] md:items-start'>
 			<article className='flex flex-row justify-between gap-x-4 gap-y-2 px-4 text-center md:flex-col md:px-6 md:text-left'>
@@ -22,7 +22,7 @@ export default function SideNav() {
 				<SidenavButton label='Exercise' href='/exercise' enabled>
 					<Dumbbell className='h-6 w-6 md:h-5 md:w-5' />
 				</SidenavButton>
-				<SidenavButton label='Diary' href='/diary'>
+				<SidenavButton label='Diary' href='/diary' enabled>
 					<NotepadText className='h-6 w-6 text-muted-foreground/50 sm:text-muted-foreground md:h-5 md:w-5' />
 				</SidenavButton>
 				<SidenavButton label='Settings' href='/settings' enabled>

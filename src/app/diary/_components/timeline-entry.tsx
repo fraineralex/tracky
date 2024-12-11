@@ -31,19 +31,17 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
 			<div className='flex-shrink-0'>{getIcon()}</div>
 			<div className='flex-grow'>
 				<div className='flex items-center justify-between'>
-					<h4 className='text-lg font-medium text-gray-900 dark:text-white'>
-						{entry.title}
-					</h4>
-					<div className='flex items-center text-sm text-gray-500 dark:text-gray-400'>
+					<h4 className='text-lg font-medium'>{entry.title}</h4>
+					<div className='flex items-center text-sm text-muted-foreground'>
 						<Clock className='mr-1 h-4 w-4' />
 						{entry.time}
 					</div>
 				</div>
-				<p className='mt-1 text-sm text-gray-600 dark:text-gray-300'>
+				<p className='mt-1 text-sm text-foreground/80'>
 					{entry.description}
 				</p>
 				{entry.mealType && (
-					<p className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
+					<p className='mt-1 flex items-center text-sm text-muted-foreground'>
 						<Apple className='mr-1 h-4 w-4' />
 						Meal: {entry.mealType}
 					</p>
@@ -53,25 +51,25 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
 				<div className='flex flex-shrink-0 items-center space-x-4'>
 					<div className='flex items-center'>
 						<Flame className='mr-1 h-5 w-5 text-red-500' />
-						<span className='text-sm font-medium'>
+						<span className='text-sm font-normal'>
 							{entry.nutritionInfo.calories} cal
 						</span>
 					</div>
 					<div className='flex items-center'>
 						<Weight className='mr-1 h-5 w-5 text-blue-500' />
-						<span className='text-sm font-medium'>
+						<span className='text-sm font-normal'>
 							{entry.nutritionInfo.protein}g protein
 						</span>
 					</div>
 					<div className='flex items-center'>
 						<Droplet className='mr-1 h-5 w-5 text-yellow-500' />
-						<span className='text-sm font-medium'>
+						<span className='text-sm font-normal'>
 							{entry.nutritionInfo.fat}g fat
 						</span>
 					</div>
 					<div className='flex items-center'>
 						<Apple className='mr-1 h-5 w-5 text-green-500' />
-						<span className='text-sm font-medium'>
+						<span className='text-sm font-normal'>
 							{entry.nutritionInfo.carbs}g carbs
 						</span>
 					</div>
@@ -81,25 +79,25 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
 				<div className='flex flex-shrink-0 items-center space-x-4'>
 					<div className='flex items-center'>
 						<Flame className='mr-1 h-5 w-5 text-red-500' />
-						<span className='text-sm font-medium'>
+						<span className='text-sm font-normal'>
 							{entry.exerciseInfo.caloriesBurned} cal burned
 						</span>
 					</div>
 					<div className='flex items-center'>
 						<Clock className='mr-1 h-5 w-5 text-blue-500' />
-						<span className='text-sm font-medium'>
+						<span className='text-sm font-normal'>
 							{entry.exerciseInfo.duration} min
 						</span>
 					</div>
 					<div className='flex items-center'>
 						<Dumbbell className='mr-1 h-5 w-5 text-purple-500' />
-						<span className='text-sm font-medium'>
+						<span className='text-sm font-normal'>
 							{entry.exerciseInfo.category}
 						</span>
 					</div>
 					<div className='flex items-center'>
 						<Weight className='mr-1 h-5 w-5 text-green-500' />
-						<span className='text-sm font-medium'>
+						<span className='text-sm font-normal'>
 							Effort: {entry.exerciseInfo.effortLevel}
 						</span>
 					</div>

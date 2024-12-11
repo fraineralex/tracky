@@ -94,7 +94,7 @@ const initialEntries: DiaryEntry[] = [
 ]
 
 export function DiaryTimeline() {
-	const [entries, setEntries] = useState<DiaryEntry[]>(initialEntries)
+	const [entries] = useState<DiaryEntry[]>(initialEntries)
 	const [selectedTypes, setSelectedTypes] = useState<EntryType[]>([
 		'food',
 		'exercise',
@@ -129,16 +129,14 @@ export function DiaryTimeline() {
 
 	return (
 		<div className='space-y-8'>
-			<div className='rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800'>
-				<h2 className='mb-6 flex items-center text-2xl font-semibold text-gray-900 dark:text-white'>
+			<div className='rounded-lg border border-muted-foreground/20 p-6 shadow-md'>
+				<h2 className='mb-6 flex items-center text-2xl font-semibold'>
 					<Filter className='mr-2 h-6 w-6' />
 					Filters
 				</h2>
 				<div className='flex flex-wrap gap-6'>
 					<div className='flex-grow space-y-2'>
-						<h3 className='mb-2 text-sm font-medium text-gray-700 dark:text-gray-300'>
-							Entry Types
-						</h3>
+						<h3 className='mb-2 text-sm font-medium'>Entry Types</h3>
 						<div className='flex flex-wrap gap-2'>
 							{(['food', 'exercise', 'food_registration'] as const).map(
 								type => (
@@ -158,9 +156,7 @@ export function DiaryTimeline() {
 						</div>
 					</div>
 					<div className='space-y-2'>
-						<h3 className='mb-2 text-sm font-medium text-gray-700 dark:text-gray-300'>
-							Date
-						</h3>
+						<h3 className='mb-2 text-sm font-medium'>Date</h3>
 						<Select onValueChange={setSelectedDate}>
 							<SelectTrigger className='w-[200px]'>
 								<Calendar className='mr-2 h-4 w-4' />
@@ -177,9 +173,7 @@ export function DiaryTimeline() {
 						</Select>
 					</div>
 					<div className='space-y-2'>
-						<h3 className='mb-2 text-sm font-medium text-gray-700 dark:text-gray-300'>
-							Meal Type
-						</h3>
+						<h3 className='mb-2 text-sm font-medium'>Meal Type</h3>
 						<Select onValueChange={setSelectedMealType}>
 							<SelectTrigger className='w-[200px]'>
 								<SelectValue placeholder='Select Meal Type' />
@@ -196,18 +190,13 @@ export function DiaryTimeline() {
 				</div>
 			</div>
 			{Object.entries(groupedEntries).map(([date, dateEntries]) => (
-				<div
-					key={date}
-					className='overflow-hidden rounded-lg bg-white shadow-md dark:bg-gray-800'
-				>
+				<div key={date} className='overflow-hidden rounded-lg'>
 					<div className='flex items-center px-6 py-4'>
-						<div className='h-px flex-grow bg-gray-200 dark:bg-gray-700'></div>
-						<h3 className='px-4 text-sm font-normal text-gray-500 dark:text-gray-400'>
-							{date}
-						</h3>
-						<div className='h-px flex-grow bg-gray-200 dark:bg-gray-700'></div>
+						<div className='h-px flex-grow bg-foreground'></div>
+						<h3 className='px-4 text-sm font-normal text-foreground'>{date}</h3>
+						<div className='h-px flex-grow bg-foreground'></div>
 					</div>
-					<div className='divide-y divide-gray-200 dark:divide-gray-700'>
+					<div className='divide-y'>
 						{dateEntries.map(entry => (
 							<TimelineEntry key={entry.id} entry={entry} />
 						))}

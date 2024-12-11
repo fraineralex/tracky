@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 			'Fitness tracking web app with AI-powered features to quickly log meals and exercises.',
 		images: [
 			{
-				url: '/og.jpg',
+				url: `https://${process.env.DOMAIN}/og.jpg`,
 				width: 1920,
 				height: 675
 			}
@@ -73,12 +73,10 @@ export const metadata: Metadata = {
 			'Fitness tracking web app with AI-powered features to quickly log meals and exercises.',
 		images: [
 			{
-				url: '/og.jpg',
+				url: `https://${process.env.DOMAIN}/og.jpg`,
 				width: 1200,
 				height: 675,
 				type: 'image/jpeg',
-				pathname: '/og.jpg',
-				hostname: process.env.DOMAIN ?? 'https://tracky.fraineralex.dev'
 			}
 		],
 		creatorId: 'fraineralex'
