@@ -12,110 +12,36 @@ import {
 } from '~/components/ui/select'
 import { Button } from '~/components/ui/button'
 import { Calendar, Filter } from 'lucide-react'
+import { format } from 'date-fns'
 
-const initialEntries: DiaryEntry[] = [
-	{
-		id: '1',
-		type: 'food',
-		time: '08:00 AM',
-		date: 'January 7th, 2024',
-		title: 'Breakfast',
-		description: 'Oatmeal with berries',
-		mealType: 'breakfast',
-		nutritionInfo: { calories: 300, protein: 10, fat: 5, carbs: 50 }
-	},
-	{
-		id: '2',
-		type: 'exercise',
-		time: '09:30 AM',
-		date: 'January 7th, 2024',
-		title: 'Morning Run',
-		description: '5km jog in the park',
-		exerciseInfo: {
-			caloriesBurned: 400,
-			duration: 30,
-			category: 'Cardio',
-			effortLevel: 'moderate'
-		}
-	},
-	{
-		id: '3',
-		type: 'food',
-		time: '12:30 PM',
-		date: 'January 7th, 2024',
-		title: 'Lunch',
-		description: 'Grilled chicken salad',
-		mealType: 'lunch',
-		nutritionInfo: { calories: 450, protein: 30, fat: 15, carbs: 20 }
-	},
-	{
-		id: '4',
-		type: 'food_registration',
-		time: '02:00 PM',
-		date: 'January 7th, 2024',
-		title: 'New Food Registration',
-		description: 'Registered homemade energy bar',
-		nutritionInfo: { calories: 200, protein: 5, fat: 10, carbs: 25 }
-	},
-	{
-		id: '5',
-		type: 'exercise',
-		time: '05:00 PM',
-		date: 'January 7th, 2024',
-		title: 'Gym Session',
-		description: 'Weight training - upper body',
-		exerciseInfo: {
-			caloriesBurned: 300,
-			duration: 60,
-			category: 'Strength',
-			effortLevel: 'hard'
-		}
-	},
-	{
-		id: '6',
-		type: 'food',
-		time: '07:00 PM',
-		date: 'January 7th, 2024',
-		title: 'Dinner',
-		description: 'Salmon with roasted vegetables',
-		mealType: 'dinner',
-		nutritionInfo: { calories: 550, protein: 40, fat: 25, carbs: 30 }
-	},
-	{
-		id: '7',
-		type: 'food',
-		time: '08:30 AM',
-		date: 'January 8th, 2024',
-		title: 'Breakfast',
-		description: 'Scrambled eggs with toast',
-		mealType: 'breakfast',
-		nutritionInfo: { calories: 350, protein: 20, fat: 15, carbs: 30 }
-	}
-]
-
-export function DiaryTimeline() {
-	const [entries] = useState<DiaryEntry[]>(initialEntries)
+export function DiaryTimeline({
+	diaryEntries
+}: {
+	diaryEntries: DiaryEntry[]
+}) {
 	const [selectedTypes, setSelectedTypes] = useState<EntryType[]>([
-		'food',
+		'meal',
 		'exercise',
-		'food_registration'
+		'food'
 	])
 	const [selectedDate, setSelectedDate] = useState<string>('all')
-	const [selectedMealType, setSelectedMealType] = useState<string>('all')
+	const [selectedDiaryGroup, setSelectedDiaryGroup] = useState<string>('all')
 
-	const filteredEntries = entries.filter(
+	const filteredEntries = diaryEntries.filter(
 		entry =>
 			selectedTypes.includes(entry.type) &&
-			(selectedDate === 'all' || entry.date === selectedDate) &&
-			(selectedMealType === 'all' || entry.mealType === selectedMealType)
+			(selectedDate === 'all' ||
+				format(entry.createdAt, 'MMMM do, yyyy') === selectedDate) &&
+			(selectedDiaryGroup === 'all' || entry.diaryGroup === selectedDiaryGroup)
 	)
 
 	const groupedEntries = filteredEntries.reduce(
 		(groups, entry) => {
-			if (!groups[entry.date]) {
-				groups[entry.date] = []
+			const date = format(entry.createdAt, 'MMMM do, yyyy')
+			if (!groups[date]) {
+				groups[date] = []
 			}
-			groups[entry.date]?.push(entry)
+			groups[date]?.push(entry)
 			return groups
 		},
 		{} as Record<string, DiaryEntry[]>
@@ -129,7 +55,7 @@ export function DiaryTimeline() {
 
 	return (
 		<div className='space-y-8'>
-			<div className='rounded-lg border border-muted-foreground/20 p-6 shadow-md'>
+			<div className='rounded-lg border border-muted-foreground/20 p-6 shadow-lg'>
 				<h2 className='mb-6 flex items-center text-2xl font-semibold'>
 					<Filter className='mr-2 h-6 w-6' />
 					Filters
@@ -138,21 +64,17 @@ export function DiaryTimeline() {
 					<div className='flex-grow space-y-2'>
 						<h3 className='mb-2 text-sm font-medium'>Entry Types</h3>
 						<div className='flex flex-wrap gap-2'>
-							{(['food', 'exercise', 'food_registration'] as const).map(
-								type => (
-									<Button
-										key={type}
-										variant={
-											selectedTypes.includes(type) ? 'default' : 'outline'
-										}
-										size='sm'
-										onClick={() => toggleEntryType(type)}
-										className='capitalize'
-									>
-										{type.replace('_', ' ')}
-									</Button>
-								)
-							)}
+							{(['meal', 'exercise', 'food'] as const).map(type => (
+								<Button
+									key={type}
+									variant={selectedTypes.includes(type) ? 'default' : 'outline'}
+									size='sm'
+									onClick={() => toggleEntryType(type)}
+									className='capitalize'
+								>
+									{type.replace('_', ' ')}
+								</Button>
+							))}
 						</div>
 					</div>
 					<div className='space-y-2'>
@@ -164,7 +86,11 @@ export function DiaryTimeline() {
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value='all'>All Dates</SelectItem>
-								{[...new Set(entries.map(e => e.date))].map(date => (
+								{[
+									...new Set(
+										diaryEntries.map(e => format(e.createdAt, 'MMMM do, yyyy'))
+									)
+								].map(date => (
 									<SelectItem key={date} value={date}>
 										{date}
 									</SelectItem>
@@ -173,13 +99,13 @@ export function DiaryTimeline() {
 						</Select>
 					</div>
 					<div className='space-y-2'>
-						<h3 className='mb-2 text-sm font-medium'>Meal Type</h3>
-						<Select onValueChange={setSelectedMealType}>
+						<h3 className='mb-2 text-sm font-medium'>Diary Group</h3>
+						<Select onValueChange={setSelectedDiaryGroup}>
 							<SelectTrigger className='w-[200px]'>
-								<SelectValue placeholder='Select Meal Type' />
+								<SelectValue placeholder='Select Diary Group' />
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value='all'>All Meal Types</SelectItem>
+								<SelectItem value='all'>All Diary Groups</SelectItem>
 								<SelectItem value='breakfast'>Breakfast</SelectItem>
 								<SelectItem value='lunch'>Lunch</SelectItem>
 								<SelectItem value='snack'>Snack</SelectItem>
@@ -190,15 +116,15 @@ export function DiaryTimeline() {
 				</div>
 			</div>
 			{Object.entries(groupedEntries).map(([date, dateEntries]) => (
-				<div key={date} className='overflow-hidden rounded-lg'>
+				<div key={date} className='overflow-hidden rounded-lg shadow-md'>
 					<div className='flex items-center px-6 py-4'>
 						<div className='h-px flex-grow bg-foreground'></div>
 						<h3 className='px-4 text-sm font-normal text-foreground'>{date}</h3>
 						<div className='h-px flex-grow bg-foreground'></div>
 					</div>
 					<div className='divide-y'>
-						{dateEntries.map(entry => (
-							<TimelineEntry key={entry.id} entry={entry} />
+						{dateEntries.map((entry, index) => (
+							<TimelineEntry key={index} entry={entry} />
 						))}
 					</div>
 				</div>
