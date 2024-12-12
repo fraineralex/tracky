@@ -1,30 +1,27 @@
-export type EntryType = 'food' | 'exercise' | 'food_registration';
+import { diaryGroupEnum, effortEnum } from '~/server/db/schema'
 
-export type EffortLevel = 'easy' | 'moderate' | 'hard' | 'very hard';
+export type EntryType = 'meal' | 'exercise' | 'food'
 
 export interface NutritionInfo {
-  calories: number;
-  protein: number;
-  fat: number;
-  carbs: number;
+	calories: string
+	protein: string
+	fat: string
+	carbs: string
 }
 
 export interface ExerciseInfo {
-  caloriesBurned: number;
-  duration: number;
-  category: string;
-  effortLevel: EffortLevel;
+	burned: string
+	duration: string
+	name: string
+	effort: typeof effortEnum.enumValues[number]
 }
 
 export interface DiaryEntry {
-  id: string;
-  type: EntryType;
-  time: string;
-  date: string;
-  title: string;
-  description: string;
-  mealType?: 'breakfast' | 'lunch' | 'snack' | 'dinner';
-  nutritionInfo?: NutritionInfo;
-  exerciseInfo?: ExerciseInfo;
+	type: EntryType
+	createdAt: Date
+	title: string
+	diaryGroup: string
+	mealType?: typeof diaryGroupEnum.enumValues[number]
+	nutritionInfo?: NutritionInfo
+	exerciseInfo?: ExerciseInfo
 }
-
