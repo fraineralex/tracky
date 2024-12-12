@@ -7,6 +7,7 @@ import { ThemeProvider } from '~/components/providers/theme-provider'
 import SideNav from '~/components/layout/sidenav'
 import Toaster from '~/components/ui/sonner'
 import { Metadata } from 'next'
+import { Suspense } from 'react'
 
 const fontSans = FontSans({
 	subsets: ['latin'],
@@ -76,7 +77,7 @@ export const metadata: Metadata = {
 				url: `https://${process.env.DOMAIN}/og.jpg`,
 				width: 1200,
 				height: 675,
-				type: 'image/jpeg',
+				type: 'image/jpeg'
 			}
 		],
 		creatorId: 'fraineralex'
@@ -104,13 +105,15 @@ export default function RootLayout({
 					disableTransitionOnChange
 				>
 					<div className='mx-auto min-h-screen w-full min-w-80 overflow-y-auto md:grid md:max-w-screen-xl md:grid-rows-[auto,1fr]'>
-						<ClerkProvider afterSignOutUrl='/' dynamic>
-							<Header />
-							<main className='px-4 md:flex md:px-10'>
-								<SideNav />
-								{children}
-							</main>
-						</ClerkProvider>
+						<Suspense fallback={null}>
+							<ClerkProvider afterSignOutUrl='/' dynamic>
+								<Header />
+								<main className='px-4 md:flex md:px-10'>
+									<SideNav />
+									{children}
+								</main>
+							</ClerkProvider>
+						</Suspense>
 					</div>
 					<Toaster richColors />
 				</ThemeProvider>

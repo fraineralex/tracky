@@ -1,6 +1,13 @@
 'use client'
 
-import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import {
+	ClerkLoaded,
+	ClerkLoading,
+	SignInButton,
+	SignedIn,
+	SignedOut,
+	UserButton
+} from '@clerk/nextjs'
 import { ModeToggle } from '~/components/theme/mode-toggle'
 import { Button, buttonVariants } from '../ui/button'
 import { Github } from '../ui/icons'
@@ -9,6 +16,7 @@ import { Badge } from '../ui/badge'
 import ExternalLink from '../ui/external-link'
 import NavLinks from './nav-links'
 import { usePathname } from 'next/navigation'
+import { Skeleton } from '../ui/skeleton'
 
 export function Header() {
 	const pathname = usePathname()
@@ -51,7 +59,12 @@ export function Header() {
 					</Button>
 				</SignedOut>
 				<SignedIn>
-					<UserButton />
+					<ClerkLoading>
+						<Skeleton className='h-7 w-7 rounded-full' />
+					</ClerkLoading>
+					<ClerkLoaded>
+						<UserButton />
+					</ClerkLoaded>
 				</SignedIn>
 			</div>
 		</nav>
