@@ -12,7 +12,6 @@ export interface NutritionInfo {
 export interface ExerciseInfo {
 	burned: string
 	duration: string
-	name: string
 	effort: typeof effortEnum.enumValues[number]
 }
 

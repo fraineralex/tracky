@@ -88,12 +88,6 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
 							{entry.exerciseInfo.duration} min
 						</span>
 					</div>
-					<div className='flex items-center rounded-full bg-purple-100 px-2 py-1 dark:bg-primary dark:text-black'>
-						<Dumbbell className='mr-1 h-4 w-4 text-purple-500' />
-						<span className='text-xs font-medium'>
-							{entry.exerciseInfo.name}
-						</span>
-					</div>
 					<div className='flex items-center rounded-full bg-green-100 px-2 py-1 dark:bg-primary dark:text-black'>
 						<Weight className='mr-1 h-4 w-4 text-green-500' />
 						<span className='text-xs font-medium'>

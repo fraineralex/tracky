@@ -114,7 +114,6 @@ export default async function DiaryPage() {
 			exerciseInfo: {
 				burned: Number(burned).toFixed(),
 				duration: Number(duration).toFixed(),
-				name: title,
 				effort
 			}
 		})
@@ -148,7 +147,7 @@ export default async function DiaryPage() {
 	return (
 		<section className='mx-auto min-h-screen w-full'>
 			<div className='container mx-auto max-w-5xl px-4 py-8'>
-				<h1 className='text-2xl font-bold uppercase pb-4'>{today}</h1>
+				<h1 className='pb-4 text-2xl font-bold uppercase'>{today}</h1>
 				<DiaryTimeline diaryEntries={diaryEntries} />
 			</div>
 		</section>
