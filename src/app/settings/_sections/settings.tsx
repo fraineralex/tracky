@@ -23,7 +23,7 @@ export function Settings({
 	goalProgress: number
 }) {
 	return (
-		<div className='container mx-auto py-5'>
+		<section className='container mx-auto py-5'>
 			<header className='mb-8 flex flex-col gap-1'>
 				<h1 className='text-2xl font-bold'>Settings</h1>
 				<h2 className='text-sm text-muted-foreground'>
@@ -247,6 +247,6 @@ export function Settings({
 			<p className='mt-8 text-center text-sm text-muted-foreground'>
 				Version 1.0.0
 			</p>
-		</div>
+		</section>
 	)
 }
