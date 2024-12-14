@@ -62,14 +62,14 @@
 		"zod": "3.23.8"
 	},
 	"devDependencies": {
-		"@types/eslint": "^9",
+		"@types/eslint": "8.56.10",
 		"@types/node": "20.11.20",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
 		"@typescript-eslint/eslint-plugin": "7.1.1",
 		"@typescript-eslint/parser": "7.1.1",
 		"drizzle-kit": "0.21.4",
-		"eslint": "^9",
+		"eslint": "8.57.0",
 		"eslint-config-next": "^15.1.0",
 		"eslint-plugin-drizzle": "0.2.3",
 		"postcss": "8.4.34",
