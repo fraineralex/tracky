@@ -65,11 +65,6 @@ export default function BodyMetrics({
 			<div
 				className={`z-10 mx-5  ${showSection ? 'flex' : 'hidden'} flex-col items-center space-y-16 text-center sm:mx-auto`}
 			>
-				<motion.h1 variants={STAGGER_CHILD_VARIANTS}>
-					<span className='font-serif text-3xl font-bold text-green-600 dark:text-green-500'>
-						trac<span className='text-wood-950 dark:text-wood-100'>ky</span>
-					</span>
-				</motion.h1>
 				<div className='space-y-10'>
 					<motion.article variants={STAGGER_CHILD_VARIANTS}>
 						<h2 className='font-display mb-1 max-w-md text-start text-sm font-semibold transition-colors'>

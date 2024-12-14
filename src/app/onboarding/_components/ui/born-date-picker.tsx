@@ -19,7 +19,7 @@ export function BornDatePicker({
 	setDate,
 	showSection
 }: {
-	date: Date | undefined
+	date: Date
 	setDate: (date: Date | undefined) => void
 	showSection: boolean
 }) {
