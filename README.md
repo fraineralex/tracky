@@ -24,7 +24,7 @@ A smart, robust and minimalist fitness tracking web app built with `T3 Stack` wi
 - ✅ **`Food Page`**
 - ✅ **`Exercise Page`**
 - ✅ **`Settings Page`**
-- 🚧 **`Diary Page`**
+- ✅ **`Diary Page`**
 
 ## 🚀 Features
 

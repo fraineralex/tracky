@@ -17,7 +17,7 @@ export default function OptionItem({
 }) {
 	return (
 		<button
-			className={`flex min-w-[320px] items-center justify-start space-x-5 overflow-hidden rounded-lg border border-gray-500 p-5 transition-colors ${active ? 'bg-gray-300 dark:bg-gray-700' : 'hover:bg-gray-200 hover:dark:bg-gray-800'}`}
+			className={`flex items-center justify-start space-x-5 overflow-hidden rounded-lg border border-gray-500 p-5 transition-colors lg:min-w-[320px] ${active ? 'bg-gray-300 dark:bg-gray-700' : 'hover:bg-gray-200 hover:dark:bg-gray-800'}`}
 			type='button'
 			onClick={selectItem}
 			disabled={active}

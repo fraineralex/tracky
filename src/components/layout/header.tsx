@@ -1,6 +1,11 @@
-'use client'
-
-import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import {
+	ClerkLoaded,
+	ClerkLoading,
+	SignInButton,
+	SignedIn,
+	SignedOut,
+	UserButton
+} from '@clerk/nextjs'
 import { ModeToggle } from '~/components/theme/mode-toggle'
 import { Button, buttonVariants } from '../ui/button'
 import { Github } from '../ui/icons'
@@ -8,12 +13,9 @@ import Link from 'next/link'
 import { Badge } from '../ui/badge'
 import ExternalLink from '../ui/external-link'
 import NavLinks from './nav-links'
-import { usePathname } from 'next/navigation'
+import { Skeleton } from '../ui/skeleton'
 
 export function Header() {
-	const pathname = usePathname()
-
-	if (pathname === '/onboarding') return null
 	return (
 		<nav className='flex w-full items-center justify-between px-5 pb-2 pt-8 text-xl font-semibold md:px-10 lg:px-16'>
 			<div className='flex space-x-10 md:space-x-28'>
@@ -43,15 +45,27 @@ export function Header() {
 
 				<ModeToggle />
 				<SignedOut>
-					<Button
-						className='rounded-full bg-forest-300 font-medium text-wood-950 hover:bg-forest-400 dark:bg-forest-600 dark:text-wood-100 dark:hover:bg-forest-500'
-						asChild
-					>
-						<SignInButton>Sign In</SignInButton>
-					</Button>
+					<ClerkLoaded>
+						<Button
+							className='rounded-full bg-forest-300 font-medium text-wood-950 hover:bg-forest-400 dark:bg-forest-600 dark:text-wood-100 dark:hover:bg-forest-500'
+							asChild
+						>
+							<SignInButton>Sign In</SignInButton>
+						</Button>
+					</ClerkLoaded>
+					<ClerkLoading>
+						<Button className='rounded-full bg-forest-300 font-medium text-wood-950 hover:bg-forest-400 dark:bg-forest-600 dark:text-wood-100 dark:hover:bg-forest-500'>
+							Sign In
+						</Button>
+					</ClerkLoading>
 				</SignedOut>
 				<SignedIn>
-					<UserButton />
+					<ClerkLoading>
+						<Skeleton className='h-7 w-7 rounded-full' />
+					</ClerkLoading>
+					<ClerkLoaded>
+						<UserButton />
+					</ClerkLoaded>
 				</SignedIn>
 			</div>
 		</nav>

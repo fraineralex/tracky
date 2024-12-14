@@ -4,10 +4,10 @@ import { HouseIcon } from '../ui/icons'
 import { Dumbbell, Ham, NotepadText, Settings } from 'lucide-react'
 import SidenavButton from './sidenav-button'
 import { usePathname } from 'next/navigation'
+import React from 'react'
 
 export default function SideNav() {
 	const pathname = usePathname()
-
 	if (pathname === '/' || pathname === '/onboarding') return null
 
 	return (
@@ -22,8 +22,8 @@ export default function SideNav() {
 				<SidenavButton label='Exercise' href='/exercise' enabled>
 					<Dumbbell className='h-6 w-6 md:h-5 md:w-5' />
 				</SidenavButton>
-				<SidenavButton label='Diary' href='/diary'>
-					<NotepadText className='h-6 w-6 text-muted-foreground/50 sm:text-muted-foreground md:h-5 md:w-5' />
+				<SidenavButton label='Diary' href='/diary' enabled>
+					<NotepadText className='h-6 w-6 md:h-5 md:w-5' />
 				</SidenavButton>
 				<SidenavButton label='Settings' href='/settings' enabled>
 					<Settings className='h-6 w-6 md:h-5 md:w-5' />

@@ -16,8 +16,8 @@ export default function OnboardingPage() {
 	const { user } = useUser()
 	const router = useRouter()
 	const [showSection, setShowSection] = useState(ONBOARDING_SECTIONS.personal)
-	const [sex, setSex] = useState<Sex | undefined>()
-	const [bornDate, setBornDate] = useState<Date | undefined>()
+	const [sex, setSex] = useState<Sex>('male')
+	const [bornDate, setBornDate] = useState(new Date(2000, 0, 1))
 	const [heightUnit, setHeightUnit] = useState('ft')
 	const [heightDecimal, setHeightDecimal] = useState(5)
 	const [weightUnit, setWeightUnit] = useState('kg')
@@ -57,7 +57,7 @@ export default function OnboardingPage() {
 	}
 
 	return (
-		<section className='flex min-h-screen w-full flex-col place-content-center place-items-center'>
+		<section className='flex w-full flex-col place-content-center place-items-center py-5'>
 			<form ref={formRef} action={handleSubmit}>
 				<PersonalInfo
 					setShowSection={setShowSection}

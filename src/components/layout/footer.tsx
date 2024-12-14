@@ -29,7 +29,7 @@ const Footer = ({
 						href='https://fraineralex.dev'
 						className='flex items-center space-x-1'
 					>
-						<p>Made by Frainer using</p>
+						<p>Made by fraineralex using</p>
 						<T3Logo className='h-4 w-4' />
 						<ArrowUpRight size={14} className='group-hover:scale-125' />
 					</ExternalLink>
