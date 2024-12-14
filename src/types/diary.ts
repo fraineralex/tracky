@@ -12,7 +12,7 @@ export interface NutritionInfo {
 export interface ExerciseInfo {
 	burned: string
 	duration: string
-	effort: typeof effortEnum.enumValues[number]
+	effort: (typeof effortEnum.enumValues)[number]
 }
 
 export interface DiaryEntry {
@@ -20,7 +20,7 @@ export interface DiaryEntry {
 	createdAt: Date
 	title: string
 	diaryGroup: string
-	mealType?: typeof diaryGroupEnum.enumValues[number]
+	mealType?: (typeof diaryGroupEnum.enumValues)[number]
 	nutritionInfo?: NutritionInfo
 	exerciseInfo?: ExerciseInfo
 }

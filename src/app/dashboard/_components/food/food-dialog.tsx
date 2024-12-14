@@ -29,7 +29,7 @@ export default async function FoodDialog() {
 					<ClipboardList className='mr-2 h-4 w-4' /> Add Meal
 				</Button>
 			</DialogTrigger>
-			<DialogContent className='max-w-[95%] min-w-80 rounded-lg px-0 md:max-w-3xl lg:max-w-4xl lg:px-5 xl:max-w-6xl'>
+			<DialogContent className='min-w-80 max-w-[95%] rounded-lg px-0 md:max-w-3xl lg:max-w-4xl lg:px-5 xl:max-w-6xl'>
 				<DialogHeader>
 					<DialogTitle className='ps-4 pt-2 text-start md:ps-8'>
 						Add Meal to Diary

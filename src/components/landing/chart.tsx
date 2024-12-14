@@ -3,7 +3,7 @@ export function Chart() {
 		<div className='flex flex-col rounded-xl border bg-background text-card-foreground shadow'>
 			<div className='flex flex-col items-center space-y-1.5 p-6 pb-0'>
 				<h3 className='font-semibold leading-none tracking-tight'>
-					Today's Nutrition Summary
+					Today&apos;s Nutrition Summary
 				</h3>
 			</div>
 			<div className='-mt-3 flex-1 p-6 pb-0 pt-0'>

@@ -78,26 +78,26 @@ export default function NutritionGraphic({
 					))}
 				</div>
 				<aside className='col-span-2 flex flex-col space-y-4 text-center text-sm sm:place-content-center sm:justify-between sm:space-y-0'>
-					<p className='font-bold leading-tight -me-5 sm:-me-0'>
+					<p className='-me-5 font-bold leading-tight sm:-me-0'>
 						{round(tdayCalories).toLocaleString()}
 						<Flame className='inline h-6 w-6 pb-1' />
 						<small className='font-xs block font-normal text-gray-500 dark:text-gray-400 sm:text-sm'>
 							of {calories.needed.toLocaleString()}
 						</small>
 					</p>
-					<p className='font-bold leading-tight -me-5 sm:-me-0'>
+					<p className='-me-5 font-bold leading-tight sm:-me-0'>
 						{round(tdayProtein).toLocaleString()} P
 						<small className='font-xs block font-normal text-gray-500 dark:text-gray-400 sm:text-sm'>
 							of {protein.needed.toLocaleString()}
 						</small>
 					</p>
-					<p className='font-bold leading-tight -me-5 sm:-me-0'>
+					<p className='-me-5 font-bold leading-tight sm:-me-0'>
 						{round(tdayFats).toLocaleString()} F
 						<small className='font-xs block font-normal text-gray-500 dark:text-gray-400 sm:text-sm'>
 							of {fats.needed.toLocaleString()}
 						</small>
 					</p>
-					<p className='font-bold leading-tight -me-5 sm:-me-0'>
+					<p className='-me-5 font-bold leading-tight sm:-me-0'>
 						{round(tdayCarbs).toLocaleString()} C
 						<small className='font-xs block font-normal text-gray-500 dark:text-gray-400 sm:text-sm'>
 							of {carbs.needed.toLocaleString()}

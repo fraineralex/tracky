@@ -87,8 +87,8 @@ export function FoodDrawer({
 						</DrawerDescription>
 					)}
 				</DrawerHeader>
-				<div className='mx-auto w-full max-w-md sm:p-4 pb-0 p-2'>
-					<Card className='mx-auto border-0 bg-transparent sm:ps-7 shadow-none'>
+				<div className='mx-auto w-full max-w-md p-2 pb-0 sm:p-4'>
+					<Card className='mx-auto border-0 bg-transparent shadow-none sm:ps-7'>
 						<div className='mx-auto grid grid-cols-4 space-x-5'>
 							<FoodCardItem
 								item={{
@@ -132,7 +132,7 @@ export function FoodDrawer({
 						</div>
 					</Card>
 					<form
-						className='mt-10 w-full items-center bg-transparent sm:px-4 sm:ps-5 px-2'
+						className='mt-10 w-full items-center bg-transparent px-2 sm:px-4 sm:ps-5'
 						action={formAction}
 					>
 						<input type='hidden' name='foodId' value={foodData.id} />
@@ -207,11 +207,11 @@ export function FoodDrawer({
 							</div>
 						</div>
 						<DrawerFooter className='mx-0 px-0'>
-							<div className='flex space-x-5 py-5 justify-between'>
+							<div className='flex justify-between space-x-5 py-5'>
 								<DrawerClose asChild>
 									<Button
 										variant='outline'
-										className='px-10 sm:px-16 dark:border-gray-400'
+										className='px-10 dark:border-gray-400 sm:px-16'
 									>
 										Cancel
 									</Button>

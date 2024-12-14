@@ -69,7 +69,7 @@ export default function FitnessGoals({
 			<div
 				className={`z-10 mx-5 ${showSection ? 'flex' : 'hidden'} flex-col items-center space-y-16 text-center sm:mx-auto`}
 			>
-				<aside className='flex flex-col lg:space-x-20 sm:mx-auto md:flex-row'>
+				<aside className='flex flex-col sm:mx-auto md:flex-row lg:space-x-20'>
 					<article className='space-y-1'>
 						<motion.h2 variants={STAGGER_CHILD_VARIANTS}>
 							<span className='font-display max-w-md text-start text-sm font-semibold transition-colors'>
