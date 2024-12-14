@@ -57,7 +57,7 @@ export default function OnboardingPage() {
 	}
 
 	return (
-		<section className='flex min-h-screen w-full flex-col place-content-center place-items-center'>
+		<section className='flex w-full flex-col place-content-center place-items-center py-5'>
 			<form ref={formRef} action={handleSubmit}>
 				<PersonalInfo
 					setShowSection={setShowSection}

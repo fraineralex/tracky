@@ -77,7 +77,7 @@ export default function PersonalInfo({
 						</motion.h1>
 						<motion.article variants={STAGGER_CHILD_VARIANTS}>
 							<div className='flex flex-col space-y-10'>
-								<h2 className='font-display max-w-lg text-3xl font-semibold transition-colors'>
+								<h2 className='font-display max-w-lg text-xl font-semibold transition-colors lg:text-3xl'>
 									What is your date of birth?
 								</h2>
 								<div className='flex flex-col place-content-center items-center text-start'>
@@ -97,12 +97,12 @@ export default function PersonalInfo({
 						</motion.article>
 						<motion.article variants={STAGGER_CHILD_VARIANTS}>
 							<div className='space-y-10 pt-5'>
-								<h2 className='font-display max-w-md text-3xl font-semibold transition-colors'>
+								<h2 className='font-display max-w-md text-xl font-semibold transition-colors lg:text-3xl'>
 									Which one is your sex?
 								</h2>
-								<article className='grid w-full grid-cols-1 divide-y divide-border rounded-md border border-border text-foreground md:grid-cols-2 md:divide-x'>
+								<article className='grid w-full grid-cols-1 divide-y rounded-md border border-border text-foreground md:grid-cols-2 md:divide-x md:divide-y-0'>
 									<button
-										className={`flex flex-col items-center justify-center space-y-5 overflow-hidden p-5 transition-colors md:min-h-[200px] md:min-w-[200px] md:p-10 ${sex.value === 'male' ? 'bg-gray-300 dark:bg-gray-700' : 'hover:bg-gray-200 hover:dark:bg-gray-800'}`}
+										className={`flex flex-col items-center justify-center space-y-5 overflow-hidden p-5 transition-colors min-h-[200px] min-w-[200px] md:p-10 ${sex.value === 'male' ? 'bg-gray-300 dark:bg-gray-700' : 'hover:bg-gray-200 hover:dark:bg-gray-800'}`}
 										onClick={handleClickSex('male')}
 										type='button'
 										disabled={sex.value === 'male'}
@@ -111,7 +111,7 @@ export default function PersonalInfo({
 										<p>Male</p>
 									</button>
 									<button
-										className={`flex min-h-[200px] flex-col items-center justify-center space-y-5 overflow-hidden p-5 transition-colors md:p-10 ${sex.value === 'female' ? 'bg-gray-300 dark:bg-gray-700' : 'hover:bg-gray-200 hover:dark:bg-gray-800'}`}
+										className={`flex min-h-[200px] min-w-[200px] flex-col items-center justify-center space-y-5 overflow-hidden p-5 transition-colors md:p-10 ${sex.value === 'female' ? 'bg-gray-300 dark:bg-gray-700' : 'hover:bg-gray-200 hover:dark:bg-gray-800'}`}
 										onClick={handleClickSex('female')}
 										type='button'
 										disabled={sex.value === 'female'}
