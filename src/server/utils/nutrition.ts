@@ -1,7 +1,7 @@
 'use cache'
 
 import 'server-only'
-import { NutritionMetricsPerDay } from '~/types'
+import { NutritionMetrics, NutritionMetricsPerDay } from '~/types'
 import { db } from '~/server/db'
 import { consumption, food } from '~/server/db/schema'
 import { eq, and, gte } from 'drizzle-orm'
@@ -66,4 +66,46 @@ export async function getUserNutritionMetrics(
 	)
 
 	return nutritionMeatricsPerDay
+}
+
+export async function getTodayNutritionMetrics(
+	userId: string,
+	userMetadata: UserPublicMetadata
+) {
+	cacheLife('max')
+	cacheTag('nutrition')
+
+	const todaynutritionMeatrics = calculateNutritionalNeeds(userMetadata)
+	const today = new Date()
+	today.setHours(0, 0, 0, 0)
+	const result = await db
+		.select({
+			portion: consumption.portion,
+			servingSize: food.servingSize,
+			kcal: food.kcal,
+			protein: food.protein,
+			carbs: food.carbs,
+			fat: food.fat
+		})
+		.from(consumption)
+		.innerJoin(food, eq(consumption.foodId, food.id))
+		.where(
+			and(eq(consumption.userId, userId), gte(consumption.createdAt, today))
+		)
+
+	result.forEach(({ portion, servingSize, kcal, protein, carbs, fat }) => {
+		const calories = (Number(portion) / Number(servingSize)) * Number(kcal)
+		const proteinConsumed =
+			(Number(portion) / Number(servingSize)) * Number(protein)
+		const carbsConsumed =
+			(Number(portion) / Number(servingSize)) * Number(carbs)
+		const fatsConsumed = (Number(portion) / Number(servingSize)) * Number(fat)
+
+		todaynutritionMeatrics.calories.consumed += calories
+		todaynutritionMeatrics.protein.consumed += proteinConsumed
+		todaynutritionMeatrics.carbs.consumed += carbsConsumed
+		todaynutritionMeatrics.fats.consumed += fatsConsumed
+	})
+
+	return todaynutritionMeatrics
 }

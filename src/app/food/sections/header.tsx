@@ -2,6 +2,8 @@ import FoodDialog from '~/app/dashboard/_components/food/food-dialog'
 import RegisterFoodDialog from '../_components/register-food-dialog'
 import AIChatDialog from '../_components/ai-chat-dialog'
 import { logMealAI } from '../_actions'
+import { Suspense } from 'react'
+import { AddMealButton } from '~/app/dashboard/_components/food/add-meal-button'
 
 export function Header() {
 	const today = new Date().toLocaleDateString('en-US', {
@@ -15,7 +17,9 @@ export function Header() {
 			<h1 className='hidden text-2xl font-bold uppercase sm:block'>{today}</h1>
 			<div className='flex w-full flex-wrap place-content-center place-items-center items-center gap-2 sm:w-auto'>
 				<RegisterFoodDialog />
-				<FoodDialog />
+				<Suspense fallback={<AddMealButton />}>
+					<FoodDialog />
+				</Suspense>
 				<AIChatDialog
 					action={logMealAI}
 					placeholder='Log 100 g of chicken breast for lunch'

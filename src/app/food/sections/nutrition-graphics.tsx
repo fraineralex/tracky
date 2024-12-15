@@ -28,26 +28,26 @@ import {
 import { daysOfWeek } from '~/constants'
 
 export default function NutritionGraphic({
-	nutritionMeatrics,
+	nutritionMeatrics: nutrition,
 	weightsChanges
 }: {
 	nutritionMeatrics: NutritionMetricsPerDay
 	weightsChanges: Weights
 }) {
-	const nutritionWeek: WeeklyNutrition[] = Object.entries(
-		nutritionMeatrics
-	).map(([key, nutritients]) => {
-		return {
-			name: daysOfWeek[Number(key)] ?? '',
-			calories: round(nutritients.calories.consumed),
-			protein: round(nutritients.protein.consumed),
-			fats: round(nutritients.fats.consumed),
-			carbs: round(nutritients.carbs.consumed)
+	const nutritionWeek: WeeklyNutrition[] = Object.entries(nutrition).map(
+		([key, nutritients]) => {
+			return {
+				name: daysOfWeek[Number(key)] ?? '',
+				calories: round(nutritients.calories.consumed),
+				protein: round(nutritients.protein.consumed),
+				fats: round(nutritients.fats.consumed),
+				carbs: round(nutritients.carbs.consumed)
+			}
 		}
-	})
+	)
 
 	const weekDay = calculateAdjustedDay(new Date())
-	const todayNutrition = nutritionMeatrics[weekDay] as NutritionMetrics
+	const todayNutrition = nutrition[weekDay] as NutritionMetrics
 	const todayGoalData = [
 		{
 			name: 'Calories',
@@ -67,20 +67,18 @@ export default function NutritionGraphic({
 		}
 	]
 
-	const weekGoalNutrition = Object.values(nutritionMeatrics).reduce(
-		(acc, day) => {
-			acc.calories.consumed += day.calories.consumed
-			acc.protein.consumed += day.protein.consumed
-			acc.fats.consumed += day.fats.consumed
-			acc.carbs.consumed += day.carbs.consumed
+	const weekGoalNutrition = Object.values(nutrition).reduce((acc, day) => {
+		acc.calories.consumed += day.calories.consumed
+		acc.protein.consumed += day.protein.consumed
+		acc.fats.consumed += day.fats.consumed
+		acc.carbs.consumed += day.carbs.consumed
 
-			acc.calories.needed += day.calories.needed
-			acc.protein.needed += day.protein.needed
-			acc.fats.needed += day.fats.needed
-			acc.carbs.needed += day.carbs.needed
-			return acc
-		}
-	)
+		acc.calories.needed += day.calories.needed
+		acc.protein.needed += day.protein.needed
+		acc.fats.needed += day.fats.needed
+		acc.carbs.needed += day.carbs.needed
+		return acc
+	})
 
 	const weekGoalData = [
 		{
