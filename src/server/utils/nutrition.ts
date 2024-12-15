@@ -1,5 +1,6 @@
-import 'server-only'
+'use cache'
 
+import 'server-only'
 import { NutritionMetricsPerDay } from '~/types'
 import { db } from '~/server/db'
 import { consumption, food } from '~/server/db/schema'
@@ -8,11 +9,18 @@ import {
 	calculateAdjustedDay,
 	calculateNutritionalNeeds
 } from '~/lib/calculations'
+import {
+	unstable_cacheLife as cacheLife,
+	unstable_cacheTag as cacheTag
+} from 'next/cache'
 
 export async function getUserNutritionMetrics(
 	userId: string,
 	userMetadata: UserPublicMetadata
 ) {
+	cacheLife('max')
+	cacheTag('nutrition')
+
 	const nutritionMeatrics = calculateNutritionalNeeds(userMetadata)
 	const dayOfWeek = new Date()
 	dayOfWeek.setDate(dayOfWeek.getDate() - calculateAdjustedDay(dayOfWeek) - 1)

@@ -171,9 +171,7 @@ export function calculateNutritionalNeeds({
 			? 88.362 + 13.397 * currentWeight + 4.799 * height - 5.677 * age
 			: 447.593 + 9.247 * currentWeight + 3.098 * height - 4.33 * age
 
-	const get = tmb * ACTIVITY_FACTORS[activity]
-
-	const adjustedGet = get * GOAL_FACTORS[goal]
+	const adjustedGet = tmb * ACTIVITY_FACTORS[activity] * GOAL_FACTORS[goal]
 
 	const proteinCalories = adjustedGet * 0.21
 	const carbCalories = adjustedGet * 0.53
@@ -202,4 +200,32 @@ export function calculateNutritionalNeeds({
 			needed: fats
 		}
 	}
+}
+
+export function calculateNeededCalories({
+	weights,
+	height,
+	heightUnit,
+	weightUnit,
+	born,
+	sex,
+	activity,
+	goal
+}: UserPublicMetadata) {
+	let currentWeight = weights[weights.length - 1]?.value ?? 0
+	const age = new Date().getFullYear() - new Date(born).getFullYear()
+	currentWeight = weightUnit === 'kg' ? currentWeight : currentWeight * 0.453592
+
+	if (heightUnit === 'ft') {
+		height = height * 30.48
+	} else if (heightUnit === 'in') {
+		height = height * 2.54
+	}
+
+	const tmb =
+		sex === 'male'
+			? 88.362 + 13.397 * currentWeight + 4.799 * height - 5.677 * age
+			: 447.593 + 9.247 * currentWeight + 3.098 * height - 4.33 * age
+
+	return round(tmb * ACTIVITY_FACTORS[activity] * GOAL_FACTORS[goal])
 }

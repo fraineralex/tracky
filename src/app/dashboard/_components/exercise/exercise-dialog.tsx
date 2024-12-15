@@ -1,3 +1,5 @@
+'use cache'
+
 import { Dumbbell } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import {
@@ -11,8 +13,10 @@ import {
 import ExerciseCategories from './exercise-categories'
 import { db } from '~/server/db'
 import { exerciseCategory } from '~/server/db/schema'
+import { unstable_cacheLife as cacheLife } from 'next/cache'
 
 export default async function ExerciseDialog() {
+	cacheLife('max')
 	const categories = await db.select().from(exerciseCategory)
 
 	return (

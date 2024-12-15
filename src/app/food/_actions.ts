@@ -3,7 +3,7 @@
 import 'server-only'
 import { auth } from '@clerk/nextjs/server'
 import { createInsertSchema } from 'drizzle-zod'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { z } from 'zod'
 import { db } from '~/server/db'
 import { consumption, diaryGroupEnum, food, unitEnum } from '~/server/db/schema'
@@ -90,6 +90,7 @@ export const registerFood = async (
 		const newFood = validatedFields.data satisfies NewFood
 		await db.insert(food).values(newFood)
 		revalidatePath('/food')
+		revalidateTag('food')
 		return { message: 'Food registered successfully', success: true }
 	} catch (error) {
 		console.error(error)

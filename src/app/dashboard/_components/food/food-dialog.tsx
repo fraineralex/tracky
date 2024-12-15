@@ -1,5 +1,3 @@
-import { ClipboardList } from 'lucide-react'
-import { Button } from '~/components/ui/button'
 import { DataTable } from '~/components/ui/data-table'
 import {
 	Dialog,
@@ -13,21 +11,31 @@ import { db } from '~/server/db'
 import { food } from '~/server/db/schema'
 import { eq, isNull, or } from 'drizzle-orm'
 import { currentUser } from '@clerk/nextjs/server'
+import { AddMealButton } from './add-meal-button'
+import {
+	unstable_cacheLife as cacheLife,
+	unstable_cacheTag as cacheTag
+} from 'next/cache'
+
+async function getFoodData(userId: string) {
+	'use cache'
+	cacheLife('max')
+	cacheTag('food')
+	return await db
+		.select()
+		.from(food)
+		.where(or(isNull(food.userId), eq(food.userId, userId)))
+}
 
 export default async function FoodDialog() {
 	const user = await currentUser()
-	if (!user) return null
-	const foodData = await db
-		.select()
-		.from(food)
-		.where(or(isNull(food.userId), eq(food.userId, user?.id)))
+	if (!user) return <AddMealButton />
+	const foodData = await getFoodData(user.id)
 
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button size='sm' className='flex-grow sm:flex-grow-0'>
-					<ClipboardList className='mr-2 h-4 w-4' /> Add Meal
-				</Button>
+				<AddMealButton />
 			</DialogTrigger>
 			<DialogContent className='min-w-80 max-w-[95%] rounded-lg px-0 md:max-w-3xl lg:max-w-4xl lg:px-5 xl:max-w-6xl'>
 				<DialogHeader>

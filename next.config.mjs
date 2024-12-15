@@ -7,7 +7,8 @@ await import('./src/env.js')
 /** @type {import("next").NextConfig} */
 const config = {
 	experimental: {
-		ppr: 'incremental'
+		ppr: 'incremental',
+		dynamicIO: true
 	}
 }
 

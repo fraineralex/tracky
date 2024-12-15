@@ -8,6 +8,7 @@ import SideNav from '~/components/layout/sidenav'
 import Toaster from '~/components/ui/sonner'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
+import Loading from './loading'
 
 const fontSans = FontSans({
 	subsets: ['latin'],
@@ -105,7 +106,7 @@ export default function RootLayout({
 					disableTransitionOnChange
 				>
 					<div className='mx-auto min-h-screen w-full min-w-80 overflow-y-auto md:grid md:max-w-screen-xl md:grid-rows-[auto,1fr]'>
-						<Suspense fallback={null}>
+						<Suspense fallback={<Loading />}>
 							<ClerkProvider afterSignOutUrl='/' dynamic>
 								<Header />
 								<main className='px-4 md:flex md:px-10'>

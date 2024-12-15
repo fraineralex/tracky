@@ -1,24 +1,19 @@
 import FoodDialog from './_components/food/food-dialog'
 import ExerciseDialog from './_components/exercise/exercise-dialog'
-import NutritionGraphic from './_sections/nutrition-graphic'
-import InsightsAndAnalitics from './_sections/insights-analytics'
-import DataAndHabits from './_sections/data-habits'
-import { currentUser } from '@clerk/nextjs/server'
-import { getUserNutritionMetrics } from '~/server/utils/nutrition'
 import { Metadata } from 'next'
 import Footer from '~/components/layout/footer'
+import { Suspense } from 'react'
+import { DashboardDataSkeleton } from './_components/skeletons'
+import { AddMealButton } from './_components/food/add-meal-button'
+import { DashboardData } from './_sections/dashboard-data'
+import { connection } from 'next/server'
 
 export const metadata: Metadata = {
 	title: 'Dashboard'
 }
 
 export default async function DashboardPage() {
-	const user = await currentUser()
-	if (!user) return null
-	const userMetadata = user.publicMetadata
-	const nutritionMeatrics = await getUserNutritionMetrics(user.id, userMetadata)
-	const expenditure = nutritionMeatrics[0]?.calories.needed ?? 0
-
+	await connection()
 	const today = new Date().toLocaleDateString('en-US', {
 		weekday: 'long',
 		month: 'long',
@@ -32,17 +27,18 @@ export default async function DashboardPage() {
 					<h1 className='order-last h-full w-full text-center align-bottom text-2xl font-bold uppercase md:order-first md:h-fit md:w-fit'>
 						{today}
 					</h1>
-
 					<header className='contents md:float-end md:flex md:space-x-5'>
-						<FoodDialog />
-						<ExerciseDialog />
+						<Suspense fallback={<AddMealButton />}>
+							<FoodDialog />
+						</Suspense>
+						<Suspense fallback={<AddMealButton />}>
+							<ExerciseDialog />
+						</Suspense>
 					</header>
 				</div>
-				<div className='mt-4 flex-col space-x-3 space-y-3 sm:mt-0 md:flex-row md:pt-2 lg:flex lg:justify-between'>
-					<NutritionGraphic nutritionMetrics={nutritionMeatrics} />
-					<InsightsAndAnalitics expenditure={expenditure} {...userMetadata} />
-				</div>
-				<DataAndHabits userMetadata={userMetadata} expenditure={expenditure} />
+				<Suspense fallback={<DashboardDataSkeleton />}>
+					<DashboardData />
+				</Suspense>
 			</section>
 			<Footer className='-left-4 bottom-0 hidden w-full py-3 backdrop-blur-none sm:fixed sm:block' />
 		</>

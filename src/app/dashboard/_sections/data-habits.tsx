@@ -2,17 +2,14 @@ import { Circle, Square } from 'lucide-react'
 import InsightsCard from '../_components/analytics/insights-card'
 import ResumeStreak from '../_components/analytics/resume-streak'
 import { Weights } from '~/types'
-import { calculateNutritionalNeeds } from '~/lib/calculations'
+import { calculateNeededCalories } from '~/lib/calculations'
 
 interface Props {
 	userMetadata: UserPublicMetadata
 	expenditure: number
 }
 
-export default async function DataAndHabits({
-	userMetadata,
-	expenditure
-}: Props) {
+export default function DataAndHabits({ expenditure, userMetadata }: Props) {
 	const currentWeight =
 		userMetadata.weights[userMetadata.weights.length - 1]?.value ?? 0
 	const dateRange = `${new Date(userMetadata.updatedAt).toLocaleDateString(
@@ -24,13 +21,12 @@ export default async function DataAndHabits({
 	)} - Now`
 
 	const weights = [userMetadata.weights[0]] as Weights
-	const nutritionMeatrics = await calculateNutritionalNeeds({
+	const nutritionMeatrics = calculateNeededCalories({
 		...userMetadata,
 		weights
 	})
-	const caloriesChanges = Math.abs(
-		nutritionMeatrics.calories.needed - expenditure
-	)
+
+	const caloriesChanges = Math.abs(nutritionMeatrics - expenditure)
 	return (
 		<section className='mx-auto mt-3 grid grid-cols-2 gap-3 sm:max-w-[460px] md:flex md:max-w-full md:gap-0 md:space-x-2 lg:justify-between'>
 			<InsightsCard
