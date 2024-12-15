@@ -1,7 +1,7 @@
 'use server'
 
 import { auth } from '@clerk/nextjs/server'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { z } from 'zod'
 import { db } from '~/server/db'
 import {
@@ -65,6 +65,8 @@ export const addConsumption = async (
 		const newConsumption = validatedFields.data satisfies NewConsumption
 		await db.insert(consumption).values(newConsumption)
 		revalidatePath('/dashboard')
+		revalidatePath('/food')
+		revalidateTag('nutrition')
 		return { message: 'Consumption added successfully', success: true }
 	} catch (error) {
 		console.error(error)
