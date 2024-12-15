@@ -1,34 +1,23 @@
 import { currentUser } from '@clerk/nextjs/server'
 import {
-	FoodMeatricsSkeleton,
 	NutritionCardsSkeleton,
 	NutritionGraphicsSkeleton
 } from '../_components/skeletons'
-import {
-	getTodayNutritionMetrics,
-	getUserNutritionMetrics
-} from '~/server/utils/nutrition'
 import { NutritionCards } from './nutrition-cards'
 import { Suspense } from 'react'
 import { NutritionGraphicData } from '../_components/nutrition-graphic-data'
+import { connection } from 'next/server'
 
 export async function FoodMeatrics() {
-	const user = await currentUser()
-	if (!user) return <FoodMeatricsSkeleton />
-	const userMetadata = user.publicMetadata
-	const nutritionMeatrics = getUserNutritionMetrics(user.id, userMetadata)
-	const todayNutrition = getTodayNutritionMetrics(user.id, userMetadata)
-
+	await connection()
+	const user = currentUser()
 	return (
 		<>
 			<Suspense fallback={<NutritionCardsSkeleton />}>
-				<NutritionCards nutrition={todayNutrition} />
+				<NutritionCards user={user} />
 			</Suspense>
 			<Suspense fallback={<NutritionGraphicsSkeleton />}>
-				<NutritionGraphicData
-					nutritionMeatrics={nutritionMeatrics}
-					weightsChanges={userMetadata.weights}
-				/>
+				<NutritionGraphicData user={user} />
 			</Suspense>
 		</>
 	)

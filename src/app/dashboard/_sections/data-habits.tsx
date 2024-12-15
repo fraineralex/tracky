@@ -3,13 +3,18 @@ import InsightsCard from '../_components/analytics/insights-card'
 import ResumeStreak from '../_components/analytics/resume-streak'
 import { Weights } from '~/types'
 import { calculateNeededCalories } from '~/lib/calculations'
+import { User } from '@clerk/nextjs/server'
+import { DataAndHabitsSkeleton } from '../_components/skeletons'
 
-interface Props {
-	userMetadata: UserPublicMetadata
-	expenditure: number
-}
-
-export default function DataAndHabits({ expenditure, userMetadata }: Props) {
+export default async function DataAndHabits({
+	user: currentUser
+}: {
+	user: Promise<User | null>
+}) {
+	const user = await currentUser
+	if (!user) return <DataAndHabitsSkeleton />
+	const userMetadata = user.publicMetadata
+	const expenditure = calculateNeededCalories(userMetadata)
 	const currentWeight =
 		userMetadata.weights[userMetadata.weights.length - 1]?.value ?? 0
 	const dateRange = `${new Date(userMetadata.updatedAt).toLocaleDateString(

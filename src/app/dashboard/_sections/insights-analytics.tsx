@@ -1,23 +1,21 @@
 import { Circle, Square } from 'lucide-react'
 import { Progress } from '~/components/ui/progress'
 import InsightsCard from '../_components/analytics/insights-card'
-import { Goal, Weights } from '~/types'
+import { User } from '@clerk/nextjs/server'
+import { InsightsAndAnaliticsSkeleton } from '../_components/skeletons'
+import { calculateNeededCalories } from '~/lib/calculations'
 
-export default function InsightsAndAnalitics({
-	expenditure,
-	weights,
-	weightUnit,
-	updatedAt,
-	goalWeight,
-	goal
+export default async function InsightsAndAnalitics({
+	user: currentUser
 }: {
-	expenditure: number
-	weights: Weights
-	weightUnit: string
-	updatedAt: string
-	goalWeight: number
-	goal: Goal
+	user: Promise<User | null>
 }) {
+	const user = await currentUser
+	if (!user) return <InsightsAndAnaliticsSkeleton />
+	const { goal, goalWeight, weightUnit, weights, updatedAt } =
+		user.publicMetadata
+
+	const expenditure = calculateNeededCalories(user.publicMetadata)
 	const currentWeight = weights[weights.length - 1]?.value ?? 0
 	const initialWeight = weights[0]?.value ?? 0
 	const dateRange = `${new Date(updatedAt).toLocaleDateString('en-US', {
@@ -87,7 +85,7 @@ export default function InsightsAndAnalitics({
 				dateRange={dateRange}
 				value={daysFromLastUpdate}
 				valueUnit='days in'
-				className='-ml-3 mt-3 rounded-lg border p-4 pb-1 dark:bg-slate-800/50 lg:ml-0'
+				className='mt-3 rounded-lg border p-4 pb-1 dark:bg-slate-800/50 lg:ml-0'
 			>
 				<Progress value={goalProgress} className='mb-6 mt-6 h-4' />
 			</InsightsCard>

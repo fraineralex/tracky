@@ -2,21 +2,19 @@ import { Skeleton } from '~/components/ui/skeleton'
 
 export function NutritionGraphicSkeleton() {
 	return (
-		<Skeleton className='mx-auto h-[374px] w-full rounded-lg md:mx-0 lg:max-w-96 xl:max-w-[490px]' />
+		<Skeleton className='-pt-2 mx-auto h-[374px] w-full rounded-lg md:mx-0 lg:max-w-96 xl:max-w-[490px]' />
 	)
 }
 
 export function InsightsAndAnaliticsSkeleton() {
 	return (
-		<div className='pt-3 lg:pt-0'>
-			<aside className='mx-auto space-y-3 md:mx-0 lg:w-full'>
-				<div className='flex space-x-3 lg:w-full'>
-					<Skeleton className='h-[190px] w-full lg:w-[235px]' />
-					<Skeleton className='h-[190px] w-full lg:w-[235px]' />
-				</div>
-				<Skeleton className='h-[173px] w-full' />
-			</aside>
-		</div>
+		<aside className='mx-auto md:mx-0 lg:w-full'>
+			<div className='flex space-x-3 lg:w-full'>
+				<Skeleton className='-mt-2 h-[190.19px] w-full lg:w-[235.5px]' />
+				<Skeleton className='-mt-2 h-[190.19px] w-full lg:w-[235.5px]' />
+			</div>
+			<Skeleton className='mt-3 h-[174.19px] w-full' />
+		</aside>
 	)
 }
 
@@ -33,7 +31,7 @@ export function DataAndHabitsSkeleton() {
 export function DashboardDataSkeleton() {
 	return (
 		<>
-			<div className='flex-col pt-4 sm:mt-0 md:flex-row lg:flex lg:justify-between'>
+			<div className='mt-4 flex-col space-x-3 space-y-3 sm:mt-0 md:flex-row md:pt-2 lg:flex lg:justify-between'>
 				<NutritionGraphicSkeleton />
 				<InsightsAndAnaliticsSkeleton />
 			</div>

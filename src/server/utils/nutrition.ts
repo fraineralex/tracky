@@ -1,7 +1,6 @@
 'use cache'
 
 import 'server-only'
-import { NutritionMetrics, NutritionMetricsPerDay } from '~/types'
 import { db } from '~/server/db'
 import { consumption, food } from '~/server/db/schema'
 import { eq, and, gte } from 'drizzle-orm'
@@ -9,6 +8,7 @@ import {
 	calculateAdjustedDay,
 	calculateNutritionalNeeds
 } from '~/lib/calculations'
+import { NutritionMetricsPerDay } from '~/types'
 import {
 	unstable_cacheLife as cacheLife,
 	unstable_cacheTag as cacheTag

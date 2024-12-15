@@ -1,10 +1,5 @@
 import { Skeleton } from '~/components/ui/skeleton'
-import {
-	DashboardDataSkeleton,
-	DataAndHabitsSkeleton,
-	InsightsAndAnaliticsSkeleton,
-	NutritionGraphicSkeleton
-} from './_components/skeletons'
+import { DashboardDataSkeleton } from './_components/skeletons'
 
 export default function Loading() {
 	return (
