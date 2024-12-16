@@ -22,8 +22,8 @@ const fontSerif = FontSerif({
 
 export const metadata: Metadata = {
 	title: {
-		default: 'Tracky',
-		template: '%s | Tracky'
+		default: 'tracky',
+		template: '%s / tracky'
 	},
 	description:
 		'Fitness tracking web app with AI-powered features to quickly log meals and exercises,',
@@ -37,12 +37,12 @@ export const metadata: Metadata = {
 		'exercise',
 		'nutrition',
 		'food',
-		'AI',
+		'ai',
 		'web app'
 	],
 	metadataBase: new URL(process.env.DOMAIN ?? 'https://tracky.fraineralex.dev'),
 	openGraph: {
-		title: 'Tracky',
+		title: 'tracky',
 		description:
 			'Fitness tracking web app with AI-powered features to quickly log meals and exercises.',
 		images: [
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
 		card: 'summary_large_image',
 		creator: '@fraineralex',
 		site: '@fraineralex',
-		title: 'Tracky',
+		title: 'tracky',
 		description:
 			'Fitness tracking web app with AI-powered features to quickly log meals and exercises.',
 		images: [

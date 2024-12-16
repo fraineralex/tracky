@@ -1,6 +1,8 @@
 import ExerciseDialog from '~/app/dashboard/_components/exercise/exercise-dialog'
 import AIChatDialog from '~/app/food/_components/ai-chat-dialog'
 import { logExerciseAI } from '../_actions'
+import { AddExerciseButton } from '~/app/dashboard/_components/exercise/add-exercise-button'
+import { Suspense } from 'react'
 
 export function Header() {
 	const today = new Date().toLocaleDateString('en-US', {
@@ -15,7 +17,9 @@ export function Header() {
 				{today}
 			</h1>
 			<div className='flex w-full flex-wrap items-center gap-2 sm:w-auto'>
-				<ExerciseDialog />
+				<Suspense fallback={<AddExerciseButton />}>
+					<ExerciseDialog />
+				</Suspense>
 				<AIChatDialog
 					action={logExerciseAI}
 					placeholder='Log 30 minutes of cardio in the morning'

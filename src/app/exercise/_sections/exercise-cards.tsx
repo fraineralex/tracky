@@ -1,13 +1,42 @@
+'use cache'
+
 import { Activity, Clock, Flame, TrendingUp } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
-import { calculateDuration } from '~/lib/calculations'
-import { ExerciseMetricsData } from '~/types'
+import {
+	calculateAdjustedDay,
+	calculateDuration,
+	round
+} from '~/lib/calculations'
+import { ExerciseMetricsData, ExerciseCall } from '~/types'
 
-export default function ExerciseMetrics({
-	metrics
+export default async function ExerciseCards({
+	exercises: exercisesPromise
 }: {
-	metrics: ExerciseMetricsData
+	exercises: Promise<ExerciseCall>
 }) {
+	const exercises = await exercisesPromise
+
+	const metrics: ExerciseMetricsData = {
+		totalEnergyBurned: 0,
+		totalDuration: 0,
+		exercisesThisWeek: 0,
+		avgDuration: 0
+	}
+
+	const dayOfWeek = new Date()
+	dayOfWeek.setDate(dayOfWeek.getDate() - calculateAdjustedDay(dayOfWeek) - 1)
+
+	for (const exercise of exercises) {
+		metrics.totalEnergyBurned += Number(exercise.burned)
+		metrics.totalDuration += Number(exercise.duration)
+
+		if (exercise.createdAt >= dayOfWeek) metrics.exercisesThisWeek++
+	}
+
+	if (exercises.length > 0) {
+		metrics.avgDuration = round(metrics.totalDuration / exercises.length)
+	}
+
 	const mainMetrics = [
 		{
 			name: 'Total Energy Burned',

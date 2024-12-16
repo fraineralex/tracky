@@ -1,6 +1,11 @@
 import { currentUser } from '@clerk/nextjs/server'
 import { calculateGoalProgress } from '~/lib/calculations'
 import { Settings } from './_sections/settings'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+	title: 'Settings'
+}
 
 export default async function SettingsPageWithModalsComponent() {
 	const user = await currentUser()

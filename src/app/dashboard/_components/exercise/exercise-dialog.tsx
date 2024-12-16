@@ -14,6 +14,7 @@ import ExerciseCategories from './exercise-categories'
 import { db } from '~/server/db'
 import { exerciseCategory } from '~/server/db/schema'
 import { unstable_cacheLife as cacheLife } from 'next/cache'
+import { AddExerciseButton } from './add-exercise-button'
 
 export default async function ExerciseDialog() {
 	cacheLife('max')
@@ -22,9 +23,7 @@ export default async function ExerciseDialog() {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button size='sm' className='flex-grow sm:flex-grow-0'>
-					<Dumbbell className='mr-2 h-4 w-4' /> Add Exercise
-				</Button>
+				<AddExerciseButton />
 			</DialogTrigger>
 			<DialogContent className='max-w-[95%] rounded-lg px-3 md:max-w-3xl md:px-5'>
 				<DialogHeader className='text-start md:px-5'>

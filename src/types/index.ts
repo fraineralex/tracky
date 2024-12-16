@@ -112,3 +112,11 @@ export type FieldTypes = Record<
 	SettingsFieldType,
 	React.FC<{ attr: SettingsAttr }>
 >
+
+export type ExerciseCall = {
+	burned: string
+	duration: string
+	group: (typeof diaryGroupEnum.enumValues)[number]
+	createdAt: Date
+	name: string
+}[]

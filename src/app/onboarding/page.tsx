@@ -11,6 +11,11 @@ import { useRef, useState } from 'react'
 import { ONBOARDING_SECTIONS } from '~/constants'
 import { Sex } from '~/types'
 import confetti from 'canvas-confetti'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+	title: 'Onboarding'
+}
 
 export default function OnboardingPage() {
 	const { user } = useUser()

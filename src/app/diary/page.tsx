@@ -9,6 +9,11 @@ import {
 import { eq, and } from 'drizzle-orm'
 import { currentUser } from '@clerk/nextjs/server'
 import { DiaryEntry } from '~/types/diary'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+	title: 'Food'
+}
 
 export default async function DiaryPage() {
 	const user = await currentUser()
