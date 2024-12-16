@@ -3,7 +3,6 @@ import { ACTIVITY_LEVELS } from '~/constants'
 import { BriefcaseMedical, Info, Mail } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import Link from 'next/link'
-
 import {
 	Dialog,
 	DialogContent,
@@ -11,25 +10,23 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '~/components/ui/dialog'
-import { calculateBodyFat, round } from '~/lib/calculations'
+import {
+	calculateBodyFat,
+	calculateGoalProgress,
+	round
+} from '~/lib/calculations'
+import { currentUser } from '@clerk/nextjs/server'
+import { SettingItemsSkeletonUI } from '../_components/skeletons'
 
-export function Settings({
-	userMetadata,
-	currentWeight,
-	goalProgress
-}: {
-	userMetadata: UserPublicMetadata
-	currentWeight: number
-	goalProgress: number
-}) {
+export async function SettingItems() {
+	const user = await currentUser()
+	if (!user) return <SettingItemsSkeletonUI />
+	const userMetadata = user?.publicMetadata
+	const currentWeight =
+		userMetadata.weights[userMetadata.weights.length - 1]?.value ?? 0
+	const goalProgress = calculateGoalProgress(userMetadata)
 	return (
-		<section className='container mx-auto py-5'>
-			<header className='mb-8 flex flex-col gap-1'>
-				<h1 className='text-2xl font-bold'>Settings</h1>
-				<h2 className='text-sm text-muted-foreground'>
-					Configure the settings for this application
-				</h2>
-			</header>
+		<>
 			<div className='mb-8'>
 				<h2 className='mb-4 text-lg font-semibold'>Personal Information</h2>
 				<div className='grid grid-cols-2 gap-4 lg:grid-cols-3'>
@@ -247,6 +244,6 @@ export function Settings({
 			<p className='mt-8 text-center text-sm text-muted-foreground'>
 				Version 1.0.0
 			</p>
-		</section>
+		</>
 	)
 }

@@ -1,4 +1,22 @@
-import { CircleDot, Coffee, Moon, Sun, Utensils } from 'lucide-react'
+import {
+	CircleDot,
+	Coffee,
+	Moon,
+	Sun,
+	Utensils,
+	Activity,
+	CalendarIcon,
+	Flag,
+	Percent,
+	Ruler,
+	Target,
+	User,
+	Weight,
+	BriefcaseMedical,
+	Info,
+	Mail
+} from 'lucide-react'
+
 import {
 	Cleaner,
 	Contruction,
@@ -91,3 +109,18 @@ export const DAILY_MEAL_ICONS = {
 }
 
 export const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
+export const SETTING_ICONS = {
+	born: CalendarIcon,
+	sex: User,
+	activity: Activity,
+	height: Ruler,
+	weights: Weight,
+	fat: Percent,
+	goal: Flag,
+	goalWeight: Weight,
+	progress: Target,
+	mail: Mail,
+	about: Info,
+	healt: BriefcaseMedical
+}

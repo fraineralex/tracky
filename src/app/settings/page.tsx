@@ -1,25 +1,24 @@
-import { currentUser } from '@clerk/nextjs/server'
-import { calculateGoalProgress } from '~/lib/calculations'
-import { Settings } from './_sections/settings'
+import { Suspense } from 'react'
+import { SettingItems } from './_sections/setting-items'
 import { Metadata } from 'next'
+import { SettingItemsSkeletonUI } from './_components/skeletons'
 
 export const metadata: Metadata = {
 	title: 'Settings'
 }
 
-export default async function SettingsPageWithModalsComponent() {
-	const user = await currentUser()
-	if (!user) return null
-	const userMetadata = user?.publicMetadata
-	const currentWeight =
-		userMetadata.weights[userMetadata.weights.length - 1]?.value ?? 0
-	const goalProgress = calculateGoalProgress(userMetadata)
-
+export default function SettingsPage() {
 	return (
-		<Settings
-			userMetadata={userMetadata}
-			currentWeight={currentWeight}
-			goalProgress={goalProgress}
-		/>
+		<section className='container mx-auto py-5'>
+			<header className='mb-8 flex flex-col gap-1'>
+				<h1 className='text-2xl font-bold'>Settings</h1>
+				<h2 className='text-sm text-muted-foreground'>
+					Configure the settings for this application
+				</h2>
+			</header>
+			<Suspense fallback={<SettingItemsSkeletonUI />}>
+				<SettingItems />
+			</Suspense>
+		</section>
 	)
 }

@@ -31,7 +31,7 @@ export function Header({
 			: [...selectedTypes, type]
 		setSelectedTypes(newTypes)
 	}
-  
+
 	return (
 		<header className='rounded-lg border border-muted-foreground/20 p-6 shadow-lg'>
 			<h2 className='mb-6 flex items-center text-2xl font-semibold'>
