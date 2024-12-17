@@ -8,7 +8,11 @@ await import('./src/env.js')
 const config = {
 	experimental: {
 		ppr: 'incremental',
-		dynamicIO: true
+		dynamicIO: true,
+		staleTimes: {
+			dynamic: 300,
+			static: 900
+		}
 	}
 }
 

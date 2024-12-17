@@ -10,7 +10,7 @@ import {
 } from '~/components/ui/dialog'
 import { AboutMenuItem, Unit, Weights } from '~/types'
 import { SettingsField } from './settings-field'
-import React from 'react'
+import React, { use } from 'react'
 import { format } from 'date-fns'
 import {
 	Activity,
@@ -25,6 +25,7 @@ import {
 import { updatePublicMetadata } from '../_actions'
 import { loadingToast } from '~/lib/loading-toast'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 const ICONS = {
 	born: CalendarIcon,
@@ -41,6 +42,7 @@ const ICONS = {
 export function MenuItem({ name, label, attr }: AboutMenuItem) {
 	const [isOpen, setIsOpen] = React.useState(false)
 	const [value, setValue] = React.useState(attr.value)
+	const router = useRouter()
 
 	function formatHeight(height: number, unit: Unit | undefined) {
 		if (unit === 'ft, in') {
@@ -89,6 +91,7 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 		}
 
 		toast.success(`Your ${label} has been updated successfully.`)
+		router.refresh()
 	}
 
 	return (

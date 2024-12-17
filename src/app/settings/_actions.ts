@@ -40,6 +40,11 @@ export const updatePublicMetadata = async (
 
 		revalidatePath('/settings')
 		revalidateTag('nutrition')
+
+		if (!metadata.goalWeight) {
+			revalidatePath('/dashboard')
+			revalidatePath('/food')
+		}
 		return {
 			message: 'Information updated successfully',
 			success: true

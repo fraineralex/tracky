@@ -3,12 +3,14 @@ import { SettingItems } from './_sections/setting-items'
 import { Metadata } from 'next'
 import { SettingItemsSkeletonUI } from './_components/skeletons'
 import Footer from '~/components/layout/footer'
+import { connection } from 'next/server'
 
 export const metadata: Metadata = {
 	title: 'Settings'
 }
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+	await connection()
 	return (
 		<section className='container mx-auto py-5'>
 			<header className='mb-8 flex flex-col gap-1'>
