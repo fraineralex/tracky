@@ -85,7 +85,7 @@ export default async function InsightsAndAnalitics({
 				dateRange={dateRange}
 				value={daysFromLastUpdate}
 				valueUnit='days in'
-				className='mt-3 rounded-lg border p-4 pb-1 dark:bg-slate-800/50 lg:ml-0'
+				className='-ml-3 mt-3 rounded-lg border p-4 pb-1 dark:bg-slate-800/50 lg:ml-0'
 			>
 				<Progress value={goalProgress} className='mb-6 mt-6 h-4' />
 			</InsightsCard>

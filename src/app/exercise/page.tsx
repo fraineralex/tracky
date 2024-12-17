@@ -7,6 +7,7 @@ import {
 } from './_components/skeletons'
 import { ExerciseMetrics } from './_components/exercise-metrics'
 import { connection } from 'next/server'
+import Footer from '~/components/layout/footer'
 
 export const metadata: Metadata = {
 	title: 'Exercise'
@@ -22,6 +23,7 @@ export default async function ExercisePage() {
 			<Suspense fallback={<ExerciseMetricsSkeleton />}>
 				<ExerciseMetrics />
 			</Suspense>
+			<Footer className='-left-4 bottom-0 hidden w-full py-3 backdrop-blur-none sm:fixed sm:block' />
 		</section>
 	)
 }

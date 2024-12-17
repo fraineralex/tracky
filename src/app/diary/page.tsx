@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 import { DiaryTimelineSkeletonUI } from './_components/skeletons'
 import { DiaryTimelineData } from './_components/diary-timeline-data'
 import { connection } from 'next/server'
+import Footer from '~/components/layout/footer'
 
 export const metadata: Metadata = {
 	title: 'Food'
@@ -24,6 +25,7 @@ export default async function DiaryPage() {
 					<DiaryTimelineData />
 				</Suspense>
 			</div>
+			<Footer className='-left-4 bottom-0 hidden w-full py-3 backdrop-blur-none sm:fixed sm:block' />
 		</section>
 	)
 }

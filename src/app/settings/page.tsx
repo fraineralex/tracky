@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { SettingItems } from './_sections/setting-items'
 import { Metadata } from 'next'
 import { SettingItemsSkeletonUI } from './_components/skeletons'
+import Footer from '~/components/layout/footer'
 
 export const metadata: Metadata = {
 	title: 'Settings'
@@ -19,6 +20,7 @@ export default function SettingsPage() {
 			<Suspense fallback={<SettingItemsSkeletonUI />}>
 				<SettingItems />
 			</Suspense>
+			<Footer className='-left-4 bottom-0 hidden w-full py-3 backdrop-blur-none sm:fixed sm:block' />
 		</section>
 	)
 }
