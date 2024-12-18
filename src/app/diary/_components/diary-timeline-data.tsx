@@ -11,10 +11,13 @@ import { currentUser } from '@clerk/nextjs/server'
 import { DiaryEntry } from '~/types/diary'
 import { DiaryTimelineSkeletonUI } from './skeletons'
 import { format } from 'date-fns'
+import { DailyUserStats } from '~/types'
+import { computeDailyUserStats } from '~/lib/calculations'
 
 export async function DiaryTimelineData() {
 	const user = await currentUser()
 	if (!user) return <DiaryTimelineSkeletonUI />
+	const userMetadata = user.publicMetadata
 
 	const fetchMeals = db
 		.select({
@@ -63,7 +66,7 @@ export async function DiaryTimelineData() {
 		fetchFood
 	])
 
-	const caloriesNutritionPerDay: { [key: string]: string } = {}
+	const userDailyResume: { [key: string]: DailyUserStats } = {}
 	const entryMeals: DiaryEntry[] = meals.map(
 		({
 			portion,
@@ -76,28 +79,34 @@ export async function DiaryTimelineData() {
 			title,
 			diaryGroup
 		}) => {
-			const calories = (
-				(Number(portion) / Number(servingSize)) *
-				Number(kcal)
-			).toFixed()
-			const proteinConsumed = (
-				(Number(portion) / Number(servingSize)) *
-				Number(protein)
-			).toFixed()
-			const carbsConsumed = (
-				(Number(portion) / Number(servingSize)) *
-				Number(carbs)
-			).toFixed()
-			const fatsConsumed = (
-				(Number(portion) / Number(servingSize)) *
-				Number(fat)
-			).toFixed()
+			const calories =
+				((Number(portion) / Number(servingSize)) * Number(kcal), 2)
+
+			const proteinConsumed =
+				((Number(portion) / Number(servingSize)) * Number(protein), 2)
+
+			const carbsConsumed =
+				((Number(portion) / Number(servingSize)) * Number(carbs), 2)
+
+			const fatsConsumed =
+				((Number(portion) / Number(servingSize)) * Number(fat), 2)
 
 			const date = format(createdAt, 'MMMM do, yyyy')
-			if (caloriesNutritionPerDay[date]) {
-				caloriesNutritionPerDay[date] += calories
+			if (userDailyResume[date]) {
+				userDailyResume[date].calories.consumed += calories
+				userDailyResume[date].protein.consumed += proteinConsumed
+				userDailyResume[date].fats.consumed += fatsConsumed
+				userDailyResume[date].carbs.consumed += carbsConsumed
 			} else {
-				caloriesNutritionPerDay[date] = calories
+				const nutritionMetrics = computeDailyUserStats({
+					...userMetadata,
+					date: createdAt
+				})
+				nutritionMetrics.calories.consumed = calories
+				nutritionMetrics.protein.consumed = proteinConsumed
+				nutritionMetrics.fats.consumed = fatsConsumed
+				nutritionMetrics.carbs.consumed = carbsConsumed
+				userDailyResume[date] = nutritionMetrics
 			}
 
 			return {
@@ -106,23 +115,29 @@ export async function DiaryTimelineData() {
 				title,
 				diaryGroup,
 				nutritionInfo: {
-					calories,
-					protein: proteinConsumed,
-					fat: fatsConsumed,
-					carbs: carbsConsumed
+					calories: calories.toLocaleString(),
+					protein: proteinConsumed.toLocaleString(),
+					fat: fatsConsumed.toLocaleString(),
+					carbs: carbsConsumed.toLocaleString()
 				}
 			}
 		}
 	)
 
-	const caloriesBurnedPerDay: { [key: string]: number } = {}
 	const entryExercises: DiaryEntry[] = exercises.map(
 		({ title, burned, createdAt, duration, diaryGroup, effort }) => {
 			const date = format(createdAt, 'MMMM do, yyyy')
-			if (caloriesBurnedPerDay[date]) {
-				caloriesBurnedPerDay[date] += Number(burned)
+			if (userDailyResume[date]) {
+				userDailyResume[date].exercise.burned += Number(burned)
+				userDailyResume[date].exercise.duration += Number(duration)
 			} else {
-				caloriesBurnedPerDay[date] = Number(burned)
+				const nutritionMetrics = computeDailyUserStats({
+					...userMetadata,
+					date: createdAt
+				})
+				nutritionMetrics.exercise.burned = Number(burned)
+				nutritionMetrics.exercise.duration = Number(duration)
+				userDailyResume[date] = nutritionMetrics
 			}
 			return {
 				type: 'exercise',
@@ -157,5 +172,10 @@ export async function DiaryTimelineData() {
 		(a, b) => b.createdAt.getTime() - a.createdAt.getTime()
 	)
 
-	return <DiaryTimeline diaryEntries={diaryEntries} />
+	return (
+		<DiaryTimeline
+			diaryEntries={diaryEntries}
+			userDailyResume={userDailyResume}
+		/>
+	)
 }

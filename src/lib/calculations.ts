@@ -1,5 +1,10 @@
-import { ACTIVITY_FACTORS, EFFORT_LEVELS, GOAL_FACTORS } from '~/constants'
-import { NutritionMetrics } from '~/types'
+import {
+	ACTIVITY_FACTORS,
+	EFFORT_LEVELS,
+	GOAL_FACTORS,
+	MACRO_DISTRIBUTION
+} from '~/constants'
+import { DailyUserStats, NutritionMetrics } from '~/types'
 
 export function calculateBodyFat({
 	sex,
@@ -131,15 +136,13 @@ export function calculateEnergyBurned({
 	const [heightFt, heightIn] = height.toString().split('.')
 	const heightInMeters =
 		(Number(heightFt ?? 0) * 30.48 + Number(heightIn ?? 0) * 2.54) / 100
-	const tmb =
-		sex === 'male'
-			? 88.362 + 13.397 * currentWeight + 4.799 * heightInMeters - 5.677 * age
-			: 447.593 + 9.247 * currentWeight + 3.098 * heightInMeters - 4.33 * age
+	const tmb = calculateTMB(currentWeight, heightInMeters, age, sex)
 
 	const effortMultiplier =
 		EFFORT_LEVELS[effort as keyof typeof EFFORT_LEVELS].multiplier
 
-	const caloriesPerMinute = (tmb / 1440) * effortMultiplier * categoryMultiplier
+	const caloriesPerMinute =
+		(tmb / (24 * 60)) * effortMultiplier * categoryMultiplier
 
 	return (duration * caloriesPerMinute).toFixed(0)
 }
@@ -162,17 +165,14 @@ export function calculateNutritionalNeeds({
 	const currentActivity = activity[activity.length - 1]?.value ?? 'moderate'
 	const currentGoal = goal[goal.length - 1]?.value ?? 'maintain'
 
-	const tmb =
-		sex === 'male'
-			? 88.362 + 13.397 * currentWeight + 4.799 * heightInMeters - 5.677 * age
-			: 447.593 + 9.247 * currentWeight + 3.098 * heightInMeters - 4.33 * age
+	const tmb = calculateTMB(currentWeight, heightInMeters, age, sex)
 
 	const adjustedGet =
 		tmb * ACTIVITY_FACTORS[currentActivity] * GOAL_FACTORS[currentGoal]
 
-	const proteinCalories = adjustedGet * 0.21
-	const carbCalories = adjustedGet * 0.53
-	const fatCalories = adjustedGet * 0.26
+	const proteinCalories = adjustedGet * MACRO_DISTRIBUTION.protein
+	const carbCalories = adjustedGet * MACRO_DISTRIBUTION.carbs
+	const fatCalories = adjustedGet * MACRO_DISTRIBUTION.fats
 
 	const protein = round(proteinCalories / 4)
 	const carbs = round(carbCalories / 4)
@@ -199,18 +199,12 @@ export function calculateNutritionalNeeds({
 	}
 }
 
-export function calculateNeededCalories({
-	weights,
-	height,
-	weightUnit,
-	born,
-	sex,
-	activity,
-	goal
-}: UserPublicMetadata) {
-	let currentWeight = weights[weights.length - 1]?.value ?? 0
+export function calculateNeededCalories(
+	{ weights, height, born, sex, activity, goal }: UserPublicMetadata,
+	{ isExpenditure }: { isExpenditure: boolean } = { isExpenditure: false }
+): number {
+	const currentWeight = weights[weights.length - 1]?.value ?? 0
 	const age = new Date().getFullYear() - new Date(born).getFullYear()
-	currentWeight = weightUnit === 'kg' ? currentWeight : currentWeight * 0.453592
 	const [heightFt, heightIn] = (height[height.length - 1]?.value ?? 0.0)
 		.toString()
 		.split('.')
@@ -219,12 +213,96 @@ export function calculateNeededCalories({
 	const currentActivity = activity[activity.length - 1]?.value ?? 'moderate'
 	const currentGoal = goal[goal.length - 1]?.value ?? 'maintain'
 
-	const tmb =
-		sex === 'male'
-			? 88.362 + 13.397 * currentWeight + 4.799 * heightInMeters - 5.677 * age
-			: 447.593 + 9.247 * currentWeight + 3.098 * heightInMeters - 4.33 * age
+	const tmb = calculateTMB(currentWeight, heightInMeters, age, sex)
 
 	return round(
-		tmb * ACTIVITY_FACTORS[currentActivity] * GOAL_FACTORS[currentGoal]
+		tmb *
+			ACTIVITY_FACTORS[currentActivity] *
+			(isExpenditure ? 1 : GOAL_FACTORS[currentGoal])
 	)
+}
+
+interface UserData extends UserPublicMetadata {
+	date: Date
+}
+
+type MetricWithDate<T> = { date: string; value: T }[]
+
+function findValueAtDate<T>(
+	metrics: MetricWithDate<T>,
+	date: Date,
+	defaultValue: T
+): T {
+	if (metrics.length === 0) return defaultValue
+	if (metrics.length === 1) return metrics[0]?.value ?? defaultValue
+
+	return (
+		metrics
+			.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+			.find(m => new Date(m.date).getTime() <= date.getTime())?.value ??
+		defaultValue
+	)
+}
+
+function calculateHeightInMeters(height: number): number {
+	const [heightFt, heightIn] = height?.toString().split('.') || [height, '0']
+	return (
+		(Number(heightFt ?? height) * 30.48 + Number(heightIn ?? 0) * 2.54) / 100
+	)
+}
+
+function calculateTMB(
+	weight: number,
+	heightInMeters: number,
+	age: number,
+	sex: string
+): number {
+	return sex === 'male'
+		? 88.362 + 13.397 * weight + 4.799 * heightInMeters * 100 - 5.677 * age
+		: 447.593 + 9.247 * weight + 3.098 * heightInMeters * 100 - 4.33 * age
+}
+
+export function computeDailyUserStats({
+	weights,
+	height,
+	born,
+	sex,
+	activity,
+	goal,
+	date
+}: UserData): DailyUserStats {
+	const weight = findValueAtDate(weights, date, 0)
+	const currentActivity = findValueAtDate(activity, date, 'moderate')
+	const currentGoal = findValueAtDate(goal, date, 'maintain')
+	const dateHeight = findValueAtDate(height, date, 0)
+
+	const age = date.getFullYear() - new Date(born).getFullYear()
+	const heightInMeters = calculateHeightInMeters(dateHeight)
+	const tmb = calculateTMB(weight, heightInMeters, age, sex)
+
+	const adjustedGet =
+		tmb * ACTIVITY_FACTORS[currentActivity] * GOAL_FACTORS[currentGoal]
+
+	const calories = round(adjustedGet)
+
+	return {
+		calories: { consumed: 0, needed: calories },
+		protein: {
+			consumed: 0,
+			needed: round((adjustedGet * MACRO_DISTRIBUTION.protein) / 4)
+		},
+		carbs: {
+			consumed: 0,
+			needed: round((adjustedGet * MACRO_DISTRIBUTION.carbs) / 4)
+		},
+		fats: {
+			consumed: 0,
+			needed: round((adjustedGet * MACRO_DISTRIBUTION.fats) / 9)
+		},
+		exercise: {
+			burned: 0,
+			needed: round(calories * 0.2),
+			duration: 0
+		}
+	}
 }

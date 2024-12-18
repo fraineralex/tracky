@@ -35,7 +35,8 @@ const OnboardingSchema = z.object({
 		required_error: 'Please select an activity level'
 	}),
 	weightUnit: z.enum(['lb', 'kg']).optional().default('lb'),
-	heightUnit: z.enum(['cm', 'ft', 'm']).optional().default('ft')
+	heightUnit: z.enum(['cm', 'ft', 'm']).optional().default('ft'),
+	heightDecimal: z.coerce.number().positive().optional()
 })
 
 export const completeOnboarding = async (formData: FormData) => {
@@ -55,7 +56,8 @@ export const completeOnboarding = async (formData: FormData) => {
 		goal: formData.get('goal'),
 		activity: formData.get('activity'),
 		weightUnit: formData.get('weightUnit'),
-		heightUnit: formData.get('heightUnit')
+		heightUnit: formData.get('heightUnit'),
+		heightDecimal: formData.get('heightDecimal')
 	})
 
 	if (!validatedFields.success) {
@@ -68,24 +70,28 @@ export const completeOnboarding = async (formData: FormData) => {
 	if (validatedFields.data.heightUnit != 'ft') {
 		const heightMt =
 			Number(
-				`${validatedFields.data.height}.${formData.get('heightDecimal') ?? 0}`
+				`${validatedFields.data.height}.${validatedFields.data.heightDecimal || 1}`
 			) / (validatedFields.data.heightUnit === 'cm' ? 100 : 1)
 
 		validatedFields.data.height = round(heightMt * 3.28084, 2)
+	} else {
+		validatedFields.data.height = Number(
+			`${validatedFields.data.height}.${validatedFields.data.heightDecimal || 1}`
+		)
 	}
 
 	if (validatedFields.data.weightUnit === 'lb') {
-		validatedFields.data.weights = round(
-			validatedFields.data.weights * 0.453592,
-			2
+		validatedFields.data.weights = Math.floor(
+			validatedFields.data.weights * 0.45359237
 		)
+		console.log(validatedFields.data.weights)
 	}
 
 	try {
 		const date = new Date().toISOString().split('T')[0] as string
 		const publicMetadata: UserPublicMetadata = {
 			onboardingCompleted: true,
-			...validatedFields.data,
+			sex: validatedFields.data.sex,
 			weights: [
 				{
 					value: validatedFields.data.weights,
@@ -94,7 +100,7 @@ export const completeOnboarding = async (formData: FormData) => {
 			],
 			height: [
 				{
-					value: validatedFields.data.height,
+					value: Number(validatedFields.data.height),
 					date
 				}
 			],

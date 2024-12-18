@@ -28,6 +28,14 @@ export interface NutritionMetrics {
 	}
 }
 
+export interface DailyUserStats extends NutritionMetrics {
+	exercise: {
+		burned: number
+		needed: number
+		duration: number
+	}
+}
+
 export type NutritionMetricsPerDay = { [key: number]: NutritionMetrics }
 
 export interface WeeklyNutrition {

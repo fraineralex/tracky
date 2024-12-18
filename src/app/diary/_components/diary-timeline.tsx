@@ -1,27 +1,36 @@
 'use client'
 
-import { useState } from 'react'
 import { DiaryEntry, EntryType } from '~/types/diary'
 import { TimelineEntry } from './timeline-entry'
 import { format } from 'date-fns'
 import { Header } from './header'
+import { DailyUserStats } from '~/types'
+import { DailySummary } from './daily-summary'
+import { useSearchParams } from 'next/navigation'
+import React from 'react'
 
 export function DiaryTimeline({
-	diaryEntries
+	diaryEntries,
+	userDailyResume
 }: {
 	diaryEntries: DiaryEntry[]
+	userDailyResume: { [key: string]: DailyUserStats }
 }) {
-	const [selectedTypes, setSelectedTypes] = useState<EntryType[]>([
-		'meal',
-		'exercise',
-		'food'
-	])
-	const [selectedDate, setSelectedDate] = useState<string>('all')
-	const [selectedDiaryGroup, setSelectedDiaryGroup] = useState<string>('all')
+	const searchParams = useSearchParams()
+	const [selectedDate, setSelectedDate] = React.useState<string>('all')
+	const [selectedDiaryGroup, setSelectedDiaryGroup] =
+		React.useState<string>('all')
+	const [selectedEntries, setSelectedEntries] = React.useState<EntryType[]>(
+		(searchParams.get('entries')?.split(',') as EntryType[]) || [
+			'meal',
+			'exercise',
+			'food'
+		]
+	)
 
 	const filteredEntries = diaryEntries.filter(
 		entry =>
-			selectedTypes.includes(entry.type) &&
+			selectedEntries.includes(entry.type) &&
 			(selectedDate === 'all' ||
 				format(entry.createdAt, 'MMMM do, yyyy') === selectedDate) &&
 			(selectedDiaryGroup === 'all' || entry.diaryGroup === selectedDiaryGroup)
@@ -47,10 +56,10 @@ export function DiaryTimeline({
 		<div className='space-y-8'>
 			<Header
 				availableDates={availableDates}
-				selectedTypes={selectedTypes}
+				selectedTypes={selectedEntries}
 				setSelectedDate={setSelectedDate}
 				setSelectedDiaryGroup={setSelectedDiaryGroup}
-				setSelectedTypes={setSelectedTypes}
+				setSelectedTypes={setSelectedEntries}
 			/>
 			{Object.entries(groupedEntries).map(([date, dateEntries]) => (
 				<div key={date} className='overflow-hidden rounded-lg shadow-md'>
@@ -64,6 +73,14 @@ export function DiaryTimeline({
 							<TimelineEntry key={index} entry={entry} />
 						))}
 					</div>
+					{userDailyResume[date] && (
+						<div className='pt-2'>
+							<DailySummary
+								daySummary={userDailyResume[date]}
+								filter={selectedEntries}
+							/>
+						</div>
+					)}
 				</div>
 			))}
 		</div>

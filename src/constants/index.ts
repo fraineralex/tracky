@@ -89,15 +89,21 @@ export const EFFORT_LEVELS = {
 }
 
 export const GOAL_FACTORS = {
-	gain: 1.1,
+	gain: 1.2,
 	maintain: 1.0,
-	lose: 0.9
+	lose: 0.8
 }
 
 export const ACTIVITY_FACTORS = {
 	sedentary: 1.2,
-	moderate: 1.55,
-	active: 1.9
+	moderate: 1.3,
+	active: 1.725
+}
+
+export const MACRO_DISTRIBUTION = {
+	protein: 0.212,
+	carbs: 0.488,
+	fats: 0.3
 }
 
 export const DAILY_MEAL_ICONS = {

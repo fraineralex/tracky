@@ -100,7 +100,7 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 					<div className='flex flex-col items-start'>
 						<span className='font-medium'>{label}</span>
 						<p
-							className={`truncate text-xs tracking-tighter text-muted-foreground sm:text-sm sm:tracking-normal`}
+							className={`truncate text-xs tracking-tighter text-muted-foreground sm:text-sm sm:tracking-normal ${name !== 'weights' && name !== 'goalWeight' ? 'capitalize' : ''}`}
 						>
 							{displayValue}
 						</p>

@@ -14,7 +14,9 @@ export default async function InsightsAndAnalitics({
 	if (!user) return <InsightsAndAnaliticsSkeleton />
 	const { goal, goalWeight, weights, updatedAt } = user.publicMetadata
 
-	const expenditure = calculateNeededCalories(user.publicMetadata)
+	const expenditure = calculateNeededCalories(user.publicMetadata, {
+		isExpenditure: true
+	})
 	const currentWeight = weights[weights.length - 1]?.value ?? 0
 	const currentGoalWeight = goalWeight[goalWeight.length - 1]?.value ?? 0
 	const currentGoal = goal[goal.length - 1]?.value ?? 'maintain'
