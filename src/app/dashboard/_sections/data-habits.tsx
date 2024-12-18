@@ -1,7 +1,7 @@
 import { Circle, Square } from 'lucide-react'
 import InsightsCard from '../_components/analytics/insights-card'
 import ResumeStreak from '../_components/analytics/resume-streak'
-import { Weights } from '~/types'
+import { TrakedField } from '~/types'
 import { calculateNeededCalories } from '~/lib/calculations'
 import { User } from '@clerk/nextjs/server'
 import { DataAndHabitsSkeleton } from '../_components/skeletons'
@@ -25,7 +25,7 @@ export default async function DataAndHabits({
 		}
 	)} - Now`
 
-	const weights = [userMetadata.weights[0]] as Weights
+	const weights = [userMetadata.weights[0]] as TrakedField
 	const nutritionMeatrics = calculateNeededCalories({
 		...userMetadata,
 		weights
@@ -50,7 +50,7 @@ export default async function DataAndHabits({
 				title='Scale Weight'
 				dateRange={dateRange}
 				value={currentWeight}
-				valueUnit={userMetadata.weightUnit}
+				valueUnit='kg'
 				className='w-full rounded-lg border p-4 pb-1 dark:bg-slate-800/50 sm:w-56 md:w-full md:max-w-xs'
 			>
 				<div className='mb-3 mt-3 flex place-content-end'>

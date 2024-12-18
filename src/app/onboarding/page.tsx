@@ -29,6 +29,10 @@ export default function OnboardingPage() {
 	const [bodyMetricsEntry, setBodyMetricsEntry] = useState(false)
 	const [fitnessGoalsEntry, setFitnessGoalsEntry] = useState(false)
 
+	function prefetchDashboard() {
+		router.prefetch('/dashboard')
+	}
+
 	async function sendForm() {
 		formRef.current?.requestSubmit()
 		const promise = () =>
@@ -86,6 +90,7 @@ export default function OnboardingPage() {
 						}}
 						showSection={showSection === ONBOARDING_SECTIONS.metrics}
 						setFitnessGoalsEntry={setFitnessGoalsEntry}
+						prefetchDashboard={prefetchDashboard}
 					/>
 				)}
 

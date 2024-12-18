@@ -17,7 +17,7 @@ import {
 	NutritionMetrics,
 	NutritionMetricsPerDay,
 	WeeklyNutrition,
-	Weights
+	TrakedField
 } from '~/types'
 import {
 	calculateAdjustedDay,
@@ -32,7 +32,7 @@ export default function NutritionGraphic({
 	weightsChanges
 }: {
 	nutritionMeatrics: NutritionMetricsPerDay
-	weightsChanges: Weights
+	weightsChanges: TrakedField
 }) {
 	const nutritionWeek: WeeklyNutrition[] = Object.entries(nutrition).map(
 		([key, nutritients]) => {
@@ -123,12 +123,12 @@ export default function NutritionGraphic({
 		}
 	]
 
-	const weightData = weightsChanges.map(({ value, date, unit }) => ({
+	const weightData = weightsChanges.map(({ value, date }) => ({
 		name: new Date(date).toLocaleDateString('en-US', {
 			day: 'numeric',
 			month: 'short'
 		}),
-		weight: unit === 'lb' ? round(value * 0.453592) : value
+		weight: value
 	}))
 
 	return (

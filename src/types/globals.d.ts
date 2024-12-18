@@ -1,6 +1,6 @@
 export {}
 
-import { Weights, Goal, ActivityLevel, Sex, Unit } from './index'
+import { TrakedField, Goal, ActivityLevel, Sex } from './index'
 
 declare global {
 	interface CustomJwtSessionClaims {
@@ -12,14 +12,12 @@ declare global {
 		onboardingCompleted: boolean
 		sex: Sex
 		born: string
-		goal: Goal
-		height: number
-		weights: Weights
-		activity: ActivityLevel
-		heightUnit: Unit
-		goalWeight: number
-		weightUnit: Unit
-		fat: number
+		goal: { value: Goal; date: string }[]
+		height: TrakedField
+		weights: TrakedField
+		activity: { value: ActivityLevel; date: string }[]
+		goalWeight: TrakedField
+		fat: { value: number; date: string }[]
 		updatedAt: string
 	}
 }

@@ -65,36 +65,68 @@ export const completeOnboarding = async (formData: FormData) => {
 		}
 	}
 
-	if (validatedFields.data.heightUnit != 'cm') {
-		const decimal =
-			Number(formData.get('heightDecimal')) > 0
-				? Number(formData.get('heightDecimal'))
-				: 0
-		validatedFields.data.height = parseFloat(
-			`${validatedFields.data.height}.${decimal}`
+	if (validatedFields.data.heightUnit != 'ft') {
+		const heightMt =
+			Number(
+				`${validatedFields.data.height}.${formData.get('heightDecimal') ?? 0}`
+			) / (validatedFields.data.heightUnit === 'cm' ? 100 : 1)
+
+		validatedFields.data.height = round(heightMt * 3.28084, 2)
+	}
+
+	if (validatedFields.data.weightUnit === 'lb') {
+		validatedFields.data.weights = round(
+			validatedFields.data.weights * 0.453592,
+			2
 		)
 	}
 
 	try {
+		const date = new Date().toISOString().split('T')[0] as string
 		const publicMetadata: UserPublicMetadata = {
 			onboardingCompleted: true,
 			...validatedFields.data,
 			weights: [
 				{
 					value: validatedFields.data.weights,
-					date: new Date().toISOString().split('T')[0] as string,
-					unit: validatedFields.data.weightUnit
+					date
 				}
 			],
-			goalWeight: round(
-				validatedFields.data.weights * GOAL_FACTORS[validatedFields.data.goal]
-			),
+			height: [
+				{
+					value: validatedFields.data.height,
+					date
+				}
+			],
+			goalWeight: [
+				{
+					value: round(
+						validatedFields.data.weights *
+							GOAL_FACTORS[validatedFields.data.goal]
+					),
+					date
+				}
+			],
+			activity: [
+				{
+					value: validatedFields.data.activity,
+					date
+				}
+			],
+			goal: [
+				{
+					value: validatedFields.data.goal,
+					date
+				}
+			],
 			born: validatedFields.data.born.toISOString().split('T')[0] as string,
 			updatedAt: new Date().toISOString().split('T')[0] as string,
-			fat: 0
+			fat: [{ value: 0, date }]
 		}
 
-		publicMetadata.fat = calculateBodyFat(publicMetadata)
+		if (publicMetadata.fat[0])
+			publicMetadata.fat[0].value = calculateBodyFat(publicMetadata)
+
 		await (await clerkClient()).users.updateUser(userId, { publicMetadata })
 
 		return { message: 'Onboarding completed succesfuly', success: true }

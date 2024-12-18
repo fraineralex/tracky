@@ -12,11 +12,12 @@ export default async function InsightsAndAnalitics({
 }) {
 	const user = await currentUser
 	if (!user) return <InsightsAndAnaliticsSkeleton />
-	const { goal, goalWeight, weightUnit, weights, updatedAt } =
-		user.publicMetadata
+	const { goal, goalWeight, weights, updatedAt } = user.publicMetadata
 
 	const expenditure = calculateNeededCalories(user.publicMetadata)
 	const currentWeight = weights[weights.length - 1]?.value ?? 0
+	const currentGoalWeight = goalWeight[goalWeight.length - 1]?.value ?? 0
+	const currentGoal = goal[goal.length - 1]?.value ?? 'maintain'
 	const initialWeight = weights[0]?.value ?? 0
 	const dateRange = `${new Date(updatedAt).toLocaleDateString('en-US', {
 		day: 'numeric',
@@ -30,30 +31,36 @@ export default async function InsightsAndAnalitics({
 
 	let goalProgress: number = 0
 
-	if (goal === 'maintain') {
-		if (currentWeight === goalWeight) goalProgress = 100
+	if (currentGoal === 'maintain') {
+		if (currentWeight === currentGoalWeight) goalProgress = 100
 		else
 			goalProgress =
 				100 -
 				Math.abs(
-					((currentWeight - goalWeight) / (initialWeight - goalWeight)) * 100
+					((currentWeight - currentGoalWeight) /
+						(initialWeight - currentGoalWeight)) *
+						100
 				)
 	}
 
-	if (goal === 'gain') {
+	if (currentGoal === 'gain') {
 		if (currentWeight <= initialWeight) goalProgress = 0
-		else if (currentWeight >= goalWeight) goalProgress = 100
+		else if (currentWeight >= currentGoalWeight) goalProgress = 100
 		else
 			goalProgress =
-				((currentWeight - initialWeight) / (goalWeight - initialWeight)) * 100
+				((currentWeight - initialWeight) /
+					(currentGoalWeight - initialWeight)) *
+				100
 	}
 
-	if (goal === 'lose') {
+	if (currentGoal === 'lose') {
 		if (currentWeight >= initialWeight) goalProgress = 0
-		else if (currentWeight <= goalWeight) goalProgress = 100
+		else if (currentWeight <= currentGoalWeight) goalProgress = 100
 		else
 			goalProgress =
-				((initialWeight - currentWeight) / (initialWeight - goalWeight)) * 100
+				((initialWeight - currentWeight) /
+					(initialWeight - currentGoalWeight)) *
+				100
 	}
 
 	return (
@@ -73,7 +80,7 @@ export default async function InsightsAndAnalitics({
 					title='Weight Trend'
 					dateRange={dateRange}
 					value={currentWeight}
-					valueUnit={weightUnit}
+					valueUnit='kg'
 				>
 					<span className='mb-8 mt-8 flex place-content-end'>
 						<Circle className='h-4 w-4 text-purple-400' strokeWidth={4} />

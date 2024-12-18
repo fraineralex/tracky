@@ -10,6 +10,7 @@ import { eq, and } from 'drizzle-orm'
 import { currentUser } from '@clerk/nextjs/server'
 import { DiaryEntry } from '~/types/diary'
 import { DiaryTimelineSkeletonUI } from './skeletons'
+import { format } from 'date-fns'
 
 export async function DiaryTimelineData() {
 	const user = await currentUser()
@@ -62,6 +63,7 @@ export async function DiaryTimelineData() {
 		fetchFood
 	])
 
+	const caloriesNutritionPerDay: { [key: string]: string } = {}
 	const entryMeals: DiaryEntry[] = meals.map(
 		({
 			portion,
@@ -91,6 +93,13 @@ export async function DiaryTimelineData() {
 				Number(fat)
 			).toFixed()
 
+			const date = format(createdAt, 'MMMM do, yyyy')
+			if (caloriesNutritionPerDay[date]) {
+				caloriesNutritionPerDay[date] += calories
+			} else {
+				caloriesNutritionPerDay[date] = calories
+			}
+
 			return {
 				type: 'meal',
 				createdAt,
@@ -106,18 +115,27 @@ export async function DiaryTimelineData() {
 		}
 	)
 
+	const caloriesBurnedPerDay: { [key: string]: number } = {}
 	const entryExercises: DiaryEntry[] = exercises.map(
-		({ title, burned, createdAt, duration, diaryGroup, effort }) => ({
-			type: 'exercise',
-			createdAt,
-			title,
-			diaryGroup,
-			exerciseInfo: {
-				burned: Number(burned).toFixed(),
-				duration: Number(duration).toFixed(),
-				effort
+		({ title, burned, createdAt, duration, diaryGroup, effort }) => {
+			const date = format(createdAt, 'MMMM do, yyyy')
+			if (caloriesBurnedPerDay[date]) {
+				caloriesBurnedPerDay[date] += Number(burned)
+			} else {
+				caloriesBurnedPerDay[date] = Number(burned)
 			}
-		})
+			return {
+				type: 'exercise',
+				createdAt,
+				title,
+				diaryGroup,
+				exerciseInfo: {
+					burned: Number(burned).toFixed(),
+					duration: Number(duration).toFixed(),
+					effort
+				}
+			}
+		}
 	)
 
 	const foodEntries: DiaryEntry[] = foodRegistries.map(

@@ -8,7 +8,11 @@ export function calculateBodyFat({
 	weights
 }: UserPublicMetadata) {
 	const weightInKg = weights[weights.length - 1]?.value ?? 0
-	const heightInMeters = height * 0.3048
+	const [heightFt, heightIn] = (height[height.length - 1]?.value ?? 0.0)
+		.toString()
+		.split('.')
+	const heightInMeters =
+		(Number(heightFt ?? 0) * 30.48 + Number(heightIn ?? 0) * 2.54) / 100
 	const bmi = weightInKg / (heightInMeters * heightInMeters)
 
 	const age = new Date().getFullYear() - parseInt(born, 10)
@@ -28,16 +32,19 @@ export function calculateGoalProgress({
 }: UserPublicMetadata) {
 	const initialWeight = weights[0]?.value || 0
 	const currentWeight = weights[weights.length - 1]?.value || 0
+	const currentGoalWeight = goalWeight[goalWeight.length - 1]?.value || 0
 
-	if (initialWeight > goalWeight) {
+	if (initialWeight > currentGoalWeight) {
 		const progress =
-			((initialWeight - currentWeight) / (initialWeight - goalWeight)) * 100
+			((initialWeight - currentWeight) / (initialWeight - currentGoalWeight)) *
+			100
 		return round(progress, 1)
 	}
 
-	if (initialWeight < goalWeight) {
+	if (initialWeight < currentGoalWeight) {
 		const progress =
-			((currentWeight - initialWeight) / (goalWeight - initialWeight)) * 100
+			((currentWeight - initialWeight) / (currentGoalWeight - initialWeight)) *
+			100
 		return round(progress, 1)
 	}
 
@@ -108,11 +115,9 @@ export function calculateEnergyBurned({
 	duration,
 	effort,
 	currentWeight,
-	weightUnit,
 	age,
 	sex,
 	height,
-	heightUnit,
 	categoryMultiplier
 }: {
 	duration: number
@@ -121,22 +126,15 @@ export function calculateEnergyBurned({
 	age: number
 	sex: string
 	height: number
-	heightUnit: string
-	weightUnit: string
 	categoryMultiplier: number
 }) {
-	const weight = weightUnit === 'kg' ? currentWeight : currentWeight * 0.453592
-
-	if (heightUnit === 'ft') {
-		height = height * 30.48
-	} else if (heightUnit === 'in') {
-		height = height * 2.54
-	}
-
+	const [heightFt, heightIn] = height.toString().split('.')
+	const heightInMeters =
+		(Number(heightFt ?? 0) * 30.48 + Number(heightIn ?? 0) * 2.54) / 100
 	const tmb =
 		sex === 'male'
-			? 88.362 + 13.397 * weight + 4.799 * height - 5.677 * age
-			: 447.593 + 9.247 * weight + 3.098 * height - 4.33 * age
+			? 88.362 + 13.397 * currentWeight + 4.799 * heightInMeters - 5.677 * age
+			: 447.593 + 9.247 * currentWeight + 3.098 * heightInMeters - 4.33 * age
 
 	const effortMultiplier =
 		EFFORT_LEVELS[effort as keyof typeof EFFORT_LEVELS].multiplier
@@ -149,29 +147,28 @@ export function calculateEnergyBurned({
 export function calculateNutritionalNeeds({
 	weights,
 	height,
-	heightUnit,
-	weightUnit,
 	born,
 	sex,
 	activity,
 	goal
 }: UserPublicMetadata): NutritionMetrics {
-	let currentWeight = weights[weights.length - 1]?.value ?? 0
+	const currentWeight = weights[weights.length - 1]?.value ?? 0
 	const age = new Date().getFullYear() - new Date(born).getFullYear()
-	currentWeight = weightUnit === 'kg' ? currentWeight : currentWeight * 0.453592
-
-	if (heightUnit === 'ft') {
-		height = height * 30.48
-	} else if (heightUnit === 'in') {
-		height = height * 2.54
-	}
+	const [heightFt, heightIn] = (height[height.length - 1]?.value ?? 0.0)
+		.toString()
+		.split('.')
+	const heightInMeters =
+		(Number(heightFt ?? 0) * 30.48 + Number(heightIn ?? 0) * 2.54) / 100
+	const currentActivity = activity[activity.length - 1]?.value ?? 'moderate'
+	const currentGoal = goal[goal.length - 1]?.value ?? 'maintain'
 
 	const tmb =
 		sex === 'male'
-			? 88.362 + 13.397 * currentWeight + 4.799 * height - 5.677 * age
-			: 447.593 + 9.247 * currentWeight + 3.098 * height - 4.33 * age
+			? 88.362 + 13.397 * currentWeight + 4.799 * heightInMeters - 5.677 * age
+			: 447.593 + 9.247 * currentWeight + 3.098 * heightInMeters - 4.33 * age
 
-	const adjustedGet = tmb * ACTIVITY_FACTORS[activity] * GOAL_FACTORS[goal]
+	const adjustedGet =
+		tmb * ACTIVITY_FACTORS[currentActivity] * GOAL_FACTORS[currentGoal]
 
 	const proteinCalories = adjustedGet * 0.21
 	const carbCalories = adjustedGet * 0.53
@@ -205,7 +202,6 @@ export function calculateNutritionalNeeds({
 export function calculateNeededCalories({
 	weights,
 	height,
-	heightUnit,
 	weightUnit,
 	born,
 	sex,
@@ -215,17 +211,20 @@ export function calculateNeededCalories({
 	let currentWeight = weights[weights.length - 1]?.value ?? 0
 	const age = new Date().getFullYear() - new Date(born).getFullYear()
 	currentWeight = weightUnit === 'kg' ? currentWeight : currentWeight * 0.453592
-
-	if (heightUnit === 'ft') {
-		height = height * 30.48
-	} else if (heightUnit === 'in') {
-		height = height * 2.54
-	}
+	const [heightFt, heightIn] = (height[height.length - 1]?.value ?? 0.0)
+		.toString()
+		.split('.')
+	const heightInMeters =
+		(Number(heightFt ?? 0) * 30.48 + Number(heightIn ?? 0) * 2.54) / 100
+	const currentActivity = activity[activity.length - 1]?.value ?? 'moderate'
+	const currentGoal = goal[goal.length - 1]?.value ?? 'maintain'
 
 	const tmb =
 		sex === 'male'
-			? 88.362 + 13.397 * currentWeight + 4.799 * height - 5.677 * age
-			: 447.593 + 9.247 * currentWeight + 3.098 * height - 4.33 * age
+			? 88.362 + 13.397 * currentWeight + 4.799 * heightInMeters - 5.677 * age
+			: 447.593 + 9.247 * currentWeight + 3.098 * heightInMeters - 4.33 * age
 
-	return round(tmb * ACTIVITY_FACTORS[activity] * GOAL_FACTORS[goal])
+	return round(
+		tmb * ACTIVITY_FACTORS[currentActivity] * GOAL_FACTORS[currentGoal]
+	)
 }

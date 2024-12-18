@@ -59,7 +59,9 @@ export async function SettingItems() {
 							label: 'Activity Level',
 							type: 'select',
 							options: Object.keys(ACTIVITY_LEVELS),
-							value: userMetadata.activity
+							value:
+								userMetadata.activity[userMetadata.activity.length - 1]
+									?.value || 'sedentary'
 						}}
 					/>
 
@@ -69,10 +71,10 @@ export async function SettingItems() {
 						attr={{
 							name: 'height',
 							label: 'Height',
-							unit: userMetadata.heightUnit,
 							type: 'number',
 							placeholder: 'Enter your height',
-							value: userMetadata.height
+							value:
+								userMetadata.height[userMetadata.height.length - 1]?.value || 0
 						}}
 					/>
 					<MenuItem
@@ -81,7 +83,6 @@ export async function SettingItems() {
 						attr={{
 							name: 'weights',
 							label: 'Weight',
-							unit: userMetadata.weightUnit,
 							type: 'number',
 							placeholder: 'Enter your weight',
 							value: currentWeight
@@ -98,7 +99,8 @@ export async function SettingItems() {
 							min: 0,
 							max: 50,
 							value: round(
-								userMetadata.fat || calculateBodyFat(userMetadata),
+								userMetadata.fat[userMetadata.fat.length - 1]?.value ||
+									calculateBodyFat(userMetadata),
 								1
 							)
 						}}
@@ -116,7 +118,7 @@ export async function SettingItems() {
 							label: 'Fitness Goal',
 							type: 'select',
 							options: ['maintain', 'lose', 'gain'],
-							value: userMetadata.goal
+							value: userMetadata.goal[userMetadata.goal.length - 1]?.value || 0
 						}}
 					/>
 					<MenuItem
@@ -125,10 +127,11 @@ export async function SettingItems() {
 						attr={{
 							name: 'goalWeight',
 							label: 'Goal Weight',
-							unit: userMetadata.weightUnit,
 							type: 'number',
 							placeholder: 'Enter your goal weight',
-							value: userMetadata.goalWeight
+							value:
+								userMetadata.goalWeight[userMetadata.goalWeight.length - 1]
+									?.value || 0
 						}}
 					/>
 					<MenuItem

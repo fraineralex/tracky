@@ -13,7 +13,7 @@ import {
 import { DialogClose, DialogFooter } from '~/components/ui/dialog'
 import { Button } from '~/components/ui/button'
 import { ExerciseState, addExercise } from '../../_actions'
-import { ExerciseCategories, Weights } from '~/types'
+import { ExerciseCategories, TrakedField } from '~/types'
 import { useUser } from '@clerk/nextjs'
 import { EFFORT_LEVELS } from '~/constants'
 import { ShowErrors } from '~/components/forms/show-errors'
@@ -47,11 +47,11 @@ export default function ExerciseForm({
 	}, [state, handleFormClose])
 
 	if (!user) return null
-	const { weights, weightUnit, height, heightUnit, born, sex } =
-		user.publicMetadata
+	const { weights, height, born, sex } = user.publicMetadata
 
-	const currentWeight = weights[weights.length - 1] as Weights[number]
+	const currentWeight = weights[weights.length - 1] as TrakedField[number]
 	const age = new Date().getFullYear() - new Date(born as string).getFullYear()
+	const currentHeight = height[height.length - 1] as TrakedField[number]
 
 	function CalcelButton() {
 		return (
@@ -75,9 +75,7 @@ export default function ExerciseForm({
 		duration,
 		effort,
 		currentWeight: currentWeight.value,
-		weightUnit,
-		height,
-		heightUnit,
+		height: currentHeight.value,
 		age,
 		sex,
 		categoryMultiplier: Number(selectedCategory?.energyBurnedPerMinute)
@@ -170,8 +168,7 @@ export default function ExerciseForm({
 							<ShowErrors errors={state.errors?.energyBurned} />
 
 							<p className='col-span-5 text-nowrap text-xs font-light text-foreground/80'>
-								Based on your current weight of {currentWeight.value}{' '}
-								{currentWeight.unit}
+								Based on your current weight of {currentWeight.value} kg
 							</p>
 						</div>
 						<div className='w-full min-w-0 max-w-xs'>

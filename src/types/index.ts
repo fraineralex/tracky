@@ -5,7 +5,7 @@ export type Sex = 'male' | 'female'
 export type Goal = 'gain' | 'maintain' | 'lose'
 export type ActivityLevel = 'sedentary' | 'moderate' | 'active'
 export type Unit = 'kg' | 'lb' | 'cm' | 'ft' | 'm' | 'ft, in' | 'in'
-export type Weights = Array<{ value: number; date: string; unit: Unit }>
+export type TrakedField = Array<{ value: number; date: string }>
 
 export type ExerciseCategories = Array<typeof exerciseCategory.$inferSelect>
 
@@ -93,7 +93,6 @@ export interface SettingsAttr {
 	name: string
 	type: SettingsFieldType
 	label?: string
-	unit?: Unit
 	placeholder?: string
 	options?: Array<{ key: string; label: string } | string>
 	min?: number

@@ -28,10 +28,19 @@ export const updatePublicMetadata = async (
 			}
 
 			if (metadata.born) publicMetadata.born = metadata.born
-			if (metadata.height) publicMetadata.height = metadata.height
+			if (metadata.height) {
+				const height = publicMetadata.height
+				height.push(metadata.height[0]!)
+				metadata.height = height
+				publicMetadata.height = height
+			}
 			if (metadata.sex) publicMetadata.sex = metadata.sex
 
-			metadata.fat = calculateBodyFat(publicMetadata)
+			const fat = {
+				value: calculateBodyFat(publicMetadata),
+				date: new Date().toISOString().split('T')[0] as string
+			}
+			metadata.fat?.push(fat)
 		}
 
 		await client.users.updateUserMetadata(user.id, {

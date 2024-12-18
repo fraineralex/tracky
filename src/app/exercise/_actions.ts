@@ -18,7 +18,7 @@ import { Message } from '../food/_actions'
 import { EXERCISE_ICONS } from '~/constants'
 import { NewExercise } from '../dashboard/_actions'
 import { calculateEnergyBurned } from '~/lib/calculations'
-import { SuccessLogData, Weights } from '~/types'
+import { SuccessLogData, TrakedField } from '~/types'
 
 const ExerciseSchema = z.object({
 	exercise: z.array(
@@ -53,11 +53,11 @@ export async function logExerciseAI(messages: Message[]): Promise<Message[]> {
 		]
 	}
 
-	const { weights, weightUnit, height, heightUnit, born, sex } =
-		user?.publicMetadata
+	const { weights, height, born, sex } = user?.publicMetadata
 
-	const currentWeight = weights[weights.length - 1] as Weights[number]
+	const currentWeight = weights[weights.length - 1] as TrakedField[number]
 	const age = new Date().getFullYear() - new Date(born as string).getFullYear()
+	const currentHeight = height[height.length - 1] as TrakedField[number]
 
 	let object
 	try {
@@ -142,9 +142,7 @@ export async function logExerciseAI(messages: Message[]): Promise<Message[]> {
 					duration: item.duration,
 					effort: item.effort,
 					currentWeight: currentWeight.value,
-					weightUnit,
-					height,
-					heightUnit,
+					height: currentHeight.value,
 					age,
 					sex,
 					categoryMultiplier

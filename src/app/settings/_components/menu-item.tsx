@@ -8,9 +8,9 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '~/components/ui/dialog'
-import { AboutMenuItem, Unit, Weights } from '~/types'
+import { AboutMenuItem } from '~/types'
 import { SettingsField } from './settings-field'
-import React, { use } from 'react'
+import React from 'react'
 import { format } from 'date-fns'
 import {
 	Activity,
@@ -44,23 +44,18 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 	const [value, setValue] = React.useState(attr.value)
 	const router = useRouter()
 
-	function formatHeight(height: number, unit: Unit | undefined) {
-		if (unit === 'ft, in') {
-			const feet = Math.floor(height)
-			const inches = Math.round((height - feet) * 12)
-			return `${feet}′${inches}"`
-		}
-
-		return `${height.toFixed(1)} ${unit}`
+	function formatHeight(height: number) {
+		const feet = Math.floor(height)
+		const inches = Math.round((height - feet) * 12)
+		return `${feet}′${inches}"`
 	}
 
 	let displayValue = value.toString()
 	if (attr.name === 'born')
 		displayValue = format(new Date(`${value}T12:00`), 'PPP')
-	if (attr.name === 'height')
-		displayValue = formatHeight(value as number, attr.unit)
+	if (attr.name === 'height') displayValue = formatHeight(value as number)
 	if (attr.name === 'weights' || name === 'goalWeight')
-		displayValue = `${value} ${attr.unit}`
+		displayValue = `${value} kg`
 	if (attr.name === 'fat' || name === 'progress') displayValue = `${value}%`
 
 	const Icon = ICONS[name as keyof typeof ICONS]
@@ -71,18 +66,17 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 		const dismiss = loadingToast(`Updating your ${label}...`, 'update-metadata')
 
 		let result
-		if (attr.name !== 'weights') {
+		if (attr.name === 'born' || attr.name === 'sex') {
 			result = await updatePublicMetadata({ [attr.name]: newValue })
 		} else {
-			const weights: Weights = [
-				{
-					value: newValue as number,
-					date: new Date().toISOString().split('T')[0]!,
-					unit: 'kg'
-				}
-			]
-
-			result = await updatePublicMetadata({ weights })
+			result = await updatePublicMetadata({
+				[attr.name]: [
+					{
+						value: newValue,
+						date: new Date().toISOString().split('T')[0]!
+					}
+				]
+			})
 		}
 		dismiss()
 		if (!result.success) {
@@ -106,7 +100,7 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 					<div className='flex flex-col items-start'>
 						<span className='font-medium'>{label}</span>
 						<p
-							className={`truncate text-xs tracking-tighter text-muted-foreground sm:text-sm sm:tracking-normal ${!attr.unit ? 'capitalize' : ''}`}
+							className={`truncate text-xs tracking-tighter text-muted-foreground sm:text-sm sm:tracking-normal`}
 						>
 							{displayValue}
 						</p>
@@ -118,9 +112,7 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 				className='max-w-[95%] rounded-lg sm:max-w-96 md:max-w-128'
 			>
 				<DialogHeader>
-					<DialogTitle>
-						{label} {attr.unit && `(${attr.unit})`}
-					</DialogTitle>
+					<DialogTitle>{label}</DialogTitle>
 				</DialogHeader>
 				<SettingsField attr={{ ...attr, value, updateValue }} />
 			</DialogContent>
