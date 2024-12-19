@@ -3,7 +3,9 @@ import { Progress } from '~/components/ui/progress'
 import InsightsCard from '../_components/analytics/insights-card'
 import { User } from '@clerk/nextjs/server'
 import { InsightsAndAnaliticsSkeleton } from '../_components/skeletons'
-import { calculateNeededCalories } from '~/lib/calculations'
+import { db } from '~/server/db'
+import { exercise } from '~/server/db/schema'
+import { eq } from 'drizzle-orm'
 
 export default async function InsightsAndAnalitics({
 	user: currentUser
@@ -13,10 +15,6 @@ export default async function InsightsAndAnalitics({
 	const user = await currentUser
 	if (!user) return <InsightsAndAnaliticsSkeleton />
 	const { goal, goalWeight, weights, updatedAt } = user.publicMetadata
-
-	const expenditure = calculateNeededCalories(user.publicMetadata, {
-		isExpenditure: true
-	})
 	const currentWeight = weights[weights.length - 1]?.value ?? 0
 	const currentGoalWeight = goalWeight[goalWeight.length - 1]?.value ?? 0
 	const currentGoal = goal[goal.length - 1]?.value ?? 'maintain'
@@ -65,6 +63,15 @@ export default async function InsightsAndAnalitics({
 				100
 	}
 
+	const exerciseEnergyBurned = await db
+		.select({ burned: exercise.energyBurned })
+		.from(exercise)
+		.where(eq(exercise.userId, user.id))
+
+	const expenditure = exerciseEnergyBurned.reduce((acc, { burned }) => {
+		return acc + Number(burned)
+	}, 0)
+
 	return (
 		<aside className='mx-auto md:mx-0 lg:w-full'>
 			<div className='flex space-x-3 lg:-mt-3 lg:w-full'>
@@ -73,16 +80,18 @@ export default async function InsightsAndAnalitics({
 					dateRange={dateRange}
 					value={expenditure}
 					valueUnit='kcal'
+					href='/diary?entries=exercise'
 				>
 					<span className='mb-8 mt-8 flex place-content-end'>
 						<Square className='h-4 w-4 text-red-400' strokeWidth={4} />
 					</span>
 				</InsightsCard>
 				<InsightsCard
-					title='Weight Trend'
+					title='Scale Weight'
 					dateRange={dateRange}
 					value={currentWeight}
 					valueUnit='kg'
+					href='/diary?entries=weight'
 				>
 					<span className='mb-8 mt-8 flex place-content-end'>
 						<Circle className='h-4 w-4 text-purple-400' strokeWidth={4} />
@@ -95,6 +104,7 @@ export default async function InsightsAndAnalitics({
 				value={daysFromLastUpdate}
 				valueUnit='days in'
 				className='-ml-3 mt-3 rounded-lg border p-4 pb-1 dark:bg-slate-800/50 lg:ml-0'
+				href='/diary?entries=goal'
 			>
 				<Progress value={goalProgress} className='mb-6 mt-6 h-4' />
 			</InsightsCard>

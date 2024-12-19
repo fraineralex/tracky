@@ -62,26 +62,22 @@ export function calculateDuration(minutes: number) {
 	return `${hours} ${mins}`
 }
 
-export function calculateStreak(arr: Date[]) {
+export function calculateStreak(arr: number[]) {
 	let streak = 0
-	const today = new Date(new Date().setHours(0, 0, 0, 0))
+	const todayTime = new Date().setHours(0, 0, 0, 0)
 
-	for (const [index, date] of arr.entries()) {
+	for (const [index, time] of arr.entries()) {
 		if (arr.length === 1) {
-			if (today.getTime() === date.getTime()) return streak++
+			if (todayTime === time) return streak++
 		}
 		const beforeDate = arr[index + 1]
-		const diff = beforeDate ? date.getTime() - beforeDate.getTime() : 0
+		const diff = beforeDate ? time - beforeDate : 0
 		if (diff === 86400000) {
 			streak++
 			continue
 		}
 
-		if (
-			index === arr.length - 1 &&
-			streak === 0 &&
-			today.getTime() === arr[0]?.getTime()
-		)
+		if (index === arr.length - 1 && streak === 0 && todayTime === arr[0])
 			streak++
 	}
 

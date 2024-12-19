@@ -1,33 +1,35 @@
-import { currentUser } from '@clerk/nextjs/server'
+'use cache'
+
 import { desc, eq } from 'drizzle-orm'
 import { Dumbbell, HandPlatter } from 'lucide-react'
+import {
+	unstable_cacheLife as cacheLife,
+	unstable_cacheTag as cacheTag
+} from 'next/cache'
 import { Card } from '~/components/ui/card'
 import { calculateStreak } from '~/lib/calculations'
 import { db } from '~/server/db'
-import { consumption, exercise } from '~/server/db/schema'
+import { exercise } from '~/server/db/schema'
 
-export default async function ResumeStreak() {
-	const user = await currentUser()
-	if (!user) return null
-	const foodDates = await db
-		.select({ createdAt: consumption.createdAt })
-		.from(consumption)
-		.where(eq(consumption.userId, user.id))
-		.orderBy(desc(consumption.createdAt))
+export default async function ResumeStreak({
+	userId,
+	nutritionDates
+}: {
+	userId: string
+	nutritionDates: number[]
+}) {
+	cacheLife('days')
+	cacheTag('resume-streak')
 
 	const exerciseDates = await db
-		.select({ createdAt: exercise.createdAt })
+		.select({ date: exercise.createdAt })
 		.from(exercise)
-		.where(eq(exercise.userId, user.id))
+		.where(eq(exercise.userId, userId))
 		.orderBy(desc(exercise.createdAt))
 
-	const foodStreak = calculateStreak(
-		foodDates.map(({ createdAt }) => new Date(createdAt.setHours(0, 0, 0, 0)))
-	)
+	const foodStreak = calculateStreak(nutritionDates)
 	const exerciseStreak = calculateStreak(
-		exerciseDates.map(
-			({ createdAt }) => new Date(createdAt.setHours(0, 0, 0, 0))
-		)
+		exerciseDates.map(({ date }) => date.setHours(0, 0, 0, 0))
 	)
 	return (
 		<Card className='order-last col-span-2 w-full rounded-lg border py-1 dark:bg-slate-800/50 md:order-none md:max-w-xs'>

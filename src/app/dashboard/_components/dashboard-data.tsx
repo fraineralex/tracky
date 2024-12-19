@@ -1,15 +1,14 @@
-import { currentUser, User } from '@clerk/nextjs/server'
-import { getUserNutritionMetrics } from '~/server/utils/nutrition'
+import { currentUser } from '@clerk/nextjs/server'
 import {
 	DataAndHabitsSkeleton,
 	InsightsAndAnaliticsSkeleton,
 	NutritionGraphicSkeleton
-} from '../_components/skeletons'
-import NutritionGraphic from './nutrition-graphic'
-import InsightsAndAnalitics from './insights-analytics'
+} from './skeletons'
+import InsightsAndAnalitics from '../_sections/insights-analytics'
 import { Suspense } from 'react'
-import DataAndHabits from './data-habits'
+import DataAndHabits from '../_sections/data-habits'
 import { connection } from 'next/server'
+import { NutritionMetrics } from './nutrition-metrics'
 
 export async function DashboardData() {
 	await connection()
@@ -29,18 +28,4 @@ export async function DashboardData() {
 			</Suspense>
 		</>
 	)
-}
-
-export async function NutritionMetrics({
-	user: currentUser
-}: {
-	user: Promise<User | null>
-}) {
-	const user = await currentUser
-	if (!user) return <NutritionGraphicSkeleton />
-	const nutritionMetrics = await getUserNutritionMetrics(
-		user.id,
-		user.publicMetadata
-	)
-	return <NutritionGraphic nutritionMetrics={nutritionMetrics} />
 }

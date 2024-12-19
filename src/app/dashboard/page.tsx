@@ -5,7 +5,7 @@ import Footer from '~/components/layout/footer'
 import { Suspense } from 'react'
 import { DashboardDataSkeleton } from './_components/skeletons'
 import { AddMealButton } from './_components/food/add-meal-button'
-import { DashboardData } from './_sections/dashboard-data'
+import { DashboardData } from './_components/dashboard-data'
 import { connection } from 'next/server'
 
 export const metadata: Metadata = {

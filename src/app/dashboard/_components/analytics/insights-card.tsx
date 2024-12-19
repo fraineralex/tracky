@@ -1,4 +1,5 @@
 import { ChevronRight } from 'lucide-react'
+import Link from 'next/link'
 import { Button } from '~/components/ui/button'
 import { Card } from '~/components/ui/card'
 
@@ -8,6 +9,7 @@ export default function InsightsCard({
 	value,
 	valueUnit,
 	children,
+	href,
 	className = 'w-full rounded-lg dark:bg-slate-800/50 p-4 pb-1 border -ml-3 lg:ml-0'
 }: {
 	title: string
@@ -16,11 +18,12 @@ export default function InsightsCard({
 	valueUnit: string
 	children: React.ReactNode
 	className?: string
+	href?: string
 }) {
 	return (
 		<Card className={className}>
 			<header className='flex flex-col space-y-1'>
-				<h3 className='font-semibold'>{title}</h3>
+				<h3 className='font-semibold capitalize'>{title}</h3>
 				<small className='text-gray-500 dark:text-gray-400'>{dateRange}</small>
 			</header>
 			{children}
@@ -31,12 +34,17 @@ export default function InsightsCard({
 						{valueUnit}
 					</span>
 				</p>
-				<Button
-					variant='ghost'
-					className='rounded-full px-1 duration-100 ease-in-out hover:scale-110 hover:bg-transparent'
-				>
-					<ChevronRight />
-				</Button>
+				{href && (
+					<Button
+						variant='ghost'
+						className='rounded-full px-1 duration-100 ease-in-out hover:scale-110 hover:bg-transparent'
+						asChild
+					>
+						<Link href={href} prefetch={true}>
+							<ChevronRight />
+						</Link>
+					</Button>
+				)}
 			</footer>
 		</Card>
 	)
