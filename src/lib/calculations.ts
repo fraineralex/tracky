@@ -280,13 +280,11 @@ export function computeDailyUserStats({
 	const heightInMeters = calculateHeightInMeters(dateHeight)
 	const tmb = calculateTMB(weight, heightInMeters, age, sex)
 
-	const adjustedGet =
-		tmb * ACTIVITY_FACTORS[currentActivity] * GOAL_FACTORS[currentGoal]
-
-	const calories = round(adjustedGet)
+	const maintainedGet = tmb * ACTIVITY_FACTORS[currentActivity]
+	const adjustedGet = maintainedGet * GOAL_FACTORS[currentGoal]
 
 	return {
-		calories: { consumed: 0, needed: calories },
+		calories: { consumed: 0, needed: round(adjustedGet) },
 		protein: {
 			consumed: 0,
 			needed: round((adjustedGet * MACRO_DISTRIBUTION.protein) / 4)
@@ -301,7 +299,7 @@ export function computeDailyUserStats({
 		},
 		exercise: {
 			burned: 0,
-			needed: round(calories * 0.2),
+			needed: round(maintainedGet),
 			duration: 0
 		}
 	}

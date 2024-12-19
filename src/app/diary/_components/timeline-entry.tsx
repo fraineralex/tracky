@@ -1,13 +1,14 @@
 import { DiaryEntry } from '~/types/diary'
 import {
-	Apple,
 	Dumbbell,
 	BookOpen,
 	Clock,
 	Utensils,
 	Flame,
 	Weight,
-	Droplet
+	Wheat,
+	Drumstick,
+	Nut
 } from 'lucide-react'
 import { format } from 'date-fns'
 
@@ -55,19 +56,19 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
 						</span>
 					</div>
 					<div className='flex items-center rounded-full bg-blue-100 px-2 py-1 dark:bg-primary dark:text-black'>
-						<Weight className='mr-1 h-4 w-4 text-blue-500' />
+						<Drumstick className='mr-1 h-4 w-4 text-blue-500' />
 						<span className='text-xs font-medium'>
 							{entry.nutritionInfo.protein}g protein
 						</span>
 					</div>
 					<div className='flex items-center rounded-full bg-yellow-100 px-2 py-1 dark:bg-primary dark:text-black'>
-						<Droplet className='mr-1 h-4 w-4 text-yellow-500' />
+						<Nut className='mr-1 h-4 w-4 text-yellow-500' />
 						<span className='text-xs font-medium'>
 							{entry.nutritionInfo.fat}g fat
 						</span>
 					</div>
 					<div className='flex items-center rounded-full bg-green-100 px-2 py-1 dark:bg-primary dark:text-black'>
-						<Apple className='mr-1 h-4 w-4 text-green-500' />
+						<Wheat className='mr-1 h-4 w-4 text-green-500' />
 						<span className='text-xs font-medium'>
 							{entry.nutritionInfo.carbs}g carbs
 						</span>

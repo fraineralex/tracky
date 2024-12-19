@@ -1,11 +1,11 @@
 import React from 'react'
 import {
 	Flame,
-	Beef,
-	CroissantIcon as Bread,
-	BeanIcon as Avocado,
-	Dumbbell,
-	Clock
+	Clock,
+	Wheat,
+	FlameKindling,
+	Drumstick,
+	Nut
 } from 'lucide-react'
 import { DailyUserStats } from '~/types'
 import { EntryType } from '~/types/diary'
@@ -23,47 +23,47 @@ export function DailySummary({
 			icon: Flame,
 			value: `${daySummary.calories.consumed.toLocaleString()}/${daySummary.calories.needed.toLocaleString()}`,
 			unit: 'kcal',
-			color: 'bg-primary text-primary-foreground',
+			color: 'bg-accent text-accent-foreground',
 			category: 'meal'
 		},
 		{
 			label: 'Protein',
-			icon: Beef,
+			icon: Drumstick,
 			value: `${daySummary.protein.consumed.toLocaleString()}/${daySummary.protein.needed.toLocaleString()}`,
 			unit: 'g',
-			color: 'bg-primary text-primary-foreground',
+			color: 'bg-accent text-accent-foreground',
 			category: 'meal'
 		},
 		{
 			label: 'Carbs',
-			icon: Bread,
+			icon: Wheat,
 			value: `${daySummary.carbs.consumed.toLocaleString()}/${daySummary.carbs.needed.toLocaleString()}`,
 			unit: 'g',
-			color: 'bg-primary text-primary-foreground',
+			color: 'bg-accent text-accent-foreground',
 			category: 'meal'
 		},
 		{
 			label: 'Fat',
-			icon: Avocado,
+			icon: Nut,
 			value: `${daySummary.fats.consumed.toLocaleString()}/${daySummary.fats.needed.toLocaleString()}`,
 			unit: 'g',
-			color: 'bg-primary text-primary-foreground',
+			color: 'bg-accent text-accent-foreground',
 			category: 'meal'
 		},
 		{
-			label: 'Cal burned',
-			icon: Dumbbell,
+			label: 'Expenditure',
+			icon: FlameKindling,
 			value: `${daySummary.exercise.burned.toLocaleString()}/${daySummary.exercise.needed.toLocaleString()}`,
 			unit: 'kcal',
-			color: 'bg-primary text-primary-foreground',
+			color: 'bg-accent text-accent-foreground',
 			category: 'exercise'
 		},
 		{
-			label: 'Exercise',
+			label: 'Total Duration',
 			icon: Clock,
 			value: `${daySummary.exercise.duration}`,
 			unit: 'min',
-			color: 'bg-primary text-primary-foreground',
+			color: 'bg-accent text-accent-foreground',
 			category: 'exercise'
 		}
 	]
@@ -85,25 +85,22 @@ export function DailySummary({
 				<h3 className='mb-3 px-4 text-lg font-medium'>Day Summary</h3>
 				<span className='h-px flex-grow bg-gray-500/50' />
 			</div>
-			<div
-				className={`grid grid-cols-1 gap-2 sm:grid-cols-2 ${gridColsConfig.meal} ${gridColsConfig.exercise} ${gridColsConfig.both}`}
-			>
+			<div className={`flex flex-wrap justify-center gap-2`}>
 				{summaryItems
 					.filter(item => filter.includes(item.category as EntryType))
 					.map(item => (
-						<div key={item.label} className='flex-1'>
-							<div
-								className={`flex items-center justify-between space-x-1 rounded-full px-2 py-1.5 text-sm font-normal ${item.color}`}
-							>
-								<div className='flex items-center space-x-1'>
-									<item.icon className='h-4 w-4' />
-									<span>{item.label}</span>
-								</div>
-								<span>
-									{item.value}
-									{item.unit}
-								</span>
+						<div
+							key={item.label}
+							className={`flex items-center space-x-2 rounded-full px-2 py-1 text-xs ${item.color}`}
+						>
+							<div className='flex items-center space-x-1'>
+								<item.icon className='h-4 w-4' />
+								<span>{item.label}:</span>
 							</div>
+							<span>
+								{item.value}
+								{item.unit}
+							</span>
 						</div>
 					))}
 			</div>

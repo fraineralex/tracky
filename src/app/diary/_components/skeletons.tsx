@@ -111,7 +111,12 @@ export function HeaderSkeletonUI() {
 					<h3 className='mb-2 text-sm font-medium'>Entry Types</h3>
 					<div className='flex flex-wrap gap-2'>
 						{(['meal', 'exercise', 'food'] as const).map(type => (
-							<Button key={type} size='sm' className='capitalize'>
+							<Button
+								key={type}
+								size='sm'
+								className='capitalize'
+								variant='outline'
+							>
 								{type}
 							</Button>
 						))}
