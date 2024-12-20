@@ -1,6 +1,15 @@
 import { diaryGroupEnum, effortEnum } from '~/server/db/schema'
 
-export type EntryType = 'meal' | 'exercise' | 'food'
+export type EntryType =
+	| 'meal'
+	| 'exercise'
+	| 'food'
+	| 'weight'
+	| 'goal'
+	| 'activity'
+	| 'fat'
+	| 'height'
+	| 'updates'
 
 export interface NutritionInfo {
 	calories: string

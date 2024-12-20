@@ -24,13 +24,17 @@ export function DiaryTimeline({
 		(searchParams.get('entries')?.split(',') as EntryType[]) || [
 			'meal',
 			'exercise',
-			'food'
+			'food',
+			'updates'
 		]
 	)
 
+	const updateEntries = ['weight', 'goal', 'activity', 'fat', 'height']
 	const filteredEntries = diaryEntries.filter(
 		entry =>
-			selectedEntries.includes(entry.type) &&
+			(selectedEntries.includes(entry.type) ||
+				(selectedEntries.includes('updates') &&
+					updateEntries.includes(entry.type))) &&
 			(selectedDate === 'all' ||
 				format(entry.createdAt, 'MMMM do, yyyy') === selectedDate) &&
 			(selectedDiaryGroup === 'all' || entry.diaryGroup === selectedDiaryGroup)
@@ -73,16 +77,28 @@ export function DiaryTimeline({
 							<TimelineEntry key={index} entry={entry} />
 						))}
 					</div>
-					{userDailyResume[date] && (
-						<div className='pt-2'>
-							<DailySummary
-								daySummary={userDailyResume[date]}
-								filter={selectedEntries}
-							/>
-						</div>
-					)}
+					{userDailyResume[date] &&
+						(selectedEntries.includes('meal') ||
+							selectedEntries.includes('exercise')) && (
+							<div className='pt-2'>
+								<DailySummary
+									daySummary={userDailyResume[date]}
+									filter={selectedEntries}
+								/>
+							</div>
+						)}
 				</div>
 			))}
+			{diaryEntries.length > 0 && filteredEntries.length === 0 && (
+				<div className='pt-10 text-center text-foreground'>
+					No entries found for the selected filters
+				</div>
+			)}
+			{diaryEntries.length === 0 && (
+				<div className='pt-10 text-center text-foreground'>
+					There are no entries to display yet
+				</div>
+			)}
 		</div>
 	)
 }

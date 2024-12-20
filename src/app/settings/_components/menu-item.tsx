@@ -26,6 +26,7 @@ import { updatePublicMetadata } from '../_actions'
 import { loadingToast } from '~/lib/loading-toast'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { formatHeight } from '~/lib/utils'
 
 const ICONS = {
 	born: CalendarIcon,
@@ -43,12 +44,6 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 	const [isOpen, setIsOpen] = React.useState(false)
 	const [value, setValue] = React.useState(attr.value)
 	const router = useRouter()
-
-	function formatHeight(height: number) {
-		const feet = Math.floor(height)
-		const inches = Math.round((height - feet) * 12)
-		return `${feet}′${inches}"`
-	}
 
 	let displayValue = value.toString()
 	if (attr.name === 'born')

@@ -42,7 +42,7 @@ export function Header({
 				<div className='flex-grow space-y-2'>
 					<h3 className='mb-2 text-sm font-medium'>Entry Types</h3>
 					<div className='flex flex-wrap gap-2'>
-						{(['meal', 'exercise', 'food'] as const).map(type => (
+						{(['meal', 'exercise', 'food', 'updates'] as const).map(type => (
 							<Button
 								key={type}
 								variant={selectedTypes.includes(type) ? 'default' : 'outline'}

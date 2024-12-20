@@ -68,16 +68,6 @@ export function DailySummary({
 		}
 	]
 
-	const filterCategories = new Set(filter)
-	const hasCategory = (category: EntryType) => filterCategories.has(category)
-
-	const gridColsConfig = {
-		meal: hasCategory('meal') && filter.length === 1 ? 'md:grid-cols-4' : '',
-		exercise:
-			hasCategory('exercise') && filter.length === 1 ? 'md:grid-cols-2' : '',
-		both: hasCategory('meal') && hasCategory('exercise') ? 'md:grid-cols-3' : ''
-	}
-
 	return (
 		<div className='px-4 pb-6 shadow-lg'>
 			<div className='flex items-center px-6 pb-4'>

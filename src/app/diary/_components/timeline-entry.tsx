@@ -8,7 +8,10 @@ import {
 	Weight,
 	Wheat,
 	Drumstick,
-	Nut
+	Nut,
+	Flag,
+	Activity,
+	Ruler
 } from 'lucide-react'
 import { format } from 'date-fns'
 
@@ -25,6 +28,16 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
 				return <Dumbbell className='h-6 w-6 text-blue-500' />
 			case 'food':
 				return <BookOpen className='h-6 w-6 text-purple-500' />
+			case 'weight':
+				return <Weight className='h-6 w-6 text-red-500' />
+			case 'goal':
+				return <Flag className='h-6 w-6 text-orange-500' />
+			case 'activity':
+				return <Activity className='h-6 w-6 text-cyan-500' />
+			case 'fat':
+				return <Flame className='h-6 w-6 text-lime-500' />
+			case 'height':
+				return <Ruler className='h-6 w-6 text-violet-500' />
 		}
 	}
 
@@ -34,7 +47,7 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
 				<div className='mb-2 flex items-center sm:mb-0'>
 					<div className='mr-3 flex-shrink-0'>{getIcon()}</div>
 					<div>
-						<h4 className='text-lg font-medium text-gray-900 dark:text-white'>
+						<h4 className='text-lg font-medium capitalize text-gray-900 dark:text-white'>
 							{entry.title}
 						</h4>
 						<p className='text-sm capitalize text-gray-600 dark:text-gray-300'>

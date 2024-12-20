@@ -13,6 +13,7 @@ import { DiaryTimelineSkeletonUI } from './skeletons'
 import { format } from 'date-fns'
 import { DailyUserStats } from '~/types'
 import { computeDailyUserStats } from '~/lib/calculations'
+import { formatHeight } from '~/lib/utils'
 
 export async function DiaryTimelineData() {
 	const user = await currentUser()
@@ -54,7 +55,7 @@ export async function DiaryTimelineData() {
 			protein: food.protein,
 			carbs: food.carbs,
 			fat: food.fat,
-			title: food.name,
+			foodName: food.name,
 			createdAt: food.createdAt
 		})
 		.from(food)
@@ -154,10 +155,10 @@ export async function DiaryTimelineData() {
 	)
 
 	const foodEntries: DiaryEntry[] = foodRegistries.map(
-		({ calories, carbs, createdAt, fat, protein, title }) => ({
+		({ calories, carbs, createdAt, fat, protein, foodName }) => ({
 			type: 'food',
-			title,
-			diaryGroup: 'New Food Registration',
+			title: 'New Food Registration',
+			diaryGroup: foodName,
 			createdAt,
 			nutritionInfo: {
 				calories: Number(calories).toFixed(),
@@ -168,9 +169,52 @@ export async function DiaryTimelineData() {
 		})
 	)
 
-	const diaryEntries = [...entryMeals, ...entryExercises, ...foodEntries].sort(
-		(a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-	)
+	const { activity, fat, goal, goalWeight, height, weights } = userMetadata
+	const metadataEntries = [
+		...activity.map(({ value, date }, index) => ({
+			title: `${index === 0 ? 'Start' : 'New'} Activity Level`,
+			type: 'activity' as const,
+			diaryGroup: value satisfies string,
+			createdAt: new Date(date)
+		})),
+		...fat.map(({ value, date }, index) => ({
+			title: `${index === 0 ? 'Start' : 'New'} Body Fat Percentage`,
+			type: 'fat' as const,
+			diaryGroup: `${value.toFixed(1)}%`,
+			createdAt: new Date(date)
+		})),
+		...goal.map(({ value, date }, index) => ({
+			title: `${index === 0 ? 'Start' : 'New'} Goal`,
+			type: 'goal' as const,
+			diaryGroup: value satisfies string,
+			createdAt: new Date(date)
+		})),
+		...goalWeight.map(({ value, date }, index) => ({
+			title: `${index === 0 ? 'Start' : 'New'} Goal Weight`,
+			type: 'goal' as const,
+			diaryGroup: `${value} KG`,
+			createdAt: new Date(date)
+		})),
+		...height.map(({ value, date }, index) => ({
+			title: `${index === 0 ? 'Start' : 'New'} Height`,
+			type: 'height' as const,
+			diaryGroup: formatHeight(value),
+			createdAt: new Date(date)
+		})),
+		...weights.map(({ value, date }, index) => ({
+			title: `${index === 0 ? 'Start' : 'New'} Weight`,
+			type: 'weight' as const,
+			diaryGroup: `${value} KG`,
+			createdAt: new Date(date)
+		}))
+	]
+
+	const diaryEntries = [
+		...entryMeals,
+		...entryExercises,
+		...foodEntries,
+		...metadataEntries
+	].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 
 	return (
 		<DiaryTimeline
