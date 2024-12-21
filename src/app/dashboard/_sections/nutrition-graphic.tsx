@@ -6,6 +6,7 @@ import { Button } from '~/components/ui/button'
 import { Card } from '~/components/ui/card'
 import { round, calculateAdjustedDay } from '~/lib/calculations'
 import { NutritionMetrics, NutritionMetricsPerDay } from '~/types'
+import { NutritionSquare } from '../_components/analytics/nutrition-square'
 
 export default function NutritionGraphic({
 	nutritionMetrics: nutrition
@@ -15,13 +16,14 @@ export default function NutritionGraphic({
 	const [showConsumed, setShowConsumed] = React.useState(true)
 
 	const dayOfWeek = calculateAdjustedDay(new Date())
-	const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
 	const { calories, protein, fats, carbs } = nutrition[
 		dayOfWeek as keyof NutritionMetricsPerDay
 	] as NutritionMetrics
 
+	const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
 	function getNutrientPercentage(index: number, day: number) {
-		if (!nutrition[day] || day > dayOfWeek) return 0
+		if (day > dayOfWeek) return showConsumed ? 0 : 100
+		if (!nutrition[day]) return 0
 		const nutrient = Object.values(nutrition[day] ?? {})[
 			index
 		] as NutritionMetrics[keyof NutritionMetrics]
@@ -56,24 +58,16 @@ export default function NutritionGraphic({
 							className={`flex pb-2 ${nutrientIndex === 4 ? 'space-x-1 sm:space-x-4 lg:space-x-1 xl:space-x-4' : 'space-x-2 sm:space-x-5 lg:space-x-2 xl:space-x-5'}`}
 							key={nutrientIndex}
 						>
-							{[...Array(8)].map((_, dayIndex) =>
-								dayIndex < 7 && nutrientIndex < 4 ? (
-									<span
-										className='rounded-md px-4 py-4'
-										key={dayIndex}
-										style={{
-											background: `linear-gradient(to top, hsl(var(--foreground) / ${dayIndex === dayOfWeek ? '1' : '0.5'}) ${getNutrientPercentage(nutrientIndex, dayIndex)}%, hsl(var(--primary) / 0.2) ${getNutrientPercentage(nutrientIndex, dayIndex)}%)`
-										}}
-									></span>
-								) : (
-									<span
-										className={`-ms-1 px-3 py-2 ${dayIndex === dayOfWeek ? 'rounded-md border-2 border-primary font-semibold' : ''}`}
-										key={dayIndex}
-									>
-										{days[dayIndex]}
-									</span>
-								)
-							)}
+							{[...Array(8)].map((_, dayIndex) => (
+								<NutritionSquare
+									key={dayIndex}
+									dayIndex={dayIndex}
+									nutrientIndex={nutrientIndex}
+									dayOfWeek={dayOfWeek}
+									percentage={nutrientIndex < 4 ? getNutrientPercentage(nutrientIndex, dayIndex).toFixed() : '0'}
+									days={days}
+								/>
+							))}
 						</div>
 					))}
 				</div>

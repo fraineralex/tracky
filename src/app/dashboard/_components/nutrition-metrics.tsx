@@ -14,5 +14,6 @@ export async function NutritionMetrics({
 		user.id,
 		user.publicMetadata
 	)
+
 	return <NutritionGraphic nutritionMetrics={nutritionMetrics} />
 }

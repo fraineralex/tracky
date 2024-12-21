@@ -13,6 +13,7 @@ import { NutritionMetrics } from './nutrition-metrics'
 export async function DashboardData() {
 	await connection()
 	const user = currentUser()
+
 	return (
 		<>
 			<div className='mt-4 flex-col space-x-3 space-y-3 sm:mt-0 md:flex-row md:pt-2 lg:flex lg:justify-between'>

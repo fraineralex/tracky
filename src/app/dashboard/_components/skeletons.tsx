@@ -2,7 +2,11 @@ import { Skeleton } from '~/components/ui/skeleton'
 
 export function NutritionGraphicSkeleton() {
 	return (
-		<Skeleton className='-pt-2 mx-auto h-[374px] w-full rounded-lg md:mx-0 lg:max-w-96 xl:max-w-[490px]' />
+		<div className='w-full'>
+			<Skeleton
+				className={`mx-auto h-full w-full rounded-lg md:mx-0 lg:max-w-96 xl:max-w-[490px]`}
+			/>
+		</div>
 	)
 }
 
@@ -10,8 +14,8 @@ export function InsightsAndAnaliticsSkeleton() {
 	return (
 		<aside className='mx-auto md:mx-0 lg:w-full'>
 			<div className='flex space-x-3 lg:w-full'>
-				<Skeleton className='-mt-2 h-[190.19px] w-full lg:w-[235.5px]' />
-				<Skeleton className='-mt-2 h-[190.19px] w-full lg:w-[235.5px]' />
+				<Skeleton className='-mt-3 h-[190.19px] w-full lg:w-[235.5px]' />
+				<Skeleton className='-mt-3 h-[190.19px] w-full lg:w-[235.5px]' />
 			</div>
 			<Skeleton className='mt-3 h-[174.19px] w-full' />
 		</aside>
