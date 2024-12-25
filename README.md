@@ -14,6 +14,8 @@ A smart, robust and minimalist fitness tracking web app built with `T3 Stack` wi
 - `Postgres`
 - `Framer Motion`
 - `shadcn/ui`
+- `OpenAi API`
+- `Vercel AI SDK`
 
 ## 🛠️ Development Progress
 
@@ -38,6 +40,7 @@ A smart, robust and minimalist fitness tracking web app built with `T3 Stack` wi
 - 📥 Get meal and workout suggestions directly from the chat feature.
 - 🌐 Minimalist, modern interface for a seamless user experience.
 - ❌ No unnecessary clutter—Tracky focuses on what matters most for your fitness journey.
+- 📝 Track and review all your activities in a detailed diary, helping you maintain accountability and monitor your progress over time.
 
 ## 🚦Running the Project
 

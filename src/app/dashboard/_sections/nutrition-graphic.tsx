@@ -64,7 +64,11 @@ export default function NutritionGraphic({
 									dayIndex={dayIndex}
 									nutrientIndex={nutrientIndex}
 									dayOfWeek={dayOfWeek}
-									percentage={nutrientIndex < 4 ? getNutrientPercentage(nutrientIndex, dayIndex).toFixed() : '0'}
+									percentage={
+										nutrientIndex < 4
+											? getNutrientPercentage(nutrientIndex, dayIndex).toFixed()
+											: '0'
+									}
 									days={days}
 								/>
 							))}

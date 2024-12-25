@@ -16,7 +16,6 @@ import {
 	unstable_cacheLife as cacheLife,
 	unstable_cacheTag as cacheTag
 } from 'next/cache'
-import { FoodData } from '~/types'
 
 async function getFoodData(userId: string) {
 	'use cache'
@@ -31,7 +30,7 @@ async function getFoodData(userId: string) {
 export default async function FoodDialog() {
 	const user = await currentUser()
 	if (!user) return <AddMealButton />
-	const foodData = (await getFoodData(user.id)) as FoodData[]
+	const foodData = await getFoodData(user.id)
 
 	return (
 		<Dialog>
