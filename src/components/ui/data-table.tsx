@@ -224,9 +224,22 @@ export function DataTable<TData, TValue>({
 					</TableBody>
 				</Table>
 			</div>
-			<p className='col-span-5 mt-3 text-nowrap text-xs font-light text-foreground/80 lg:hidden'>
-				Nutritional values are based on a 100g serving size.
-			</p>
+			<div className='mt-3 space-y-1'>
+				<p className='text-nowrap text-xs font-light text-foreground/80'>
+					Data Source:{' '}
+					<a
+						href='https://fdc.nal.usda.gov/'
+						target='_blank'
+						rel='noopener noreferrer'
+						className='text-foreground hover:underline'
+					>
+						USDA FoodData Central
+					</a>
+				</p>
+				<p className='col-span-5 text-nowrap text-xs font-light text-foreground/80 lg:hidden'>
+					Nutritional values are based on a 100g serving size.
+				</p>
+			</div>
 
 			<div className='flex items-center justify-end space-x-2 py-4'>
 				<Button

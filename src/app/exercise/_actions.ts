@@ -2,7 +2,7 @@
 
 import 'server-only'
 import { currentUser } from '@clerk/nextjs/server'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { z } from 'zod'
 import { db } from '~/server/db'
 import {
@@ -180,6 +180,9 @@ export async function logExerciseAI(messages: Message[]): Promise<Message[]> {
 	}
 
 	revalidatePath('/exercise')
+	revalidatePath('/dashboard')
+	revalidatePath('/diary')
+	revalidateTag('resume-streak')
 	return [
 		...messages,
 		{

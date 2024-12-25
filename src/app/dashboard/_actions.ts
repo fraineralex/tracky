@@ -1,5 +1,6 @@
 'use server'
 
+import 'server-only'
 import { auth } from '@clerk/nextjs/server'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { z } from 'zod'
@@ -63,9 +64,24 @@ export const addConsumption = async (
 
 	try {
 		const newConsumption = validatedFields.data satisfies NewConsumption
+
+		if (newConsumption.unit === 'ml') newConsumption.unit = 'g'
+		if (newConsumption.unit === 'oz') {
+			newConsumption.unit = 'g'
+			newConsumption.portion = (
+				Number(newConsumption.portion) * 28.3495
+			).toFixed(2)
+		}
+
+		if (newConsumption.unit === 'cup') {
+			newConsumption.unit = 'g'
+			newConsumption.portion = (Number(newConsumption.portion) * 128).toFixed(2)
+		}
+
 		await db.insert(consumption).values(newConsumption)
 		revalidatePath('/dashboard')
 		revalidatePath('/food')
+		revalidatePath('/diary')
 		revalidateTag('nutrition')
 		revalidateTag('resume-streak')
 		return { message: 'Consumption added successfully', success: true }
@@ -137,6 +153,7 @@ export const addExercise = async (
 		await db.insert(exercise).values(newExercise)
 		revalidatePath('/dashboard')
 		revalidatePath('/exercise')
+		revalidatePath('/diary')
 		revalidateTag('resume-streak')
 		return { message: 'Exercise added successfully', success: true }
 	} catch (error) {

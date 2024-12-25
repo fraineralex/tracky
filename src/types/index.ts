@@ -127,3 +127,17 @@ export type ExerciseCall = {
 	createdAt: Date
 	name: string
 }[]
+
+export interface FoodData {
+	unit: 'g' | 'ml' | 'oz' | 'cup'
+	id: string
+	name: string
+	protein: string
+	kcal: string
+	fat: string
+	carbs: string
+	servingSize: string
+	userId: string | null
+	createdAt: Date
+	updatedAt: Date | null
+}

@@ -16,6 +16,7 @@ import {
 	unstable_cacheLife as cacheLife,
 	unstable_cacheTag as cacheTag
 } from 'next/cache'
+import { FoodData } from '~/types'
 
 async function getFoodData(userId: string) {
 	'use cache'
@@ -30,7 +31,7 @@ async function getFoodData(userId: string) {
 export default async function FoodDialog() {
 	const user = await currentUser()
 	if (!user) return <AddMealButton />
-	const foodData = await getFoodData(user.id)
+	const foodData = (await getFoodData(user.id)) as FoodData[]
 
 	return (
 		<Dialog>
@@ -45,7 +46,7 @@ export default async function FoodDialog() {
 				</DialogHeader>
 
 				<div className='mx-auto px-2 md:container'>
-					<DataTable columns={columns} data={foodData} />
+					<DataTable columns={columns} data={foodData!} />
 				</div>
 			</DialogContent>
 		</Dialog>

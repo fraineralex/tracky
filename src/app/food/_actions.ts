@@ -88,8 +88,37 @@ export const registerFood = async (
 
 	try {
 		const newFood = validatedFields.data satisfies NewFood
+		if (newFood.unit === 'ml') newFood.unit = 'g'
+
+		if (newFood.unit === 'g' && Number(newFood.servingSize) !== 100) {
+			const multiplier = 100 / Number(newFood.servingSize)
+			newFood.kcal = (Number(newFood.kcal) * multiplier).toFixed(2)
+			newFood.protein = (Number(newFood.protein) * multiplier).toFixed(2)
+			newFood.carbs = (Number(newFood.carbs) * multiplier).toFixed(2)
+			newFood.fat = (Number(newFood.fat) * multiplier).toFixed(2)
+		}
+
+		if (newFood.unit === 'oz') {
+			newFood.unit = 'g'
+			const multiplier = (100 / Number(newFood.servingSize)) * 28.3495
+			newFood.kcal = (Number(newFood.kcal) * multiplier).toFixed(2)
+			newFood.protein = (Number(newFood.protein) * multiplier).toFixed(2)
+			newFood.carbs = (Number(newFood.carbs) * multiplier).toFixed(2)
+			newFood.fat = (Number(newFood.fat) * multiplier).toFixed(2)
+		}
+
+		if (newFood.unit === 'cup') {
+			newFood.unit = 'g'
+			const multiplier = (100 / Number(newFood.servingSize)) * 128
+			newFood.kcal = (Number(newFood.kcal) * multiplier).toFixed(2)
+			newFood.protein = (Number(newFood.protein) * multiplier).toFixed(2)
+			newFood.carbs = (Number(newFood.carbs) * multiplier).toFixed(2)
+			newFood.fat = (Number(newFood.fat) * multiplier).toFixed(2)
+		}
+
 		await db.insert(food).values(newFood)
 		revalidatePath('/food')
+		revalidatePath('/diary')
 		revalidateTag('food')
 		return { message: 'Food registered successfully', success: true }
 	} catch (error) {
@@ -269,6 +298,10 @@ export async function logMealAI(messages: Message[]): Promise<Message[]> {
 	}
 
 	revalidatePath('/food')
+	revalidatePath('/dashboard')
+	revalidatePath('/diary')
+	revalidateTag('nutrition')
+	revalidateTag('resume-streak')
 	return [
 		...messages,
 		{
