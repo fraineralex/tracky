@@ -336,6 +336,7 @@ async function seed() {
 			unit: 'g'
 		}
 	]
+	
 	const categoriesSelect = await db
 		.select({ name: exerciseCategory.name })
 		.from(exerciseCategory)

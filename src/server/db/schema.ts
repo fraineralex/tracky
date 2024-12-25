@@ -30,8 +30,10 @@ export const food = createTable(
 		kcal: decimal('kcal', { precision: 7, scale: 2 }).notNull(),
 		fat: decimal('fat', { precision: 7, scale: 2 }).notNull(),
 		carbs: decimal('carbs', { precision: 7, scale: 2 }).notNull(),
-		servingSize: decimal('serving_size', { precision: 7, scale: 2 }).notNull(),
-		unit: unitEnum('unit').notNull(),
+		servingSize: decimal('serving_size', { precision: 7, scale: 2 }).default(
+			'100.0'
+		),
+		unit: unitEnum('unit').default('g'),
 		userId: varchar('user_id', { length: 50 }),
 		createdAt: timestamp('created_at', { withTimezone: true })
 			.default(sql`CURRENT_TIMESTAMP`)
