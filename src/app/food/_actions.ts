@@ -9,7 +9,7 @@ import { db } from '~/server/db'
 import { consumption, diaryGroupEnum, food, unitEnum } from '~/server/db/schema'
 import { generateObject } from 'ai'
 import { openai } from '@ai-sdk/openai'
-import { desc, sql } from 'drizzle-orm'
+import { desc, ilike } from 'drizzle-orm'
 import { NewConsumption } from '../dashboard/_actions'
 import { SuccessLogData } from '~/types'
 
@@ -232,7 +232,7 @@ export async function logMealAI(messages: Message[]): Promise<Message[]> {
 						servingSize: food.servingSize
 					})
 					.from(food)
-					.where(sql`lower(${food.name}) = lower(${item.foodName})`)
+					.where(ilike(food.name, `%${item.foodName}%`))
 					.orderBy(desc(food.createdAt))
 					.limit(1)
 					.execute()

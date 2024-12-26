@@ -41,8 +41,8 @@ export const food = createTable(
 		updatedAt: timestamp('updatedAt', { withTimezone: true })
 	},
 	food => ({
-		nameIndex: index('food_name_idx').on(food.name),
-		userIdIndex: index('food_user_idx').on(food.userId)
+		nameFoodIndex: index('food_name_idx').on(food.name),
+		userIdFoodIndex: index('food_user_idx').on(food.userId)
 	})
 )
 
@@ -65,8 +65,11 @@ export const consumption = createTable(
 		updatedAt: timestamp('updatedAt', { withTimezone: true })
 	},
 	consumption => ({
-		userIndex: index('user_idx').on(consumption.userId),
-		foodIndex: index('food_idx').on(consumption.foodId)
+		userConsumptionIndex: index('user_consumption_idx').on(consumption.userId),
+		foodConsumptionIndex: index('food_idx').on(consumption.foodId),
+		createdAtConsumptionIndex: index('created_at_consumption_idx').on(
+			consumption.createdAt
+		)
 	})
 )
 
@@ -88,7 +91,9 @@ export const exerciseCategory = createTable(
 		updatedAt: timestamp('updatedAt', { withTimezone: true })
 	},
 	exerciseCategory => ({
-		nameIndex: index('exercise_cat_name_idx').on(exerciseCategory.name)
+		nameExerciseCategIndex: index('exercise_cat_name_idx').on(
+			exerciseCategory.name
+		)
 	})
 )
 
@@ -124,6 +129,8 @@ export const exercise = createTable(
 		updatedAt: timestamp('updatedAt', { withTimezone: true })
 	},
 	exercise => ({
-		nameIndex: index('categoryId_idx').on(exercise.categoryId)
+		userExerciseIndex: index('exercise_user_idx').on(exercise.userId),
+		nameExerciseIndex: index('categoryId_idx').on(exercise.categoryId),
+		createAtExerciseIndex: index('created_at_idx').on(exercise.createdAt)
 	})
 )

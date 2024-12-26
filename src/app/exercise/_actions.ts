@@ -13,7 +13,7 @@ import {
 } from '~/server/db/schema'
 import { generateObject } from 'ai'
 import { openai } from '@ai-sdk/openai'
-import { desc, sql } from 'drizzle-orm'
+import { desc, ilike } from 'drizzle-orm'
 import { Message } from '../food/_actions'
 import { EXERCISE_ICONS } from '~/constants'
 import { NewExercise } from '../dashboard/_actions'
@@ -120,7 +120,7 @@ export async function logExerciseAI(messages: Message[]): Promise<Message[]> {
 						multiplier: exerciseCategory.energyBurnedPerMinute
 					})
 					.from(exerciseCategory)
-					.where(sql`lower(${exerciseCategory.name}) = lower(${item.category})`)
+					.where(ilike(exerciseCategory.name, `%${item.category}%`))
 					.orderBy(desc(exerciseCategory.createdAt))
 					.limit(1)
 					.execute()
