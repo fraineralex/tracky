@@ -22,7 +22,14 @@ async function getFoodData(userId: string) {
 	cacheLife('max')
 	cacheTag('food')
 	return await db
-		.select()
+		.select({
+			id: food.id,
+			name: food.name,
+			protein: food.protein,
+			kcal: food.kcal,
+			fat: food.fat,
+			carbs: food.carbs
+		})
 		.from(food)
 		.where(or(isNull(food.userId), eq(food.userId, userId)))
 }
@@ -45,7 +52,7 @@ export default async function FoodDialog() {
 				</DialogHeader>
 
 				<div className='mx-auto px-2 md:container'>
-					<DataTable columns={columns} data={foodData!} />
+					<DataTable columns={columns} data={foodData} />
 				</div>
 			</DialogContent>
 		</Dialog>

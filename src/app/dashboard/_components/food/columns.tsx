@@ -11,7 +11,6 @@ export interface Food {
 	kcal: string
 	fat: string
 	carbs: string
-	servingSize: string
 }
 
 export const columns: ColumnDef<Food>[] = [
@@ -66,7 +65,7 @@ export const columns: ColumnDef<Food>[] = [
 					variant='ghost'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
-					Net Carbs
+					Carbs
 					<ArrowUpDown className='ml-2 h-4 w-4' />
 				</Button>
 			)
@@ -137,14 +136,8 @@ export const columns: ColumnDef<Food>[] = [
 				</Button>
 			)
 		},
-		cell: ({ row }) => {
-			const servingSize = parseFloat(row.getValue('servingSize'))
-			const formatted = new Intl.NumberFormat('en-US', {
-				style: 'unit',
-				unit: 'gram'
-			}).format(servingSize)
-
-			return <div className='text-left '>{formatted}</div>
+		cell: () => {
+			return <div className='text-left '>100 g</div>
 		}
 	}
 	/* {
