@@ -30,7 +30,7 @@ export function Header() {
 						className='hidden cursor-pointer rounded-full md:block'
 						variant='outline'
 					>
-						alpha
+						beta
 					</Badge>
 				</Link>
 				<NavLinks />

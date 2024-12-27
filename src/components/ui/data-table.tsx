@@ -104,8 +104,7 @@ export function DataTable<TData, TValue>({
 			protein: row.getValue('protein'),
 			kcal: row.getValue('kcal'),
 			fat: row.getValue('fat'),
-			carbs: row.getValue('carbs'),
-			servingSize: row.getValue('servingSize')
+			carbs: row.getValue('carbs')
 		}
 
 		setSelectedRow(foodData)
