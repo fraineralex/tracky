@@ -22,18 +22,38 @@ export default function NutritionGraphic({
 
 	const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
 	function getNutrientPercentage(index: number, day: number) {
-		if (day > dayOfWeek) return showConsumed ? 0 : 100
-		if (!nutrition[day]) return 0
+		let percentage = 0
+		if (day > dayOfWeek) percentage = showConsumed ? 0 : 100
 		const nutrient = Object.values(nutrition[day] ?? {})[
 			index
 		] as NutritionMetrics[keyof NutritionMetrics]
-		return (
+		percentage =
 			((showConsumed
 				? nutrient.consumed
 				: nutrient.needed - nutrient.consumed) /
 				nutrient.needed) *
 			100
-		)
+
+		return percentage
+	}
+
+	function getDayPercentage(day: number) {
+		let percentage = 0
+		if (day > dayOfWeek) percentage = showConsumed ? 0 : 100
+		const nutritionDay = nutrition[day]
+		const calories =
+			(nutritionDay?.calories.consumed ?? 0) /
+			(nutritionDay?.calories.needed ?? 1)
+		const protein =
+			(nutritionDay?.protein.consumed ?? 0) /
+			(nutritionDay?.protein.needed ?? 1)
+		const fats =
+			(nutritionDay?.fats.consumed ?? 0) / (nutritionDay?.fats.needed ?? 1)
+		const carbs =
+			(nutritionDay?.carbs.consumed ?? 0) / (nutritionDay?.carbs.needed ?? 1)
+		percentage = (calories + protein + fats + carbs) / 4
+
+		return showConsumed ? percentage : 100 - percentage
 	}
 
 	let tdayCalories = calories.consumed
@@ -49,7 +69,7 @@ export default function NutritionGraphic({
 	}
 
 	return (
-		<Card className='mx-auto h-fit w-full rounded-lg border p-2 pr-1 dark:bg-slate-800/50 sm:p-5 md:mx-0 lg:max-w-96 xl:max-w-[490px]'>
+		<Card className='mx-auto mb-3 h-fit w-full rounded-lg border p-2 pr-1 dark:bg-slate-800/50 sm:p-5 md:mx-0 lg:mb-0 lg:max-w-96 xl:max-w-[490px]'>
 			<h2 className='mb-3 font-semibold'>Nutrition & Targets</h2>
 			<div className='mb-2 grid grid-cols-10 space-x-1 sm:space-x-5 lg:space-x-3 xl:space-x-5'>
 				<div className='col-span-8 grid grid-flow-row space-y-2'>
@@ -58,7 +78,7 @@ export default function NutritionGraphic({
 							className={`flex pb-2 ${nutrientIndex === 4 ? 'space-x-1 sm:space-x-4 lg:space-x-1 xl:space-x-4' : 'space-x-2 sm:space-x-5 lg:space-x-2 xl:space-x-5'}`}
 							key={nutrientIndex}
 						>
-							{[...Array(8)].map((_, dayIndex) => (
+							{[...Array(7)].map((_, dayIndex) => (
 								<NutritionSquare
 									key={dayIndex}
 									dayIndex={dayIndex}
@@ -67,9 +87,19 @@ export default function NutritionGraphic({
 									percentage={
 										nutrientIndex < 4
 											? getNutrientPercentage(nutrientIndex, dayIndex).toFixed()
-											: '0'
+											: getDayPercentage(dayIndex).toFixed()
 									}
 									days={days}
+									nutrient={
+										nutrientIndex < 4
+											? (Object.values(nutrition[dayIndex] ?? {})[
+													nutrientIndex
+												] as NutritionMetrics[keyof NutritionMetrics])
+											: undefined
+									}
+									nutritionDay={
+										nutrientIndex === 4 ? nutrition[dayIndex] : undefined
+									}
 								/>
 							))}
 						</div>

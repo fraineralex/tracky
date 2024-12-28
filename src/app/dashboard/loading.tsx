@@ -1,5 +1,8 @@
 import { Skeleton } from '~/components/ui/skeleton'
-import { DashboardDataSkeleton } from './_components/skeletons'
+import {
+	DataAndHabitsSkeleton,
+	InsightsAndAnaliticsSkeleton
+} from './_components/skeletons'
 
 export default function Loading() {
 	return (
@@ -14,7 +17,15 @@ export default function Loading() {
 					<Skeleton className='mx-auto h-9 w-40 md:w-32' />
 				</header>
 			</div>
-			<DashboardDataSkeleton />
+			<div className='mt-4 flex-col space-x-3 sm:mt-0 md:flex-row md:pt-3 lg:flex lg:justify-between'>
+				<div className='mx-auto w-full pb-3 lg:pb-0'>
+					<Skeleton
+						className={`h-[350px] w-full rounded-lg  lg:h-full lg:max-w-96 xl:max-w-[490px]`}
+					/>
+				</div>
+				<InsightsAndAnaliticsSkeleton />
+			</div>
+			<DataAndHabitsSkeleton />
 		</section>
 	)
 }

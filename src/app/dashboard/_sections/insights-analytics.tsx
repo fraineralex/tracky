@@ -74,7 +74,7 @@ export default async function InsightsAndAnalitics({
 
 	return (
 		<aside className='mx-auto md:mx-0 lg:w-full'>
-			<div className='flex space-x-3 lg:-mt-3 lg:w-full'>
+			<div className='flex space-x-3 lg:w-full'>
 				<InsightsCard
 					title='Expenditure'
 					dateRange={dateRange}
