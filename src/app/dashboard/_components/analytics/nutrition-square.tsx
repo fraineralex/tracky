@@ -8,6 +8,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger
 } from '~/components/ui/tooltip'
+import { round } from '~/lib/calculations'
 import { NutritionMetrics } from '~/types'
 
 export function NutritionSquare({
@@ -89,7 +90,8 @@ export function NutritionSquare({
 							<p className='flex space-x-1 text-gray-300 dark:text-gray-700'>
 								<strong>Consumed:</strong>
 								<span>
-									{nutrient?.consumed} / {nutrient?.needed}{' '}
+									{round(nutrient?.consumed).toLocaleString()} /{' '}
+									{round(nutrient?.needed).toLocaleString()}{' '}
 									{nutrientIndex === 0 ? 'kcal' : 'g'}
 								</span>
 							</p>
@@ -97,7 +99,9 @@ export function NutritionSquare({
 								<strong>Remainig:</strong>
 								<span>
 									{(nutrient?.needed ?? 0) > (nutrient?.consumed ?? 0)
-										? (nutrient?.needed ?? 0) - (nutrient?.consumed ?? 0)
+										? round(
+												(nutrient?.needed ?? 0) - (nutrient?.consumed ?? 0)
+											).toLocaleString()
 										: 0}{' '}
 									{nutrientIndex === 0 ? 'kcal' : 'g'}
 								</span>
@@ -114,31 +118,32 @@ export function NutritionSquare({
 								<Flame className='h-4 w-4 text-red-300 dark:text-red-500' />
 								<strong>Calories:</strong>{' '}
 								<span>
-									{nutritionDay?.calories.consumed} /{' '}
-									{nutritionDay?.calories.needed} kcal
+									{round(nutritionDay?.calories.consumed).toLocaleString()} /{' '}
+									{round(nutritionDay?.calories.needed).toLocaleString()} kcal
 								</span>
 							</p>
 							<p className='flex items-center space-x-1'>
 								<Drumstick className='h-4 w-4 text-blue-300 dark:text-blue-500' />
 								<strong>Protein:</strong>{' '}
 								<span>
-									{nutritionDay?.protein.consumed} /{' '}
-									{nutritionDay?.protein.needed} g
+									{round(nutritionDay?.protein.consumed).toLocaleString()} /{' '}
+									{round(nutritionDay?.protein.needed).toLocaleString()} g
 								</span>
 							</p>
 							<p className='flex items-center space-x-1'>
 								<Nut className='h-4 w-4 text-yellow-300 dark:text-yellow-500' />
 								<strong>Fats:</strong>{' '}
 								<span>
-									{nutritionDay?.fats.consumed} / {nutritionDay?.fats.needed} g
+									{round(nutritionDay?.fats.consumed).toLocaleString()} /{' '}
+									{round(nutritionDay?.fats.needed).toLocaleString()} g
 								</span>
 							</p>
 							<p className='flex items-center space-x-1'>
 								<Wheat className='h-4 w-4 text-green-300 dark:text-green-500' />
 								<strong>Carbs:</strong>{' '}
 								<span>
-									{nutritionDay?.carbs.consumed} / {nutritionDay?.carbs.needed}{' '}
-									g
+									{round(nutritionDay?.carbs.consumed).toLocaleString()} /{' '}
+									{round(nutritionDay?.carbs.needed).toLocaleString()} g
 								</span>
 							</p>
 						</article>
