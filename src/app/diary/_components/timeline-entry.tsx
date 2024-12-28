@@ -65,7 +65,7 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
 					<div className='flex items-center rounded-full bg-red-100 px-2 py-1 dark:bg-primary dark:text-black'>
 						<Flame className='mr-1 h-4 w-4 text-red-500' />
 						<span className='text-xs font-medium'>
-							{entry.nutritionInfo.calories} cal
+							{entry.nutritionInfo.calories} kcal
 						</span>
 					</div>
 					<div className='flex items-center rounded-full bg-blue-100 px-2 py-1 dark:bg-primary dark:text-black'>
@@ -93,7 +93,7 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
 					<div className='flex items-center rounded-full bg-red-100 px-2 py-1 dark:bg-primary dark:text-black'>
 						<Flame className='mr-1 h-4 w-4 text-red-500' />
 						<span className='text-xs font-medium'>
-							{entry.exerciseInfo.burned} cal burned
+							{entry.exerciseInfo.burned} kcal burned
 						</span>
 					</div>
 					<div className='flex items-center rounded-full bg-blue-100 px-2 py-1 dark:bg-primary dark:text-black'>

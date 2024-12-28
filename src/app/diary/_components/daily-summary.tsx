@@ -19,12 +19,22 @@ export function DailySummary({
 }) {
 	const summaryItems = [
 		{
+			label: 'Burned',
+			icon: FlameKindling,
+			value: `${daySummary.exercise.burned.toLocaleString()}/${daySummary.exercise.needed.toLocaleString()}`,
+			unit: 'kcal',
+			color: 'bg-accent text-accent-foreground',
+			category: 'exercise',
+			show: daySummary.exercise.burned > 0
+		},
+		{
 			label: 'Cal',
 			icon: Flame,
 			value: `${daySummary.calories.consumed.toLocaleString()}/${daySummary.calories.needed.toLocaleString()}`,
 			unit: 'kcal',
 			color: 'bg-accent text-accent-foreground',
-			category: 'meal'
+			category: 'meal',
+			show: daySummary.calories.consumed > 0
 		},
 		{
 			label: 'Protein',
@@ -32,7 +42,8 @@ export function DailySummary({
 			value: `${daySummary.protein.consumed.toLocaleString()}/${daySummary.protein.needed.toLocaleString()}`,
 			unit: 'g',
 			color: 'bg-accent text-accent-foreground',
-			category: 'meal'
+			category: 'meal',
+			show: daySummary.protein.consumed > 0
 		},
 		{
 			label: 'Carbs',
@@ -40,7 +51,8 @@ export function DailySummary({
 			value: `${daySummary.carbs.consumed.toLocaleString()}/${daySummary.carbs.needed.toLocaleString()}`,
 			unit: 'g',
 			color: 'bg-accent text-accent-foreground',
-			category: 'meal'
+			category: 'meal',
+			show: daySummary.carbs.consumed > 0
 		},
 		{
 			label: 'Fat',
@@ -48,28 +60,22 @@ export function DailySummary({
 			value: `${daySummary.fats.consumed.toLocaleString()}/${daySummary.fats.needed.toLocaleString()}`,
 			unit: 'g',
 			color: 'bg-accent text-accent-foreground',
-			category: 'meal'
+			category: 'meal',
+			show: daySummary.fats.consumed > 0
 		},
 		{
-			label: 'Expenditure',
-			icon: FlameKindling,
-			value: `${daySummary.exercise.burned.toLocaleString()}/${daySummary.exercise.needed.toLocaleString()}`,
-			unit: 'kcal',
-			color: 'bg-accent text-accent-foreground',
-			category: 'exercise'
-		},
-		{
-			label: 'Total Duration',
+			label: 'Duration',
 			icon: Clock,
 			value: `${daySummary.exercise.duration}`,
 			unit: 'min',
 			color: 'bg-accent text-accent-foreground',
-			category: 'exercise'
+			category: 'exercise',
+			show: daySummary.exercise.duration > 0
 		}
 	]
 
 	return (
-		<div className='px-4 pb-6 shadow-lg'>
+		<div className='pb-6 shadow-lg'>
 			<div className='flex items-center px-6 pb-4'>
 				<span className='h-px flex-grow bg-gray-500/50' />
 				<h3 className='mb-3 px-4 text-lg font-medium'>Day Summary</h3>
@@ -77,7 +83,9 @@ export function DailySummary({
 			</div>
 			<div className={`flex flex-wrap justify-center gap-2`}>
 				{summaryItems
-					.filter(item => filter.includes(item.category as EntryType))
+					.filter(
+						item => filter.includes(item.category as EntryType) && item.show
+					)
 					.map(item => (
 						<div
 							key={item.label}
@@ -85,9 +93,9 @@ export function DailySummary({
 						>
 							<div className='flex items-center space-x-1'>
 								<item.icon className='h-4 w-4' />
-								<span>{item.label}:</span>
+								<span className='text-xs'>{item.label}:</span>
 							</div>
-							<span>
+							<span className='text-xs'>
 								{item.value}
 								{item.unit}
 							</span>
