@@ -2,7 +2,7 @@
 
 A smart, robust and minimalist fitness tracking web app built with `T3 Stack` with AI-powered features to quickly log meals and exercises. It helps users follow their fitness journey every step of the way, without overwhelming them with unnecessary features. With a modern interface, Tracky makes it easy to log workouts and meals, keeping users focused on progress while simplifying their path to achieving fitness goals.
 
-![Open graph image of Tracky](/public/gh.webp)
+![Open graph image of Tracky](https://pub-f159aa4256dd4a64ae2f0c18d87e674e.r2.dev/gh.webp)
 
 ## 📦 Technologies
 

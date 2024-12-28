@@ -47,7 +47,7 @@ export const metadata: Metadata = {
 			'Fitness tracking web app with AI-powered features to quickly log meals and exercises.',
 		images: [
 			{
-				url: `https://${process.env.DOMAIN}/og.jpg`,
+				url: `https://pub-f159aa4256dd4a64ae2f0c18d87e674e.r2.dev/og.webp`,
 				width: 1920,
 				height: 675
 			}
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
 			'Fitness tracking web app with AI-powered features to quickly log meals and exercises.',
 		images: [
 			{
-				url: `https://${process.env.DOMAIN}/og.jpg`,
+				url: `https://pub-f159aa4256dd4a64ae2f0c18d87e674e.r2.dev/og.webp`,
 				width: 1200,
 				height: 675,
 				type: 'image/jpeg'

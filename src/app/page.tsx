@@ -46,7 +46,7 @@ export default function HomePage() {
 				<figure className='z-10 max-w-96 items-center p-3 pb-0 md:p-0 lg:max-w-128'>
 					<picture>
 						<Image
-							src='/home/banner.avif'
+							src='https://pub-f159aa4256dd4a64ae2f0c18d87e674e.r2.dev/banner.avif'
 							alt='banner image'
 							height={252}
 							width={400}
@@ -55,7 +55,7 @@ export default function HomePage() {
 							loading='eager'
 							fetchPriority='high'
 						/>
-						<source srcSet='/home/banner.webp' type='image/webp' />
+						<source srcSet='https://pub-f159aa4256dd4a64ae2f0c18d87e674e.r2.dev/banner.webp' type='image/webp' />
 					</picture>
 				</figure>
 				<article className='z-10 mt-1 flex min-h-40 place-content-center ps-16'>
