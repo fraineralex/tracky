@@ -36,6 +36,7 @@ import { FoodDrawer } from '~/app/dashboard/_components/food/food-drawer'
 import { Drawer, DrawerTrigger } from './drawer'
 import { Food } from '~/app/dashboard/_components/food/columns'
 import { toast } from 'sonner'
+import { DialogClose } from './dialog'
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[]
@@ -241,6 +242,11 @@ export function DataTable<TData, TValue>({
 			</div>
 
 			<div className='flex items-center justify-end space-x-2 py-4'>
+				<DialogClose asChild className='block lg:hidden'>
+					<Button variant='outline' size='sm'>
+						Cancel
+					</Button>
+				</DialogClose>
 				<Button
 					variant='outline'
 					size='sm'

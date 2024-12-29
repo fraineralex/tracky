@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 		template: '%s / tracky'
 	},
 	description:
-		'Fitness tracking web app with AI-powered features to quickly log meals and exercises,',
+		'Fitness tracking web app with AI-powered features to quickly log meals and exercises.',
 	icons: [
 		{ rel: 'icon', url: '/favicon.svg', type: 'image/svg+xml', sizes: 'any' }
 	],
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 		'ai',
 		'web app'
 	],
-	metadataBase: new URL(process.env.DOMAIN ?? 'https://tracky.fraineralex.dev'),
+	metadataBase: new URL(process.env.DOMAIN ?? 'https://tracky.fit'),
 	openGraph: {
 		title: 'tracky',
 		description:
@@ -49,7 +49,8 @@ export const metadata: Metadata = {
 			{
 				url: `https://pub-f159aa4256dd4a64ae2f0c18d87e674e.r2.dev/og.webp`,
 				width: 1920,
-				height: 675
+				height: 675,
+				type: 'image/webp'
 			}
 		],
 		locale: 'en_US',
@@ -78,7 +79,7 @@ export const metadata: Metadata = {
 				url: `https://pub-f159aa4256dd4a64ae2f0c18d87e674e.r2.dev/og.webp`,
 				width: 1200,
 				height: 675,
-				type: 'image/jpeg'
+				type: 'image/webp'
 			}
 		],
 		creatorId: 'fraineralex'

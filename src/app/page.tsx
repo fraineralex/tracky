@@ -55,7 +55,10 @@ export default function HomePage() {
 							loading='eager'
 							fetchPriority='high'
 						/>
-						<source srcSet='https://pub-f159aa4256dd4a64ae2f0c18d87e674e.r2.dev/banner.webp' type='image/webp' />
+						<source
+							srcSet='https://pub-f159aa4256dd4a64ae2f0c18d87e674e.r2.dev/banner.webp'
+							type='image/webp'
+						/>
 					</picture>
 				</figure>
 				<article className='z-10 mt-1 flex min-h-40 place-content-center ps-16'>
