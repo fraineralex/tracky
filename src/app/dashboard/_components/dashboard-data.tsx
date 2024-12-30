@@ -16,7 +16,7 @@ export async function DashboardData() {
 
 	return (
 		<>
-			<div className='mt-4 flex-col space-x-3 sm:mt-0 md:flex-row lg:flex lg:justify-between'>
+			<div className='mt-4 flex-col gap-x-3 sm:mt-0 md:flex-row lg:flex lg:justify-between'>
 				<Suspense fallback={<NutritionGraphicSkeleton />}>
 					<NutritionMetrics user={user} />
 				</Suspense>
