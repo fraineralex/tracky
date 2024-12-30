@@ -9,6 +9,7 @@ import Toaster from '~/components/ui/sonner'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
 import Loading from './loading'
+import { env } from '~/env'
 
 const fontSans = FontSans({
 	subsets: ['latin'],
@@ -40,7 +41,7 @@ export const metadata: Metadata = {
 		'ai',
 		'web app'
 	],
-	metadataBase: new URL(process.env.DOMAIN ?? 'https://tracky.fit'),
+	metadataBase: new URL(env.DOMAIN),
 	openGraph: {
 		title: 'tracky',
 		description:

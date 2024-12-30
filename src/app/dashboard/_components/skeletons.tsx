@@ -35,7 +35,7 @@ export function DataAndHabitsSkeleton() {
 export function DashboardDataSkeleton() {
 	return (
 		<>
-			<div className='mt-4 flex-col sm:mt-0 md:flex-row md:pt-3 lg:flex lg:justify-between gap-x-3'>
+			<div className='mt-4 flex-col gap-x-3 sm:mt-0 md:flex-row md:pt-3 lg:flex lg:justify-between'>
 				<NutritionGraphicSkeleton />
 				<InsightsAndAnaliticsSkeleton />
 			</div>

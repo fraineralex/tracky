@@ -1,5 +1,7 @@
+import { env } from '~/env'
+
 export default function robots() {
-	const DOMAIN = process.env.DOMAIN || 'https://tracky.fit'
+	const DOMAIN = env.DOMAIN
 	return {
 		rules: [
 			{

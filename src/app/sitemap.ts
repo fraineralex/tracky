@@ -1,7 +1,8 @@
 import { MetadataRoute } from 'next'
+import { env } from '~/env'
 
 export default function sitemap() {
-	const DOMAIN = process.env.DOMAIN || 'https://tracky.fit'
+	const DOMAIN = env.DOMAIN
 
 	const routes: MetadataRoute.Sitemap = [
 		{
