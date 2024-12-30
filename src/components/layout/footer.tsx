@@ -26,6 +26,7 @@ const Footer = ({
 						className='text-green-600 group-hover:fill-green-600'
 					/>
 					<ExternalLink
+						rel='noopener'
 						href='https://fraineralex.dev'
 						className='flex items-center space-x-1'
 					>

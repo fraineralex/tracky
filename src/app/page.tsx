@@ -3,6 +3,7 @@ import { Chart } from '~/components/landing/chart'
 import { GetStartedButton } from '~/components/landing/get-started'
 import Footer from '~/components/layout/footer'
 import { Button } from '~/components/ui/button'
+import ExternalLink from '~/components/ui/external-link'
 import { Github } from '~/components/ui/icons'
 
 export default function HomePage() {
@@ -35,10 +36,13 @@ export default function HomePage() {
 						size='lg'
 						className='group h-12 cursor-pointer border-slate-600 px-4 hover:bg-slate-300/80 dark:border-neutral-500 dark:hover:bg-neutral-600'
 					>
-						<span className='flex items-center space-x-2'>
+						<ExternalLink
+							className='flex items-center space-x-2'
+							href='https://github.com/fraineralex/tracky'
+						>
 							<Github className='h-5 w-5 duration-100 ease-in-out group-hover:scale-110' />
 							<i className='text-base font-medium not-italic'>Star on GitHub</i>
-						</span>
+						</ExternalLink>
 					</Button>
 				</div>
 			</article>

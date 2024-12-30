@@ -5,13 +5,14 @@ interface Props {
 	href: string
 	children: ReactNode
 	className?: string
+	rel?: string
 }
 
 const ExternalLink = (props: Props) => {
 	return (
 		<a
 			href={props.href}
-			rel='noreferrer'
+			rel={props.rel ?? 'noopener noreferrer'}
 			target='_blank'
 			className={cn(props.className)}
 		>

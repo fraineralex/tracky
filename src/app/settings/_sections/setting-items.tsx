@@ -188,13 +188,13 @@ export async function SettingItems() {
 
 							<div>
 								<p>
-									Tracky is your personal health and fitness companion.
+									tracky is your personal health and fitness companion.
 									We&apos;re dedicated to helping you achieve your fitness
 									goals, whether you&apos;re looking to lose weight, build
 									muscle, or maintain a healthy lifestyle.
 								</p>
 								<p className='mt-4'>
-									Tracky provides personalized workout plans, nutrition
+									tracky provides personalized workout plans, nutrition
 									tracking, and progress monitoring to keep you motivated and on
 									track.
 								</p>
@@ -226,7 +226,7 @@ export async function SettingItems() {
 
 							<div>
 								<p>
-									Tracky provides health and fitness tracking for informational
+									tracky provides health and fitness tracking for informational
 									purposes only. It is not a substitute for professional medical
 									advice, diagnosis, or treatment.
 								</p>
@@ -237,7 +237,7 @@ export async function SettingItems() {
 									attention.
 								</p>
 								<p className='mt-8 text-center text-sm text-muted-foreground'>
-									Stay safe while using Tracky. 💚
+									Stay safe while using tracky. 💚
 								</p>
 							</div>
 						</DialogContent>
