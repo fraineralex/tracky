@@ -38,6 +38,7 @@
 		"@types/canvas-confetti": "1.6.4",
 		"@vercel/analytics": "^1.4.1",
 		"@vercel/postgres": "0.9.0",
+		"@vercel/speed-insights": "^1.1.0",
 		"ai": "3.4.9",
 		"canvas-confetti": "1.9.3",
 		"class-variance-authority": "0.7.0",

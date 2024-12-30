@@ -11,6 +11,7 @@ import { Suspense } from 'react'
 import Loading from './loading'
 import { env } from '~/env'
 import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 const fontSans = FontSans({
 	subsets: ['latin'],
@@ -122,6 +123,7 @@ export default function RootLayout({
 					<Toaster richColors />
 				</ThemeProvider>
 				<Analytics />
+				<SpeedInsights />
 			</body>
 		</html>
 	)
