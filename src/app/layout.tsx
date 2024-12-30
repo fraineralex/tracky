@@ -10,6 +10,7 @@ import { Metadata } from 'next'
 import { Suspense } from 'react'
 import Loading from './loading'
 import { env } from '~/env'
+import { Analytics } from '@vercel/analytics/next'
 
 const fontSans = FontSans({
 	subsets: ['latin'],
@@ -120,6 +121,7 @@ export default function RootLayout({
 					</div>
 					<Toaster richColors />
 				</ThemeProvider>
+				<Analytics />
 			</body>
 		</html>
 	)
