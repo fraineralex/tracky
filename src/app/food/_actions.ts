@@ -117,9 +117,9 @@ export const registerFood = async (
 		}
 
 		await db.insert(food).values(newFood)
+		revalidateTag('food')
 		revalidatePath('/food')
 		revalidatePath('/diary')
-		revalidateTag('food')
 		return { message: 'Food registered successfully', success: true }
 	} catch (error) {
 		console.error(error)
@@ -297,11 +297,11 @@ export async function logMealAI(messages: Message[]): Promise<Message[]> {
 		return errorResponse
 	}
 
+	revalidateTag('resume-streak')
+	revalidateTag('nutrition')
 	revalidatePath('/food')
 	revalidatePath('/dashboard')
 	revalidatePath('/diary')
-	revalidateTag('nutrition')
-	revalidateTag('resume-streak')
 	return [
 		...messages,
 		{

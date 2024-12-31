@@ -179,10 +179,10 @@ export async function logExerciseAI(messages: Message[]): Promise<Message[]> {
 		return errorResponse
 	}
 
+	revalidateTag('resume-streak')
 	revalidatePath('/exercise')
 	revalidatePath('/dashboard')
 	revalidatePath('/diary')
-	revalidateTag('resume-streak')
 	return [
 		...messages,
 		{

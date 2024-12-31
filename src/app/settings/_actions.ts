@@ -47,8 +47,8 @@ export const updatePublicMetadata = async (
 			publicMetadata: metadata as UserPublicMetadata
 		})
 
-		revalidatePath('/settings')
 		revalidateTag('nutrition')
+		revalidatePath('/settings')
 
 		if (!metadata.goalWeight) {
 			revalidatePath('/dashboard')

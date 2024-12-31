@@ -79,11 +79,11 @@ export const addConsumption = async (
 		}
 
 		await db.insert(consumption).values(newConsumption)
+		revalidateTag('nutrition')
+		revalidateTag('resume-streak')
 		revalidatePath('/dashboard')
 		revalidatePath('/food')
 		revalidatePath('/diary')
-		revalidateTag('nutrition')
-		revalidateTag('resume-streak')
 		return { message: 'Consumption added successfully', success: true }
 	} catch (error) {
 		console.error(error)
@@ -151,10 +151,10 @@ export const addExercise = async (
 	try {
 		const newExercise = validatedFields.data satisfies NewExercise
 		await db.insert(exercise).values(newExercise)
+		revalidateTag('resume-streak')
 		revalidatePath('/dashboard')
 		revalidatePath('/exercise')
 		revalidatePath('/diary')
-		revalidateTag('resume-streak')
 		return { message: 'Exercise added successfully', success: true }
 	} catch (error) {
 		console.error('There was an error inserting a exercise:', error)
