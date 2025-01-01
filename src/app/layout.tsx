@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 		template: '%s / tracky'
 	},
 	description:
-		'Fitness tracking web app with AI-powered features to quickly log meals and exercises.',
+		'Tracky is a free fitness tracking web app with AI-powered features to quickly log meals and exercises, helping you stay healthy and fit.',
 	icons: [
 		{ rel: 'icon', url: '/favicon.svg', type: 'image/svg+xml', sizes: 'any' }
 	],
@@ -41,13 +41,14 @@ export const metadata: Metadata = {
 		'nutrition',
 		'food',
 		'ai',
-		'web app'
+		'web app',
+		'free fitness app'
 	],
 	metadataBase: new URL(env.DOMAIN),
 	openGraph: {
 		title: 'tracky',
 		description:
-			'Fitness tracking web app with AI-powered features to quickly log meals and exercises.',
+			'Tracky is a free fitness tracking web app with AI-powered features to quickly log meals and exercises, helping you stay healthy and fit.',
 		images: [
 			{
 				url: `https://pub-f159aa4256dd4a64ae2f0c18d87e674e.r2.dev/og.webp`,
@@ -76,7 +77,7 @@ export const metadata: Metadata = {
 		site: '@fraineralex',
 		title: 'tracky',
 		description:
-			'Fitness tracking web app with AI-powered features to quickly log meals and exercises.',
+			'Tracky is a free fitness tracking web app with AI-powered features to quickly log meals and exercises, helping you stay healthy and fit.',
 		images: [
 			{
 				url: `https://pub-f159aa4256dd4a64ae2f0c18d87e674e.r2.dev/og.webp`,

@@ -8,7 +8,7 @@ import { Github } from '~/components/ui/icons'
 
 export default function HomePage() {
 	return (
-		<section className='grid h-full grid-cols-3 place-items-center'>
+		<section className='grid min-h-screen grid-cols-3 place-items-center content-center lg:h-full lg:min-h-fit lg:content-normal'>
 			<article className='col-span-3 flex flex-col pb-10 lg:col-span-2'>
 				<h2 className='text-center font-serif text-[5.5rem] font-bold lg:text-8xl 2xl:text-[7rem]'>
 					<span
