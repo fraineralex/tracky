@@ -18,6 +18,7 @@ import { useUser } from '@clerk/nextjs'
 import { EFFORT_LEVELS } from '~/constants'
 import { ShowErrors } from '~/components/forms/show-errors'
 import { calculateEnergyBurned } from '~/lib/calculations'
+import { toast } from 'sonner'
 
 const initialState: ExerciseState = {
 	errors: {},
@@ -34,7 +35,10 @@ export default function ExerciseForm({
 	handleFormClose: (message: string) => void
 	handleCategorySelect: (category: ExerciseCategories[number] | null) => void
 }) {
-	const [state, formAction] = React.useActionState(addExercise, initialState)
+	const [state, formAction, isPending] = React.useActionState(
+		addExercise,
+		initialState
+	)
 	const [duration, setDuration] = React.useState(60)
 	const [energyBurned, setEnergyBurned] = React.useState<string | null>(null)
 	const [effort, setEffort] = React.useState<keyof typeof EFFORT_LEVELS>('easy')
@@ -43,8 +47,21 @@ export default function ExerciseForm({
 	React.useEffect(() => {
 		if (state.success && state.message) {
 			handleFormClose(state.message)
+			toast.dismiss('exercise-form')
 		}
-	}, [state, handleFormClose])
+
+		if (!state.success && isPending) {
+			const promise = () =>
+				new Promise(resolve =>
+					setTimeout(() => resolve({ name: 'Sonner' }), 100000)
+				)
+
+			toast.promise(promise, {
+				loading: 'Adding exercise...',
+				id: 'exercise-form'
+			})
+		}
+	}, [state, handleFormClose, isPending])
 
 	if (!user) return null
 	const { weights, height, born, sex } = user.publicMetadata

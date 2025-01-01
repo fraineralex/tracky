@@ -29,7 +29,7 @@ import { ShowErrors } from '~/components/forms/show-errors'
 const initialState: ConsumptionState = {
 	message: '',
 	errors: {},
-	success: false
+	success: undefined
 }
 
 export function FoodDrawer({
@@ -43,7 +43,10 @@ export function FoodDrawer({
 	const [unit, setUnit] = React.useState<keyof typeof unitConversions>('g')
 	const [mealGroup, setMealGroup] = React.useState('uncategorized')
 
-	const [state, formAction] = React.useActionState(addConsumption, initialState)
+	const [state, formAction, isPending] = React.useActionState(
+		addConsumption,
+		initialState
+	)
 
 	const unitConversions = {
 		g: 1,
@@ -73,8 +76,24 @@ export function FoodDrawer({
 		}
 	}
 	React.useEffect(() => {
-		if (state.success) handleDrawerClose()
-	}, [state, handleDrawerClose])
+		if (state.success) {
+			handleDrawerClose()
+			toast.dismiss('consumption-form')
+			toast.success('Consumption added successfully')
+		}
+
+		if (!state.success && isPending) {
+			const promise = () =>
+				new Promise(resolve =>
+					setTimeout(() => resolve({ name: 'Sonner' }), 100000)
+				)
+
+			toast.promise(promise, {
+				loading: 'Adding food consumption...',
+				id: 'consumption-form'
+			})
+		}
+	}, [state, handleDrawerClose, isPending])
 
 	return (
 		<DrawerContent className='min-w-80'>

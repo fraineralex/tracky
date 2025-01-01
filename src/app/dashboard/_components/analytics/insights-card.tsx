@@ -10,7 +10,7 @@ export default function InsightsCard({
 	valueUnit,
 	children,
 	href,
-	className = 'w-full rounded-lg dark:bg-slate-800/50 p-4 pb-1 border -ml-3 lg:ml-0'
+	className = 'w-full rounded-lg dark:bg-slate-800/50 p-4 pb-1 border'
 }: {
 	title: string
 	dateRange: string

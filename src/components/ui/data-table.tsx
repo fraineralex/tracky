@@ -35,7 +35,6 @@ import {
 import { FoodDrawer } from '~/app/dashboard/_components/food/food-drawer'
 import { Drawer, DrawerTrigger } from './drawer'
 import { Food } from '~/app/dashboard/_components/food/columns'
-import { toast } from 'sonner'
 import { DialogClose } from './dialog'
 
 interface DataTableProps<TData, TValue> {
@@ -111,10 +110,7 @@ export function DataTable<TData, TValue>({
 		setSelectedRow(foodData)
 	}
 
-	const handleDrawerClose = () => {
-		setSelectedRow(null)
-		toast.success('Consumption added successfully')
-	}
+	const handleDrawerClose = () => setSelectedRow(null)
 
 	return (
 		<section>

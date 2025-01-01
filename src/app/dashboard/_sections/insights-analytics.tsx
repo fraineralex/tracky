@@ -74,7 +74,7 @@ export default async function InsightsAndAnalitics({
 
 	return (
 		<aside className='mx-auto md:mx-0 lg:w-full'>
-			<div className='flex space-x-3 lg:w-full'>
+			<div className='flex gap-x-3 lg:w-full'>
 				<InsightsCard
 					title='Expenditure'
 					dateRange={dateRange}
@@ -103,7 +103,7 @@ export default async function InsightsAndAnalitics({
 				dateRange={dateRange}
 				value={daysFromLastUpdate}
 				valueUnit='days in'
-				className='-ml-3 mt-3 rounded-lg border p-4 pb-1 dark:bg-slate-800/50 lg:ml-0'
+				className='mt-3 rounded-lg border p-4 pb-1 dark:bg-slate-800/50'
 				href='/diary?entries=goal'
 			>
 				<Progress value={goalProgress} className='mb-6 mt-6 h-4' />
