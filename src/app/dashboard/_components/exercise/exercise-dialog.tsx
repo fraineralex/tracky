@@ -23,7 +23,7 @@ export default async function ExerciseDialog() {
 			<DialogTrigger asChild>
 				<AddExerciseButton />
 			</DialogTrigger>
-			<DialogContent className='max-w-[95%] rounded-lg px-3 md:max-w-3xl md:px-5'>
+			<DialogContent className='rounded-lg px-3 md:max-w-3xl md:px-5'>
 				<DialogHeader className='text-start md:px-5'>
 					<DialogTitle>Register Exercise</DialogTitle>
 				</DialogHeader>

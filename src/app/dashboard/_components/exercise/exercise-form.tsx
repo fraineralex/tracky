@@ -214,7 +214,13 @@ export default function ExerciseForm({
 			<DialogFooter className='pt-5 sm:flex sm:space-x-5'>
 				{!selectedCategory && (
 					<DialogClose asChild>
-						<CalcelButton />
+						<Button
+							variant='outline'
+							className='w-full font-medium sm:w-auto'
+							type='button'
+						>
+							Cancel
+						</Button>
 					</DialogClose>
 				)}
 				{selectedCategory && <CalcelButton />}
