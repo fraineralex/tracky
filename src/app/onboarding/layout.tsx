@@ -17,7 +17,7 @@ export default async function OnboardingLayout({
 
 	if (
 		authResult.sessionClaims?.metadata?.onboardingCompleted === true &&
-		env.VERCEL_ENV !== 'development'
+		env.VERCEL_ENV === 'production'
 	) {
 		redirect('/dashboard')
 	}
