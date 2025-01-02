@@ -2,6 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { Metadata } from 'next'
 import Footer from '~/components/layout/footer'
+import { env } from '~/env'
 
 export const metadata: Metadata = {
 	title: 'Onboarding'
@@ -16,7 +17,7 @@ export default async function OnboardingLayout({
 
 	if (
 		authResult.sessionClaims?.metadata?.onboardingCompleted === true &&
-		process.env.NODE_ENV === 'production'
+		env.VERCEL_ENV !== 'development'
 	) {
 		redirect('/dashboard')
 	}

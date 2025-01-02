@@ -44,9 +44,9 @@ export default function OnboardingPage() {
 
 	const handleSubmit = async (formData: FormData) => {
 		try {
-			router.prefetch('/dashboard')
 			const confettiPromise = confetti()
 			const result = await completeOnboarding(formData)
+			router.prefetch('/dashboard')
 
 			if (!result.success) {
 				toast.dismiss('onboarding-form')
