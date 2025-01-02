@@ -14,7 +14,10 @@ export default async function OnboardingLayout({
 }) {
 	const authResult = await auth()
 
-	if (authResult.sessionClaims?.metadata?.onboardingCompleted === true) {
+	if (
+		authResult.sessionClaims?.metadata?.onboardingCompleted === true &&
+		process.env.NODE_ENV === 'production'
+	) {
 		redirect('/dashboard')
 	}
 

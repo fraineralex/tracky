@@ -19,8 +19,8 @@ export default function PersonalInfo({
 }: {
 	setShowSection: (section: string) => void
 	sex: {
-		value: Sex
-		setValue: (sexParam: Sex) => void
+		value: Sex | null
+		setValue: (sexParam: Sex | null) => void
 	}
 	bornDate: {
 		value: Date
@@ -118,7 +118,7 @@ export default function PersonalInfo({
 								<input
 									type='hidden'
 									name='sex'
-									value={sex.value}
+									value={sex.value ?? ''}
 									ref={sexInputRef}
 								/>
 							</div>

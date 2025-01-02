@@ -19,8 +19,7 @@ export default function BodyMetrics({
 	height,
 	weight,
 	showSection,
-	setFitnessGoalsEntry,
-	prefetchDashboard
+	setFitnessGoalsEntry
 }: {
 	setShowSection: (section: string) => void
 	height: {
@@ -39,7 +38,6 @@ export default function BodyMetrics({
 	}
 	showSection: boolean
 	setFitnessGoalsEntry: (entry: boolean) => void
-	prefetchDashboard: () => void
 }) {
 	let heightLength = height.unit === 'ft' ? 8 : 250
 	if (height.unit === 'm') heightLength = 2
@@ -47,7 +45,6 @@ export default function BodyMetrics({
 	const decimalLength = height.unit === 'ft' ? 11 : 99
 
 	const handleClickNext = () => {
-		prefetchDashboard()
 		if (height.value && weight.value) {
 			setShowSection(ONBOARDING_SECTIONS.goals)
 			setFitnessGoalsEntry(true)

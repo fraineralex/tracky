@@ -16,22 +16,18 @@ export default function OnboardingPage() {
 	const { user } = useUser()
 	const router = useRouter()
 	const [showSection, setShowSection] = useState(ONBOARDING_SECTIONS.personal)
-	const [sex, setSex] = useState<Sex>('male')
+	const [sex, setSex] = useState<Sex | null>(null)
 	const [bornDate, setBornDate] = useState(new Date(2000, 0, 1))
 	const [heightUnit, setHeightUnit] = useState('ft')
 	const [heightDecimal, setHeightDecimal] = useState(5)
 	const [weightUnit, setWeightUnit] = useState('kg')
 	const [height, setHeight] = useState(5)
 	const [weight, setWeight] = useState(0)
-	const [goal, setGoal] = useState<string | undefined>()
-	const [activity, setActivity] = useState<string | undefined>()
+	const [goal, setGoal] = useState<string | null>(null)
+	const [activity, setActivity] = useState<string | null>(null)
 	const formRef = useRef<HTMLFormElement>(null)
 	const [bodyMetricsEntry, setBodyMetricsEntry] = useState(false)
 	const [fitnessGoalsEntry, setFitnessGoalsEntry] = useState(false)
-
-	function prefetchDashboard() {
-		router.prefetch('/dashboard')
-	}
 
 	async function sendForm() {
 		formRef.current?.requestSubmit()
@@ -47,17 +43,26 @@ export default function OnboardingPage() {
 	}
 
 	const handleSubmit = async (formData: FormData) => {
-		const result = await completeOnboarding(formData)
-		toast.dismiss('onboarding-form')
-		if (!result.success) {
-			toast.error(result.message)
-			return
-		}
+		try {
+			router.prefetch('/dashboard')
+			const confettiPromise = confetti()
+			const result = await completeOnboarding(formData)
 
-		confetti()
-		toast.success(result.message)
-		await user?.reload()
-		router.push('/dashboard')
+			if (!result.success) {
+				toast.dismiss('onboarding-form')
+				toast.error(result.message)
+				return
+			}
+
+			await Promise.all([user?.reload(), confettiPromise])
+
+			toast.dismiss('onboarding-form')
+			toast.success(result.message)
+			router.push('/dashboard')
+		} catch (error) {
+			toast.dismiss('onboarding-form')
+			toast.error('Something went wrong')
+		}
 	}
 
 	return (
@@ -90,7 +95,6 @@ export default function OnboardingPage() {
 						}}
 						showSection={showSection === ONBOARDING_SECTIONS.metrics}
 						setFitnessGoalsEntry={setFitnessGoalsEntry}
-						prefetchDashboard={prefetchDashboard}
 					/>
 				)}
 

@@ -2,6 +2,7 @@
 
 import {
 	ChevronLeft,
+	ChevronRight,
 	Dumbbell,
 	Scale,
 	Snail,
@@ -29,12 +30,12 @@ export default function FitnessGoals({
 }: {
 	setShowSection: (section: string) => void
 	goal: {
-		value: string | undefined
-		setValue: (value: string | undefined) => void
+		value: string | null
+		setValue: (value: string | null) => void
 	}
 	activity: {
-		value: string | undefined
-		setValue: (value: string | undefined) => void
+		value: string | null
+		setValue: (value: string | null) => void
 	}
 	sendForm: () => void
 	showSection: boolean
@@ -105,7 +106,7 @@ export default function FitnessGoals({
 							type='hidden'
 							name='goal'
 							required
-							value={goal.value}
+							value={goal.value ?? ''}
 							ref={goalInputRef}
 						/>
 					</article>
@@ -143,7 +144,7 @@ export default function FitnessGoals({
 						<input
 							type='hidden'
 							name='activity'
-							value={activity.value}
+							value={activity.value ?? ''}
 							ref={activityInputRef}
 							required
 						/>
@@ -151,7 +152,7 @@ export default function FitnessGoals({
 				</aside>
 				<motion.footer variants={STAGGER_CHILD_VARIANTS}>
 					{' '}
-					<div className='flex w-full justify-start'>
+					<div className='flex w-full justify-between'>
 						<Button
 							type='button'
 							variant='secondary'
@@ -159,6 +160,15 @@ export default function FitnessGoals({
 							onClick={() => setShowSection(ONBOARDING_SECTIONS.metrics)}
 						>
 							<ChevronLeft />
+						</Button>
+						<Button
+							type='button'
+							variant={`${activity.value && goal.value ? 'default' : 'secondary'}`}
+							className='text-base font-medium'
+							onClick={sendForm}
+							disabled={!activity.value || !goal.value}
+						>
+							<ChevronRight />
 						</Button>
 					</div>
 				</motion.footer>
