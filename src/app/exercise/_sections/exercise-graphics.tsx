@@ -30,6 +30,7 @@ import {
 } from '~/components/ui/chart'
 import { ExerciseGraphicsData, TimeCategory } from '~/types'
 import { DAILY_MEAL_ICONS } from '~/constants'
+import { calculateNeededCalories } from '~/lib/calculations'
 
 const weeklyEnergyConfig: ChartConfig = {
 	calories: {
@@ -50,9 +51,11 @@ const monthlyProgressConfig: ChartConfig = {
 }
 
 export function ExerciseGraphics({
-	exerciseData
+	exerciseData,
+	userMetadata
 }: {
 	exerciseData: ExerciseGraphicsData
+	userMetadata: UserPublicMetadata
 }) {
 	const exerciseCategories = Object.keys(
 		exerciseData.exerciseFrequency[0] || {}
@@ -77,7 +80,7 @@ export function ExerciseGraphics({
 		(sum, day) => sum + (day.value || 0),
 		0
 	)
-	const targetWeeklyCalories = 3000 //TODO: need to get this from user settings
+	const targetWeeklyCalories = calculateNeededCalories(userMetadata) * 7 //Medium: 3000
 	const percentageAchieved = (totalWeeklyCalories / targetWeeklyCalories) * 100
 
 	const lastWeekTotal = exerciseData.exerciseFrequency
@@ -117,7 +120,8 @@ export function ExerciseGraphics({
 		(sum, week) => sum + (week.energyBurned || 0),
 		0
 	)
-	const targetMonthlyEnergyBurned = 12000 //TODO: need to get this from user settings
+	const targetMonthlyEnergyBurned =
+		calculateNeededCalories(userMetadata, { isExpenditure: true }) * 7 // Medium: 12000
 	const monthlyPercentageAchieved =
 		(totalMonthlyEnergyBurned / targetMonthlyEnergyBurned) * 100
 

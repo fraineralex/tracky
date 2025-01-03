@@ -44,7 +44,7 @@ export default async function FoodDialog() {
 			<DialogTrigger asChild>
 				<AddMealButton />
 			</DialogTrigger>
-			<DialogContent className='lg:px-5 rounded-lg px-0 md:min-w-80 md:max-w-3xl lg:max-w-4xl xl:max-w-6xl'>
+			<DialogContent className='rounded-lg px-0 md:min-w-80 md:max-w-3xl lg:max-w-4xl lg:px-5 xl:max-w-6xl'>
 				<DialogHeader>
 					<DialogTitle className='ps-4 pt-2 text-start md:ps-8'>
 						Add Meal to Diary

@@ -32,7 +32,7 @@ export async function SettingItems() {
 				<div className='grid grid-cols-2 gap-4 lg:grid-cols-3'>
 					<MenuItem
 						name='born'
-						label='Born Date'
+						label='Born'
 						attr={{
 							name: 'born',
 							label: 'Born Date',
@@ -188,13 +188,17 @@ export async function SettingItems() {
 
 							<div>
 								<p>
-									tracky is your personal health and fitness companion.
-									We&apos;re dedicated to helping you achieve your fitness
-									goals, whether you&apos;re looking to lose weight, build
-									muscle, or maintain a healthy lifestyle.
+									<span className='font-serif text-lg font-bold text-green-600 dark:text-green-500'>
+										trac
+										<span className='text-wood-950 dark:text-wood-100'>ky</span>
+									</span>{' '}
+									is your personal health and fitness companion. We&apos;re
+									dedicated to helping you achieve your fitness goals, whether
+									you&apos;re looking to lose weight, build muscle, or maintain
+									a healthy lifestyle.
 								</p>
 								<p className='mt-4'>
-									tracky provides personalized workout plans, nutrition
+									Our app provides personalized workout plans, nutrition
 									tracking, and progress monitoring to keep you motivated and on
 									track.
 								</p>
@@ -226,7 +230,11 @@ export async function SettingItems() {
 
 							<div>
 								<p>
-									tracky provides health and fitness tracking for informational
+									<span className='font-serif text-lg font-bold text-green-600 dark:text-green-500'>
+										trac
+										<span className='text-wood-950 dark:text-wood-100'>ky</span>
+									</span>{' '}
+									provides health and fitness tracking for informational
 									purposes only. It is not a substitute for professional medical
 									advice, diagnosis, or treatment.
 								</p>
@@ -237,7 +245,12 @@ export async function SettingItems() {
 									attention.
 								</p>
 								<p className='mt-8 text-center text-sm text-muted-foreground'>
-									Stay safe while using tracky. 💚
+									Stay safe while using{' '}
+									<span className='font-serif font-bold text-green-600 dark:text-green-500'>
+										trac
+										<span className='text-wood-950 dark:text-wood-100'>ky</span>
+									</span>{' '}
+									💚
 								</p>
 							</div>
 						</DialogContent>

@@ -34,7 +34,10 @@ export async function ExerciseMetrics() {
 				<ExerciseCards exercises={exercises} />
 			</Suspense>
 			<Suspense fallback={<ExerciseGraphicsSkeleton />}>
-				<ExerciseGraphicsData exercises={exercises} />
+				<ExerciseGraphicsData
+					exercises={exercises}
+					userMetadata={user.publicMetadata}
+				/>
 			</Suspense>
 		</>
 	)

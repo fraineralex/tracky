@@ -8,9 +8,11 @@ import { ExerciseCall, ExerciseGraphicsData as Data } from '~/types'
 import { ExerciseGraphics } from '../_sections/exercise-graphics'
 
 export async function ExerciseGraphicsData({
-	exercises: exercisesPromise
+	exercises: exercisesPromise,
+	userMetadata
 }: {
 	exercises: Promise<ExerciseCall>
+	userMetadata: UserPublicMetadata
 }) {
 	const exercises = await exercisesPromise
 
@@ -138,5 +140,10 @@ export async function ExerciseGraphicsData({
 		}
 	}
 
-	return <ExerciseGraphics exerciseData={exerciseGraphicsData} />
+	return (
+		<ExerciseGraphics
+			exerciseData={exerciseGraphicsData}
+			userMetadata={userMetadata}
+		/>
+	)
 }

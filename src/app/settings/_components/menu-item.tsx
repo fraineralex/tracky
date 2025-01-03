@@ -14,13 +14,13 @@ import React from 'react'
 import { format } from 'date-fns'
 import {
 	Activity,
-	CalendarIcon,
 	Flag,
 	Percent,
 	Ruler,
 	Target,
 	User,
-	Weight
+	Weight,
+	Calendar
 } from 'lucide-react'
 import { updatePublicMetadata } from '../_actions'
 import { loadingToast } from '~/lib/loading-toast'
@@ -29,7 +29,7 @@ import { useRouter } from 'next/navigation'
 import { formatHeight } from '~/lib/utils'
 
 const ICONS = {
-	born: CalendarIcon,
+	born: Calendar,
 	sex: User,
 	activity: Activity,
 	height: Ruler,
@@ -47,7 +47,7 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 
 	let displayValue = value.toString()
 	if (attr.name === 'born')
-		displayValue = format(new Date(`${value}T12:00`), 'PPP')
+		displayValue = format(new Date(`${value}T12:00`), 'PP')
 	if (attr.name === 'height') displayValue = formatHeight(value as number)
 	if (attr.name === 'weights' || name === 'goalWeight')
 		displayValue = `${value} kg`
