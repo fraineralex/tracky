@@ -5,7 +5,6 @@ export default function Loading() {
 		<section className='flex w-full flex-col place-content-center place-items-center'>
 			<div className='mx-5 flex'>
 				<div className='flex flex-col items-center space-y-10 text-center sm:mx-auto'>
-					<Skeleton className='mt-5 h-8 w-28' />
 					<article>
 						<div className='flex flex-col space-y-10'>
 							<Skeleton className='h-[28px] w-[280px] lg:h-9 lg:w-[382px]' />

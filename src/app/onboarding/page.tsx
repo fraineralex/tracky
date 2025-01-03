@@ -17,7 +17,9 @@ export default function OnboardingPage() {
 	const router = useRouter()
 	const [showSection, setShowSection] = useState(ONBOARDING_SECTIONS.personal)
 	const [sex, setSex] = useState<Sex | null>(null)
-	const [bornDate, setBornDate] = useState(new Date(2000, 0, 1))
+	const [bornDate, setBornDate] = useState(
+		new Date(new Date().getFullYear() - 25, 0, 1)
+	)
 	const [heightUnit, setHeightUnit] = useState('ft')
 	const [heightDecimal, setHeightDecimal] = useState(5)
 	const [weightUnit, setWeightUnit] = useState('kg')
