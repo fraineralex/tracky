@@ -12,10 +12,14 @@ export function formatHeight(height: number) {
 }
 
 export function formatNumber(value: number): string {
-	if (value >= 1_000_000) {
-		return `${(value / 1_000_000).toFixed(1)}M` // For millions
+	if (value >= 1_100_000) {
+		return `${(value / 1_000_000).toFixed(1)}MM`
+	} else if (value >= 1_000_000) {
+		return `${(value / 1_000_000).toFixed()}MM`
+	} else if (value >= 1_100) {
+		return `${(value / 1_000).toFixed(1)}k`
 	} else if (value >= 1_000) {
-		return `${(value / 1_000).toFixed(1)}k` // For thousands
+		return `${(value / 1_000).toFixed()}k`
 	}
-	return value.toFixed() // For values less than 1000
+	return value.toFixed()
 }

@@ -6,7 +6,7 @@ import {
 	exerciseCategory,
 	food
 } from '~/server/db/schema'
-import { eq, and } from 'drizzle-orm'
+import { eq, and, desc } from 'drizzle-orm'
 import { currentUser } from '@clerk/nextjs/server'
 import { DiaryEntry } from '~/types/diary'
 import { DiaryTimelineSkeletonUI } from './skeletons'
@@ -35,7 +35,8 @@ export async function DiaryTimelineData() {
 		.from(consumption)
 		.innerJoin(food, eq(consumption.foodId, food.id))
 		.where(and(eq(consumption.userId, user.id)))
-		.limit(100)
+		.orderBy(desc(consumption.createdAt))
+		.limit(50)
 
 	const fetchExercise = db
 		.select({
@@ -49,7 +50,8 @@ export async function DiaryTimelineData() {
 		.from(exercise)
 		.innerJoin(exerciseCategory, eq(exercise.categoryId, exerciseCategory.id))
 		.where(eq(exercise.userId, user.id))
-		.limit(100)
+		.orderBy(desc(exercise.createdAt))
+		.limit(50)
 
 	const fetchFood = db
 		.select({
@@ -62,7 +64,8 @@ export async function DiaryTimelineData() {
 		})
 		.from(food)
 		.where(eq(food.userId, user.id))
-		.limit(100)
+		.orderBy(desc(food.createdAt))
+		.limit(50)
 
 	const [meals, exercises, foodRegistries] = await Promise.all([
 		fetchMeals,
