@@ -5,7 +5,7 @@ import { User } from '@clerk/nextjs/server'
 import { InsightsAndAnaliticsSkeleton } from '../_components/skeletons'
 import { db } from '~/server/db'
 import { exercise } from '~/server/db/schema'
-import { desc, eq } from 'drizzle-orm'
+import { asc, eq } from 'drizzle-orm'
 import { formatDistance } from 'date-fns'
 
 export default async function InsightsAndAnalitics({
@@ -60,7 +60,7 @@ export default async function InsightsAndAnalitics({
 		.select({ burned: exercise.energyBurned, createdAt: exercise.createdAt })
 		.from(exercise)
 		.where(eq(exercise.userId, user.id))
-		.orderBy(desc(exercise.createdAt))
+		.orderBy(asc(exercise.createdAt))
 
 	const expenditure = exerciseEnergyBurned.reduce((acc, { burned }) => {
 		return acc + Number(burned)
