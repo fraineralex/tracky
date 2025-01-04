@@ -170,10 +170,10 @@ export function calculateNutritionalNeeds({
 	const carbCalories = adjustedGet * MACRO_DISTRIBUTION.carbs
 	const fatCalories = adjustedGet * MACRO_DISTRIBUTION.fats
 
-	const protein = round(proteinCalories / 4)
-	const carbs = round(carbCalories / 4)
-	const fats = round(fatCalories / 9)
 	const calories = round(adjustedGet)
+	const protein = round(proteinCalories / 4)
+	const fats = round(fatCalories / 9)
+	const carbs = round(carbCalories / 4)
 
 	return {
 		calories: {
@@ -184,13 +184,13 @@ export function calculateNutritionalNeeds({
 			consumed: 0,
 			needed: protein
 		},
-		carbs: {
-			consumed: 0,
-			needed: carbs
-		},
 		fats: {
 			consumed: 0,
 			needed: fats
+		},
+		carbs: {
+			consumed: 0,
+			needed: carbs
 		}
 	}
 }

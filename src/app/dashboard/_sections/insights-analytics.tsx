@@ -6,6 +6,7 @@ import { InsightsAndAnaliticsSkeleton } from '../_components/skeletons'
 import { db } from '~/server/db'
 import { exercise } from '~/server/db/schema'
 import { desc, eq } from 'drizzle-orm'
+import { formatDistance } from 'date-fns'
 
 export default async function InsightsAndAnalitics({
 	user: currentUser
@@ -14,17 +15,12 @@ export default async function InsightsAndAnalitics({
 }) {
 	const user = await currentUser
 	if (!user) return <InsightsAndAnaliticsSkeleton />
-	const { goal, goalWeight, weights, updatedAt } = user.publicMetadata
+	const { goal, goalWeight, weights } = user.publicMetadata
 	const currentWeight = weights[weights.length - 1]?.value ?? 0
 	const currentGoalWeight = goalWeight[goalWeight.length - 1]?.value ?? 0
 	const currentGoal = goal[goal.length - 1]?.value ?? 'maintain'
 	const initialWeight = weights[0]?.value ?? 0
 	const userCreatedAt = new Date(user.createdAt)
-
-	const daysFromLastUpdate = Math.floor(
-		(new Date().getTime() - new Date(updatedAt).getTime()) /
-			(1000 * 60 * 60 * 24)
-	)
 
 	let goalProgress: number = 0
 
@@ -80,6 +76,8 @@ export default async function InsightsAndAnalitics({
 		month: 'short'
 	})} - Now`
 
+	const daysFromLastUpdate = `${formatDistance(new Date(), initialDate)} in`
+
 	return (
 		<aside className='mx-auto md:mx-0 lg:w-full'>
 			<div className='flex gap-x-3 lg:w-full'>
@@ -109,8 +107,8 @@ export default async function InsightsAndAnalitics({
 			<InsightsCard
 				title='Goal Progress'
 				dateRange={dateRange}
-				value={daysFromLastUpdate}
-				valueUnit='days in'
+				timeDistance={daysFromLastUpdate}
+				valueUnit=''
 				className='mt-3 rounded-lg border p-4 pb-1 dark:bg-slate-800/50'
 				href='/diary?entries=goal'
 			>

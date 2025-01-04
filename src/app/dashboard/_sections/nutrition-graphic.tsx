@@ -38,22 +38,26 @@ export default function NutritionGraphic({
 	}
 
 	function getDayPercentage(day: number) {
-		let percentage = 0
-		if (day > dayOfWeek) percentage = showConsumed ? 0 : 100
-		const nutritionDay = nutrition[day]
-		const calories =
-			(nutritionDay?.calories.consumed ?? 0) /
-			(nutritionDay?.calories.needed ?? 1)
-		const protein =
-			(nutritionDay?.protein.consumed ?? 0) /
-			(nutritionDay?.protein.needed ?? 1)
-		const fats =
-			(nutritionDay?.fats.consumed ?? 0) / (nutritionDay?.fats.needed ?? 1)
-		const carbs =
-			(nutritionDay?.carbs.consumed ?? 0) / (nutritionDay?.carbs.needed ?? 1)
-		percentage = (calories + protein + fats + carbs) / 4
+		const getPercent = (num: number) => (num > 1 ? 1 : num)
 
-		return showConsumed ? percentage : 100 - percentage
+		let percentage = 0
+		if (day > dayOfWeek) return showConsumed ? 0 : 100
+		const nutritionDay = nutrition[day]
+		if (!nutritionDay) return showConsumed ? 0 : 100
+
+		const calories =
+			nutritionDay.calories.consumed / nutritionDay.calories.needed
+		const protein = nutritionDay.protein.consumed / nutritionDay.protein.needed
+		const fats = nutritionDay.fats.consumed / nutritionDay.fats.needed
+		const carbs = nutritionDay.carbs.consumed / nutritionDay.carbs.needed
+		percentage =
+			(getPercent(calories) +
+				getPercent(protein) +
+				getPercent(fats) +
+				getPercent(carbs)) /
+			4
+
+		return showConsumed ? percentage * 100 : 100 - percentage * 100
 	}
 
 	let tdayCalories = calories.consumed
@@ -105,30 +109,36 @@ export default function NutritionGraphic({
 						</div>
 					))}
 				</div>
-				<aside className='col-span-2 flex flex-col space-y-4 text-center text-sm sm:place-content-center sm:justify-between sm:space-y-0'>
-					<p className='-me-5 font-bold leading-tight sm:-me-0'>
+				<aside className='col-span-2 flex flex-col space-y-4 text-center text-sm sm:place-content-center sm:justify-between sm:space-y-0 md:pb-4 lg:pb-3'>
+					<p className='-me-5 text-sm font-bold leading-tight sm:-me-0'>
 						{round(tdayCalories).toLocaleString()}
 						<Flame className='inline h-6 w-6 pb-1' />
 						<small className='font-xs block font-normal text-gray-500 dark:text-gray-400 sm:text-sm'>
 							of {calories.needed.toLocaleString()}
 						</small>
 					</p>
-					<p className='-me-5 font-bold leading-tight sm:-me-0'>
+					<p className='-me-5 text-sm font-bold leading-tight sm:-me-0'>
 						{round(tdayProtein).toLocaleString()} P
 						<small className='font-xs block font-normal text-gray-500 dark:text-gray-400 sm:text-sm'>
 							of {protein.needed.toLocaleString()}
 						</small>
 					</p>
-					<p className='-me-5 font-bold leading-tight sm:-me-0'>
+					<p className='-me-5 text-sm font-bold leading-tight sm:-me-0'>
 						{round(tdayFats).toLocaleString()} F
 						<small className='font-xs block font-normal text-gray-500 dark:text-gray-400 sm:text-sm'>
 							of {fats.needed.toLocaleString()}
 						</small>
 					</p>
-					<p className='-me-5 font-bold leading-tight sm:-me-0'>
+					<p className='-me-5 text-sm font-bold leading-tight sm:-me-0'>
 						{round(tdayCarbs).toLocaleString()} C
 						<small className='font-xs block font-normal text-gray-500 dark:text-gray-400 sm:text-sm'>
 							of {carbs.needed.toLocaleString()}
+						</small>
+					</p>
+					<p className='-me-5 text-sm font-bold leading-tight sm:-me-0 md:pt-2'>
+						{getDayPercentage(dayOfWeek).toFixed()} %
+						<small className='font-xs block font-normal text-gray-500 dark:text-gray-400 sm:text-sm'>
+							of 100
 						</small>
 					</p>
 				</aside>

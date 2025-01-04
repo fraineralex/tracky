@@ -103,8 +103,8 @@ export async function getTodayNutritionMetrics(
 
 		todaynutritionMeatrics.calories.consumed += calories
 		todaynutritionMeatrics.protein.consumed += proteinConsumed
-		todaynutritionMeatrics.carbs.consumed += carbsConsumed
 		todaynutritionMeatrics.fats.consumed += fatsConsumed
+		todaynutritionMeatrics.carbs.consumed += carbsConsumed
 	})
 
 	return todaynutritionMeatrics

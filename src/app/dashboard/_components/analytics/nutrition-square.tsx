@@ -62,7 +62,7 @@ export function NutritionSquare({
 							className='pointer rounded-md px-4 py-4'
 							key={dayIndex}
 							style={{
-								background: `linear-gradient(to top, hsl(var(--foreground) / ${dayIndex === dayOfWeek ? '1' : '0.5'}) ${percentage}%, hsl(var(--primary) / 0.2) ${percentage}%)`
+								background: `linear-gradient(to top, hsl(var(--foreground) / ${dayIndex === dayOfWeek ? '0.9' : '0.5'}) ${percentage}%, hsl(var(--primary) / 0.2) ${percentage}%)`
 							}}
 							onClick={() => setOpen(!open)}
 						></span>

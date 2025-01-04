@@ -1,4 +1,4 @@
-import { CakeSlice, EggFried, Flame, Ham } from 'lucide-react'
+import { Drumstick, EggFried, Flame, Wheat } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { calculatePercentage, round } from '~/lib/calculations'
 import { NutritionMetrics } from '~/types'
@@ -12,9 +12,9 @@ export function NutritionCard({
 }) {
 	const nutritionIcons: { [nutrient: string]: typeof Flame } = {
 		calories: Flame,
-		protein: Ham,
+		protein: Drumstick,
 		fats: EggFried,
-		carbs: CakeSlice
+		carbs: Wheat
 	}
 
 	const Icon = nutritionIcons[name] as typeof Flame

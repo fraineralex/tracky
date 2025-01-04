@@ -8,7 +8,7 @@ import {
 	Weight,
 	Wheat,
 	Drumstick,
-	Nut,
+	EggFried,
 	Flag,
 	Activity,
 	Ruler
@@ -75,7 +75,7 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
 						</span>
 					</div>
 					<div className='flex items-center rounded-full bg-yellow-100 px-2 py-1 dark:bg-primary dark:text-black'>
-						<Nut className='mr-1 h-4 w-4 text-yellow-500' />
+						<EggFried className='mr-1 h-4 w-4 text-yellow-500' />
 						<span className='text-xs font-medium'>
 							{entry.nutritionInfo.fat}g fat
 						</span>

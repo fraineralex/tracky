@@ -8,6 +8,7 @@ export default function InsightsCard({
 	title,
 	dateRange,
 	value,
+	timeDistance,
 	valueUnit,
 	children,
 	href,
@@ -15,7 +16,8 @@ export default function InsightsCard({
 }: {
 	title: string
 	dateRange: string
-	value: number
+	value?: number
+	timeDistance?: string
 	valueUnit: string
 	children: React.ReactNode
 	className?: string
@@ -30,7 +32,9 @@ export default function InsightsCard({
 			{children}
 			<footer className='flex items-center justify-between border-t pt-1'>
 				<p className='font-normal'>
-					{value != 0 ? formatNumber(value) : '----'}{' '}
+					{value && value != 0 && formatNumber(value)}
+					{(!value || value === 0) && !timeDistance && '----'}
+					{timeDistance && timeDistance}{' '}
 					<span className='text-sm font-normal text-gray-500 dark:text-gray-400'>
 						{valueUnit}
 					</span>
