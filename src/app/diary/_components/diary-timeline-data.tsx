@@ -35,6 +35,7 @@ export async function DiaryTimelineData() {
 		.from(consumption)
 		.innerJoin(food, eq(consumption.foodId, food.id))
 		.where(and(eq(consumption.userId, user.id)))
+		.limit(100)
 
 	const fetchExercise = db
 		.select({
@@ -48,6 +49,7 @@ export async function DiaryTimelineData() {
 		.from(exercise)
 		.innerJoin(exerciseCategory, eq(exercise.categoryId, exerciseCategory.id))
 		.where(eq(exercise.userId, user.id))
+		.limit(100)
 
 	const fetchFood = db
 		.select({
@@ -60,6 +62,7 @@ export async function DiaryTimelineData() {
 		})
 		.from(food)
 		.where(eq(food.userId, user.id))
+		.limit(100)
 
 	const [meals, exercises, foodRegistries] = await Promise.all([
 		fetchMeals,
@@ -80,17 +83,15 @@ export async function DiaryTimelineData() {
 			title,
 			diaryGroup
 		}) => {
-			const calories =
-				((Number(portion) / Number(servingSize)) * Number(kcal), 2)
+			const calories = (Number(portion) / Number(servingSize)) * Number(kcal)
 
 			const proteinConsumed =
-				((Number(portion) / Number(servingSize)) * Number(protein), 2)
+				(Number(portion) / Number(servingSize)) * Number(protein)
 
 			const carbsConsumed =
-				((Number(portion) / Number(servingSize)) * Number(carbs), 2)
+				(Number(portion) / Number(servingSize)) * Number(carbs)
 
-			const fatsConsumed =
-				((Number(portion) / Number(servingSize)) * Number(fat), 2)
+			const fatsConsumed = (Number(portion) / Number(servingSize)) * Number(fat)
 
 			const date = format(createdAt, 'MMMM do, yyyy')
 			if (userDailyResume[date]) {

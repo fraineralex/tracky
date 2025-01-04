@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { DailyUserStats } from '~/types'
 import { EntryType } from '~/types/diary'
+import { formatNumber } from '~/lib/utils'
 
 export function DailySummary({
 	daySummary,
@@ -21,7 +22,7 @@ export function DailySummary({
 		{
 			label: 'Burned',
 			icon: FlameKindling,
-			value: `${daySummary.exercise.burned.toLocaleString()}/${daySummary.exercise.needed.toLocaleString()}`,
+			value: `${formatNumber(daySummary.exercise.burned)}/${formatNumber(daySummary.exercise.needed)}`,
 			unit: 'kcal',
 			color: 'bg-accent text-accent-foreground',
 			category: 'exercise',
@@ -30,7 +31,7 @@ export function DailySummary({
 		{
 			label: 'Cal',
 			icon: Flame,
-			value: `${daySummary.calories.consumed.toLocaleString()}/${daySummary.calories.needed.toLocaleString()}`,
+			value: `${formatNumber(daySummary.calories.consumed)}/${formatNumber(daySummary.calories.needed)}`,
 			unit: 'kcal',
 			color: 'bg-accent text-accent-foreground',
 			category: 'meal',
@@ -39,7 +40,7 @@ export function DailySummary({
 		{
 			label: 'Protein',
 			icon: Drumstick,
-			value: `${daySummary.protein.consumed.toLocaleString()}/${daySummary.protein.needed.toLocaleString()}`,
+			value: `${formatNumber(daySummary.protein.consumed)}/${formatNumber(daySummary.protein.needed)}`,
 			unit: 'g',
 			color: 'bg-accent text-accent-foreground',
 			category: 'meal',
@@ -48,7 +49,7 @@ export function DailySummary({
 		{
 			label: 'Carbs',
 			icon: Wheat,
-			value: `${daySummary.carbs.consumed.toLocaleString()}/${daySummary.carbs.needed.toLocaleString()}`,
+			value: `${formatNumber(daySummary.carbs.consumed)}/${formatNumber(daySummary.carbs.needed)}`,
 			unit: 'g',
 			color: 'bg-accent text-accent-foreground',
 			category: 'meal',
@@ -57,7 +58,7 @@ export function DailySummary({
 		{
 			label: 'Fat',
 			icon: Nut,
-			value: `${daySummary.fats.consumed.toLocaleString()}/${daySummary.fats.needed.toLocaleString()}`,
+			value: `${formatNumber(daySummary.fats.consumed)}/${formatNumber(daySummary.fats.needed)}`,
 			unit: 'g',
 			color: 'bg-accent text-accent-foreground',
 			category: 'meal',
@@ -66,7 +67,7 @@ export function DailySummary({
 		{
 			label: 'Duration',
 			icon: Clock,
-			value: `${daySummary.exercise.duration}`,
+			value: `${formatNumber(daySummary.exercise.duration)}`,
 			unit: 'min',
 			color: 'bg-accent text-accent-foreground',
 			category: 'exercise',
@@ -96,8 +97,7 @@ export function DailySummary({
 								<span className='text-xs'>{item.label}:</span>
 							</div>
 							<span className='text-xs'>
-								{item.value}
-								{item.unit}
+								{item.value} {item.unit}
 							</span>
 						</div>
 					))}

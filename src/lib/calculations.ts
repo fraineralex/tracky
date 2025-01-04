@@ -295,7 +295,7 @@ export function computeDailyUserStats({
 		},
 		exercise: {
 			burned: 0,
-			needed: round(maintainedGet),
+			needed: Math.floor(maintainedGet),
 			duration: 0
 		}
 	}

@@ -2,6 +2,7 @@ import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '~/components/ui/button'
 import { Card } from '~/components/ui/card'
+import { formatNumber } from '~/lib/utils'
 
 export default function InsightsCard({
 	title,
@@ -29,7 +30,7 @@ export default function InsightsCard({
 			{children}
 			<footer className='flex items-center justify-between border-t pt-1'>
 				<p className='font-normal'>
-					{value != 0 ? value.toLocaleString() : '----'}{' '}
+					{value != 0 ? formatNumber(value) : '----'}{' '}
 					<span className='text-sm font-normal text-gray-500 dark:text-gray-400'>
 						{valueUnit}
 					</span>

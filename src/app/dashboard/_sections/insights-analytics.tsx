@@ -5,7 +5,7 @@ import { User } from '@clerk/nextjs/server'
 import { InsightsAndAnaliticsSkeleton } from '../_components/skeletons'
 import { db } from '~/server/db'
 import { exercise } from '~/server/db/schema'
-import { eq } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 
 export default async function InsightsAndAnalitics({
 	user: currentUser
@@ -19,10 +19,7 @@ export default async function InsightsAndAnalitics({
 	const currentGoalWeight = goalWeight[goalWeight.length - 1]?.value ?? 0
 	const currentGoal = goal[goal.length - 1]?.value ?? 'maintain'
 	const initialWeight = weights[0]?.value ?? 0
-	const dateRange = `${new Date(updatedAt).toLocaleDateString('en-US', {
-		day: 'numeric',
-		month: 'short'
-	})} - Now`
+	const userCreatedAt = new Date(user.createdAt)
 
 	const daysFromLastUpdate = Math.floor(
 		(new Date().getTime() - new Date(updatedAt).getTime()) /
@@ -64,13 +61,24 @@ export default async function InsightsAndAnalitics({
 	}
 
 	const exerciseEnergyBurned = await db
-		.select({ burned: exercise.energyBurned })
+		.select({ burned: exercise.energyBurned, createdAt: exercise.createdAt })
 		.from(exercise)
 		.where(eq(exercise.userId, user.id))
+		.orderBy(desc(exercise.createdAt))
 
 	const expenditure = exerciseEnergyBurned.reduce((acc, { burned }) => {
 		return acc + Number(burned)
 	}, 0)
+
+	const initialDate =
+		exerciseEnergyBurned[0] &&
+		exerciseEnergyBurned[0].createdAt.getTime() < userCreatedAt.getTime()
+			? exerciseEnergyBurned[0].createdAt
+			: userCreatedAt
+	const dateRange = `${initialDate.toLocaleDateString('en-US', {
+		day: 'numeric',
+		month: 'short'
+	})} - Now`
 
 	return (
 		<aside className='mx-auto md:mx-0 lg:w-full'>

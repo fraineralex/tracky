@@ -17,24 +17,29 @@ export default async function DataAndHabits({
 	const user = await currentUser
 	if (!user) return <DataAndHabitsSkeleton />
 	const userMetadata = user.publicMetadata
-	const dateRange = `${new Date(userMetadata.updatedAt).toLocaleDateString(
-		'en-US',
-		{
-			day: 'numeric',
-			month: 'short'
-		}
-	)} - Now`
 
 	const nutritionRows = await db
 		.select({
 			date: consumption.createdAt,
 			portion: consumption.portion,
-			calories: food.kcal
+			calories: food.kcal,
+			createdAt: consumption.createdAt
 		})
 		.from(consumption)
 		.innerJoin(food, eq(consumption.foodId, food.id))
 		.where(eq(consumption.userId, user.id))
 		.orderBy(desc(consumption.createdAt))
+
+	const userCreatedAt = new Date(user.createdAt)
+	const initialDate =
+		nutritionRows[0] &&
+		nutritionRows[0].createdAt.getTime() < userCreatedAt.getTime()
+			? nutritionRows[0].createdAt
+			: userCreatedAt
+	const dateRange = `${initialDate.toLocaleDateString('en-US', {
+		day: 'numeric',
+		month: 'short'
+	})} - Now`
 
 	const { totalCalories, nutritionDates } = nutritionRows.reduce(
 		(

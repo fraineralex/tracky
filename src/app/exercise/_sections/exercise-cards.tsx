@@ -7,6 +7,7 @@ import {
 	calculateDuration,
 	round
 } from '~/lib/calculations'
+import { formatNumber } from '~/lib/utils'
 import { ExerciseMetricsData, ExerciseCall } from '~/types'
 
 export default async function ExerciseCards({
@@ -40,7 +41,7 @@ export default async function ExerciseCards({
 	const mainMetrics = [
 		{
 			name: 'Total Energy Burned',
-			value: `${metrics.totalEnergyBurned.toLocaleString()} kcal`,
+			value: `${formatNumber(metrics.totalEnergyBurned)} kcal`,
 			icon: Flame
 		},
 		{
