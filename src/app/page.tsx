@@ -69,7 +69,7 @@ export default function HomePage() {
 					<Chart />
 				</article>
 			</div>
-			<Footer className='fixed bottom-0 left-0 py-6 lg:p-6' />
+			<Footer className='fixed bottom-0 left-0 py-6 lg:p-6' showMadeBy />
 		</section>
 	)
 }

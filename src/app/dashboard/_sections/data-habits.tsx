@@ -5,7 +5,7 @@ import { User } from '@clerk/nextjs/server'
 import { DataAndHabitsSkeleton } from '../_components/skeletons'
 import { db } from '~/server/db'
 import { consumption, food } from '~/server/db/schema'
-import { asc, eq } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 import { Suspense } from 'react'
 import { Skeleton } from '~/components/ui/skeleton'
 
@@ -28,13 +28,14 @@ export default async function DataAndHabits({
 		.from(consumption)
 		.innerJoin(food, eq(consumption.foodId, food.id))
 		.where(eq(consumption.userId, user.id))
-		.orderBy(asc(consumption.createdAt))
+		.orderBy(desc(consumption.createdAt))
 
 	const userCreatedAt = new Date(user.createdAt)
+	const lastIndex = nutritionRows.length - 1
 	const initialDate =
-		nutritionRows[0] &&
-		nutritionRows[0].createdAt.getTime() < userCreatedAt.getTime()
-			? nutritionRows[0].createdAt
+		nutritionRows[lastIndex] &&
+		nutritionRows[lastIndex].createdAt.getTime() < userCreatedAt.getTime()
+			? nutritionRows[lastIndex].createdAt
 			: userCreatedAt
 	const dateRange = `${initialDate.toLocaleDateString('en-US', {
 		day: 'numeric',

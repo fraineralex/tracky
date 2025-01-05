@@ -22,7 +22,7 @@ export default async function SettingsPage() {
 			<Suspense fallback={<SettingItemsSkeletonUI />}>
 				<SettingItems />
 			</Suspense>
-			<Footer className='-left-4 bottom-0 hidden w-full py-3 backdrop-blur-none sm:fixed sm:block' />
+			<Footer className='fixed bottom-0 right-0 backdrop-blur-none' showAbout />
 		</section>
 	)
 }

@@ -34,7 +34,8 @@ export default function InsightsCard({
 				<p className='font-normal'>
 					{value && value != 0 && formatNumber(value)}
 					{(!value || value === 0) && !timeDistance && '----'}
-					{timeDistance && timeDistance}{' '}
+					{timeDistance &&
+						timeDistance.charAt(0).toUpperCase() + timeDistance.slice(1)}{' '}
 					<span className='text-sm font-normal text-gray-500 dark:text-gray-400'>
 						{valueUnit}
 					</span>

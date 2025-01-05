@@ -28,6 +28,7 @@ export default async function OnboardingLayout({
 			<Footer
 				className='bottom-0 left-0 hidden w-full py-3 backdrop-blur-none sm:fixed sm:block'
 				showTwitter
+				showMadeBy
 			/>
 		</>
 	)

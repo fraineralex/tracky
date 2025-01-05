@@ -159,9 +159,9 @@ export async function SettingItems() {
 						<Link href={`mailto:frainerdeveloper@gmail.com`}>
 							<Mail className='mr-2 h-5 w-5' />
 							<div className='flex flex-col items-start'>
-								<span className='font-medium'>Contact Us</span>
+								<span className='font-medium'>Reach out</span>
 								<span className='text-sm text-muted-foreground'>
-									Get in touch with technical support
+									Get technical support
 								</span>
 							</div>
 						</Link>
@@ -175,8 +175,8 @@ export async function SettingItems() {
 								<Info className='mr-2 h-5 w-5' />
 								<div className='flex flex-col items-start'>
 									<span className='font-medium'>About</span>
-									<span className='text-sm capitalize text-muted-foreground'>
-										Learn more about the app
+									<span className='text-sm text-muted-foreground'>
+										Learn more about Tracky
 									</span>
 								</div>
 							</Button>
@@ -192,15 +192,35 @@ export async function SettingItems() {
 										trac
 										<span className='text-wood-950 dark:text-wood-100'>ky</span>
 									</span>{' '}
-									is your personal health and fitness companion. We&apos;re
-									dedicated to helping you achieve your fitness goals, whether
-									you&apos;re looking to lose weight, build muscle, or maintain
-									a healthy lifestyle.
+									is a free fitness tracking web app with AI-powered features to
+									quickly log meals and exercises, helping you stay healthy and
+									fit.
 								</p>
 								<p className='mt-4'>
-									Our app provides personalized workout plans, nutrition
-									tracking, and progress monitoring to keep you motivated and on
-									track.
+									Whether you&apos;re aiming to lose weight, build muscle, or
+									maintain a healthy lifestyle. Tracky makes tracking your
+									progress simple and efficient.
+								</p>
+								<p className='mt-4'>
+									Build by{' '}
+									<a
+										href='https://x.com/fraineralex'
+										className='text-blue-500'
+										rel='noopener noreferrer'
+										target='_blank'
+									>
+										fraineralex
+									</a>
+									. Source code available on{' '}
+									<a
+										href='https://github.com/fraineralex/tracky'
+										className='text-blue-500'
+										rel='noopener noreferrer'
+										target='_blank'
+									>
+										Github
+									</a>
+									.
 								</p>
 								<p className='mt-8 text-center text-sm text-muted-foreground'>
 									Version 1.0.0
@@ -217,7 +237,7 @@ export async function SettingItems() {
 								<BriefcaseMedical className='mr-2 h-5 w-5' />
 								<div className='flex flex-col items-start'>
 									<span className='font-medium'>Health Disclaimer</span>
-									<span className='text-sm capitalize text-muted-foreground'>
+									<span className='text-sm text-muted-foreground'>
 										Understand the health guidelines
 									</span>
 								</div>

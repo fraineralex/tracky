@@ -76,7 +76,7 @@ export default async function InsightsAndAnalitics({
 		month: 'short'
 	})} - Now`
 
-	const daysFromLastUpdate = `${formatDistance(new Date(), initialDate)} in`
+	const userDaysIn = `${formatDistance(new Date(), initialDate)} in`
 
 	return (
 		<aside className='mx-auto md:mx-0 lg:w-full'>
@@ -107,7 +107,7 @@ export default async function InsightsAndAnalitics({
 			<InsightsCard
 				title='Goal Progress'
 				dateRange={dateRange}
-				timeDistance={daysFromLastUpdate}
+				timeDistance={userDaysIn}
 				valueUnit=''
 				className='mt-3 rounded-lg border p-4 pb-1 dark:bg-slate-800/50'
 				href='/diary?entries=goal'
