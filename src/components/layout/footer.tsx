@@ -26,7 +26,7 @@ export default function Footer({
 		>
 			<div className={cn('container flex items-center justify-between')}>
 				{showMadeBy && (
-					<div className='group flex items-center space-x-2 backdrop-blur-md hover:text-neutral-800 group-hover:scale-105 hover:dark:text-neutral-200'>
+					<div className='group flex items-center space-x-2 py-2 backdrop-blur-md hover:text-neutral-800 group-hover:scale-105 hover:dark:text-neutral-200'>
 						<Heart
 							size={14}
 							className='text-green-600 group-hover:fill-green-600'

@@ -16,7 +16,7 @@ export function About() {
 				<Button
 					variant='ghost'
 					size='icon'
-					className='fixed bottom-1 right-2 z-50 sm:bottom-2 sm:right-4'
+					className='fixed bottom-0 right-2 z-50 sm:right-4'
 				>
 					<CircleHelp className='size-4 text-muted-foreground' />
 				</Button>

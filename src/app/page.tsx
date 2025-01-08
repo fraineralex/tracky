@@ -8,11 +8,11 @@ import { Github } from '~/components/ui/icons'
 
 export default function HomePage() {
 	return (
-		<section className='grid min-h-screen grid-cols-3 place-items-center content-center lg:h-full lg:min-h-fit lg:content-normal'>
+		<section className='relative grid min-h-screen grid-cols-3 place-items-center content-center lg:h-full lg:min-h-fit lg:content-normal'>
 			<article className='col-span-3 flex flex-col pb-10 lg:col-span-2'>
-				<h2 className='text-center font-serif text-[5.5rem] font-bold lg:text-8xl 2xl:text-[7rem]'>
+				<h2 className='text-center font-serif text-[5.5rem] font-bold lg:text-8xl'>
 					<span
-						className='mb-2 block text-nowrap text-[6rem] tracking-wide text-wood-950 dark:text-wood-100 lg:mb-6 lg:text-8xl 2xl:text-9xl'
+						className='mb-2 block text-nowrap text-[6rem] tracking-wide text-wood-950 dark:text-wood-100 lg:mb-6 lg:text-8xl'
 						style={{ lineHeight: 1 }}
 					>
 						Smart,
@@ -69,7 +69,7 @@ export default function HomePage() {
 					<Chart />
 				</article>
 			</div>
-			<Footer className='fixed bottom-0 left-0 py-6 lg:p-6' showMadeBy />
+			<Footer className='absolute -left-12 bottom-0 py-6' showMadeBy />
 		</section>
 	)
 }
