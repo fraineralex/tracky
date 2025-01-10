@@ -18,7 +18,7 @@ export default async function ResumeStreak({
 	userId: string
 	nutritionDates: number[]
 }) {
-	cacheLife('days')
+	cacheLife('hours')
 	cacheTag('resume-streak')
 
 	const exerciseDates = await db

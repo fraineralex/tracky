@@ -2,6 +2,7 @@ import { db } from '..'
 import { exerciseCategory, food } from '../schema'
 import { categories } from './categories.json'
 import { foods } from './foods.json'
+import { seedUserEntries } from './user-entries'
 
 async function seed() {
 	const exerciseCategoryCount = await db
@@ -20,6 +21,8 @@ async function seed() {
 		await db.insert(food).values(foods)
 		console.log(`✅ Inserted ${foods.length} food items successfully`)
 	}
+
+	await seedUserEntries()
 }
 
-seed().catch(error => console.error('Error inserting seed data:', error))
+seed().catch(e => console.error('Error seeding your database', e))

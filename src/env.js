@@ -14,7 +14,8 @@ export const env = createEnv({
 		VERCEL_ENV: z
 			.enum(['development', 'preview', 'production'])
 			.optional()
-			.default('development')
+			.default('development'),
+		CLERK_USER_ID: z.string().optional()
 	},
 
 	/**
@@ -49,7 +50,8 @@ export const env = createEnv({
 		NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL:
 			process.env.NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL,
 		DOMAIN: `https://${process.env.VERCEL_URL}`,
-		VERCEL_ENV: process.env.VERCEL_ENV
+		VERCEL_ENV: process.env.VERCEL_ENV,
+		CLERK_USER_ID: process.env.CLERK_USER_ID
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

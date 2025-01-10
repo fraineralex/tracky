@@ -38,10 +38,7 @@ export default async function DashboardPage() {
 			<Suspense fallback={<DashboardDataSkeleton />}>
 				<DashboardData />
 			</Suspense>
-			<Footer
-				className='fixed bottom-2 right-0 backdrop-blur-none'
-				showAbout
-			/>
+			<Footer className='fixed bottom-2 right-0 backdrop-blur-none' showAbout />
 		</section>
 	)
 }
