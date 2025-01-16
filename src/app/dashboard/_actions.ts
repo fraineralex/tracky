@@ -80,7 +80,7 @@ export const addConsumption = async (
 
 		await db.insert(consumption).values(newConsumption)
 		revalidateTag('nutrition')
-		revalidateTag('rstreakesume-')
+		revalidateTag('resume-streak')
 		revalidatePath('/dashboard')
 		revalidatePath('/food')
 		revalidatePath('/diary')
