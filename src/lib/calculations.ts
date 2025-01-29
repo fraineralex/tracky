@@ -63,19 +63,19 @@ export function calculateDuration(minutes: number) {
 }
 
 export function calculateStreak(arr: number[]) {
-	let streak = 0
 	const todayTime = new Date().setHours(0, 0, 0, 0)
+	let streak = arr[0] === todayTime ? 1 : 0
 
 	for (const [index, time] of arr.entries()) {
 		if (arr.length === 1) {
-			if (todayTime === time) return streak++
+			if (todayTime === time) return 1
 		}
 		const beforeDate = arr[index + 1]
 		const diff = beforeDate ? time - beforeDate : 0
 		if (diff === 86400000) {
 			streak++
 			continue
-		}
+		} else streak = 0
 
 		if (index === arr.length - 1 && streak === 0 && todayTime === arr[0])
 			streak++
