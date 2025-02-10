@@ -28,6 +28,7 @@ export const updatePublicMetadata = async (
 			}
 
 			if (metadata.born) publicMetadata.born = metadata.born
+
 			if (metadata.height) {
 				const height = publicMetadata.height
 				height.push(metadata.height[0]!)
@@ -54,6 +55,7 @@ export const updatePublicMetadata = async (
 			revalidatePath('/dashboard')
 			revalidatePath('/food')
 		}
+
 		return {
 			message: 'Information updated successfully',
 			success: true

@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatHeight(height: number) {
 	const feet = Math.floor(height)
-	const inches = Math.round((height - feet) * 12)
+	const inches = Math.floor((height - feet) * 12)
 	return `${feet}′${inches}"`
 }
 

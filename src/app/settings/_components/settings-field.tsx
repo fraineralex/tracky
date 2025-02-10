@@ -14,5 +14,8 @@ const fieldTypes: FieldTypes = {
 }
 
 export function SettingsField({ attr }: { attr: SettingsAttr }) {
-	return <>{fieldTypes[attr.type]({ attr })}</>
+	const Field = fieldTypes[attr.type]
+	if (!Field) return null
+
+	return <Field attr={attr} />
 }

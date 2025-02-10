@@ -11,11 +11,12 @@ const config = {
 		ppr: 'incremental',
 		dynamicIO: true,
 		staleTimes: {
-			dynamic: 1440, // 24 hours
-			static: 43200 // 30 days
+			dynamic: 1440, // 12 hours
+			static: 43200 // 15 days
 		}
 	},
 	images: {
+		minimumCacheTTL: 31536000, // 1 year
 		remotePatterns: [
 			{
 				protocol: 'https',

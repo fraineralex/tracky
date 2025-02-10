@@ -26,10 +26,10 @@ export function DateField({ attr }: { attr: SettingsAttr }) {
 						variant={'outline'}
 						className={cn(
 							'w-full pl-3 text-left font-normal',
-							!attr.value && 'text-muted-foreground'
+							!newDate && 'text-muted-foreground'
 						)}
 					>
-						{attr.value ? format(attr.value, 'PPP') : <span>Pick a date</span>}
+						{newDate ? format(newDate, 'PPP') : <span>Pick a date</span>}
 						<CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
 					</Button>
 				</PopoverTrigger>
@@ -47,7 +47,7 @@ export function DateField({ attr }: { attr: SettingsAttr }) {
 						}}
 						initialFocus
 						onSelect={handleSelect}
-						defaultMonth={(attr.value as Date) || new Date('2000-01-31')}
+						defaultMonth={newDate || new Date('2000-01-31')}
 					/>
 				</PopoverContent>
 			</Popover>
