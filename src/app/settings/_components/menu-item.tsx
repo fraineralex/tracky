@@ -46,8 +46,7 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 	const router = useRouter()
 
 	let displayValue = value.toString()
-	if (attr.name === 'born')
-		displayValue = format(new Date(`${value}T12:00:00`), 'PP')
+	if (attr.name === 'born') displayValue = format(value, 'PP')
 	if (attr.name === 'height') displayValue = formatHeight(value as number)
 	if (attr.name === 'weights' || name === 'goalWeight')
 		displayValue = `${value} kg`
@@ -101,7 +100,6 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 					onClick={() => {
 						if (name !== 'born') setIsOpen(true)
 					}}
-					disabled={name === 'born'}
 				>
 					<Icon className='mr-2 h-5 w-5' />
 					<div className='flex flex-col items-start'>

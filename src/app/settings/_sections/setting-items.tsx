@@ -37,7 +37,7 @@ export async function SettingItems() {
 							name: 'born',
 							label: 'Born Date',
 							type: 'date',
-							value: userMetadata.born
+							value: new Date(userMetadata.born)
 						}}
 					/>
 					<MenuItem
