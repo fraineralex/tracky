@@ -12,7 +12,7 @@ import {
 	exerciseCategory
 } from '~/server/db/schema'
 import { generateObject } from 'ai'
-import { openai } from '@ai-sdk/openai'
+import { google } from '@ai-sdk/google'
 import { desc, ilike } from 'drizzle-orm'
 import { Message } from '../food/_actions'
 import { EXERCISE_ICONS } from '~/constants'
@@ -62,7 +62,9 @@ export async function logExerciseAI(messages: Message[]): Promise<Message[]> {
 	let object
 	try {
 		const result = await generateObject({
-			model: openai('gpt-4-turbo'),
+			model: google('gemini-1.5-flash', {
+				structuredOutputs: false
+			}),
 			system: `You are a fitness app assistant generating exercise data to log in the database. Ensure the data follows the provided schema. Adjust unclear categories to the most applicable or set to null if not possible. Estimate duration in minutes if not provided. Adjust diary group based on time of day (e.g., morning to breakfast, afternoon to lunch, evening to dinner).`,
 			messages,
 			schema: ExerciseSchema

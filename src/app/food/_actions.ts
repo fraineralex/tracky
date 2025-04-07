@@ -8,7 +8,7 @@ import { z } from 'zod'
 import { db } from '~/server/db'
 import { consumption, diaryGroupEnum, food, unitEnum } from '~/server/db/schema'
 import { generateObject } from 'ai'
-import { openai } from '@ai-sdk/openai'
+import { google } from '@ai-sdk/google'
 import { desc, ilike } from 'drizzle-orm'
 import { NewConsumption } from '../dashboard/_actions'
 import { SuccessLogData } from '~/types'
@@ -163,10 +163,12 @@ export async function logMealAI(messages: Message[]): Promise<Message[]> {
 		]
 	}
 
-	let object
+	let object: typeof ConsumptionSchema._type
 	try {
 		const result = await generateObject({
-			model: openai('gpt-4-turbo'),
+			model: google('gemini-1.5-flash', {
+				structuredOutputs: false
+			}),
 			system:
 				'Generate an array of food consumption entries. Ensure data accuracy and adherence to the schema. Set food name to null if missing. Convert portions to grams. Adjust meal group based on time of day (morning: breakfast, afternoon: lunch, evening: dinner).',
 			messages,
