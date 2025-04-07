@@ -32,11 +32,16 @@ export default async function DataAndHabits({
 
 	const userCreatedAt = new Date(user.createdAt)
 	const lastIndex = nutritionRows.length - 1
-	const initialDate =
-		nutritionRows[lastIndex] &&
-		nutritionRows[lastIndex].createdAt.getTime() < userCreatedAt.getTime()
-			? nutritionRows[lastIndex].createdAt
-			: userCreatedAt
+	const lastNutritionRow = nutritionRows[lastIndex]
+
+	let initialDate
+	if (
+		!lastNutritionRow ||
+		lastNutritionRow.createdAt?.getTime() >= userCreatedAt.getTime()
+	)
+		initialDate = userCreatedAt
+	else initialDate = lastNutritionRow.createdAt
+
 	const dateRange = `${initialDate.toLocaleDateString('en-US', {
 		day: 'numeric',
 		month: 'short'

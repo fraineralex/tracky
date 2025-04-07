@@ -97,11 +97,12 @@ export async function DiaryTimelineData() {
 			const fatsConsumed = (Number(portion) / Number(servingSize)) * Number(fat)
 
 			const date = format(createdAt, 'MMMM do, yyyy')
-			if (userDailyResume[date]) {
-				userDailyResume[date].calories.consumed += calories
-				userDailyResume[date].protein.consumed += proteinConsumed
-				userDailyResume[date].fats.consumed += fatsConsumed
-				userDailyResume[date].carbs.consumed += carbsConsumed
+			const userResumeDay = userDailyResume[date]
+			if (userResumeDay) {
+				userResumeDay.calories.consumed += calories
+				userResumeDay.protein.consumed += proteinConsumed
+				userResumeDay.fats.consumed += fatsConsumed
+				userResumeDay.carbs.consumed += carbsConsumed
 			} else {
 				const nutritionMetrics = computeDailyUserStats({
 					...userMetadata,
@@ -132,9 +133,10 @@ export async function DiaryTimelineData() {
 	const entryExercises: DiaryEntry[] = exercises.map(
 		({ title, burned, createdAt, duration, diaryGroup, effort }) => {
 			const date = format(createdAt, 'MMMM do, yyyy')
-			if (userDailyResume[date]) {
-				userDailyResume[date].exercise.burned += Number(burned)
-				userDailyResume[date].exercise.duration += Number(duration)
+			const userResumeDay = userDailyResume[date]
+			if (userResumeDay) {
+				userResumeDay.exercise.burned += Number(burned)
+				userResumeDay.exercise.duration += Number(duration)
 			} else {
 				const nutritionMetrics = computeDailyUserStats({
 					...userMetadata,

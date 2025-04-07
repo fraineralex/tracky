@@ -82,7 +82,7 @@ export function DiaryTimeline({
 							selectedEntries.includes('exercise')) && (
 							<div className='pt-2'>
 								<DailySummary
-									daySummary={userDailyResume[date]}
+									daySummary={userDailyResume[date] as DailyUserStats}
 									filter={selectedEntries}
 								/>
 							</div>
