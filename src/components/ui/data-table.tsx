@@ -3,13 +3,12 @@
 import * as React from 'react'
 import {
 	ColumnDef,
-	ColumnFiltersState,
+	PaginationState,
 	Row,
 	SortingState,
 	VisibilityState,
 	flexRender,
 	getCoreRowModel,
-	getFilteredRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
 	useReactTable
@@ -47,12 +46,23 @@ export function DataTable<TData, TValue>({
 	data
 }: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = React.useState<SortingState>([])
-	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-		[]
-	)
 	const [columnVisibility, setColumnVisibility] =
 		React.useState<VisibilityState>({})
+	const [pagination, setPagination] = React.useState<PaginationState>({
+		pageIndex: 0,
+		pageSize: 10
+	})
 	const [selectedRow, setSelectedRow] = React.useState<Food | null>(null)
+	const [filterValue, setFilterValue] = React.useState('')
+	const normalizedFilter = filterValue.trim().toLowerCase()
+	const filteredData = React.useMemo(() => {
+		if (!normalizedFilter) return data
+		return data.filter(row => {
+			const name = (row as { name?: string }).name
+			if (typeof name !== 'string') return false
+			return name.toLowerCase().includes(normalizedFilter)
+		})
+	}, [data, normalizedFilter])
 
 	React.useEffect(() => {
 		const handleResize = () => {
@@ -81,19 +91,18 @@ export function DataTable<TData, TValue>({
 		return () => window.removeEventListener('resize', handleResize)
 	}, [])
 	const table = useReactTable({
-		data,
+		data: filteredData,
 		columns,
 		onSortingChange: setSorting,
-		onColumnFiltersChange: setColumnFilters,
 		onColumnVisibilityChange: setColumnVisibility,
+		onPaginationChange: setPagination,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
-		getFilteredRowModel: getFilteredRowModel(),
 		state: {
 			sorting,
-			columnFilters,
-			columnVisibility
+			columnVisibility,
+			pagination
 		}
 	})
 
@@ -117,10 +126,12 @@ export function DataTable<TData, TValue>({
 			<div className='flex items-center space-x-10 pb-4 md:space-x-20'>
 				<Input
 					placeholder='Filter names...'
-					value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-					onChange={event =>
-						table.getColumn('name')?.setFilterValue(event.target.value)
-					}
+					value={filterValue}
+					onChange={event => {
+						const value = event.target.value
+						setFilterValue(value)
+						setPagination(current => ({ ...current, pageIndex: 0 }))
+					}}
 					className='max-w-full'
 				/>
 				<DropdownMenu>
