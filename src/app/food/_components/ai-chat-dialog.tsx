@@ -9,7 +9,7 @@ import {
 	DialogTrigger
 } from '~/components/ui/dialog'
 import AIChatConversation from './ai-chat-conversation'
-import { Message } from '../_actions'
+import { DescribeImageInput, Message } from '../_actions'
 
 interface AIChatDialogProps {
 	action: (messages: Message[]) => Promise<Message[]>
@@ -17,6 +17,7 @@ interface AIChatDialogProps {
 	title: string
 	description: string
 	instruction: string
+	describeImage?: (payload: DescribeImageInput) => Promise<string>
 }
 
 export default function AIChatDialog({
@@ -24,7 +25,8 @@ export default function AIChatDialog({
 	placeholder,
 	title,
 	description,
-	instruction
+	instruction,
+	describeImage
 }: AIChatDialogProps) {
 	return (
 		<Dialog>
@@ -42,6 +44,7 @@ export default function AIChatDialog({
 					action={action}
 					placeholder={placeholder}
 					instruction={instruction}
+					describeImage={describeImage}
 				/>
 			</DialogContent>
 		</Dialog>

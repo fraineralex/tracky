@@ -1,7 +1,7 @@
 import FoodDialog from '~/app/dashboard/_components/food/food-dialog'
 import RegisterFoodDialog from '../_components/register-food-dialog'
 import AIChatDialog from '../_components/ai-chat-dialog'
-import { logMealAI } from '../_actions'
+import { describeMealImage, logMealAI } from '../_actions'
 import { Suspense } from 'react'
 import { AddMealButton } from '~/app/dashboard/_components/food/add-meal-button'
 
@@ -26,6 +26,7 @@ export function Header() {
 					title='Chat with AI'
 					description='Tell the AI about your meals, and it will log them for you.'
 					instruction='Please specify the food item, portion size, and meal group.'
+					describeImage={describeMealImage}
 				/>
 			</div>
 		</div>
