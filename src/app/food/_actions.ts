@@ -166,7 +166,7 @@ export async function logMealAI(messages: Message[]): Promise<Message[]> {
 	let object: typeof ConsumptionSchema._type
 	try {
 		const result = await generateObject({
-			model: google('gemini-1.5-flash', {
+			model: google('gemini-2.5-flash-lite', {
 				structuredOutputs: false
 			}),
 			system:
