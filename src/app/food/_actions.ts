@@ -149,10 +149,12 @@ export interface Message {
 
 const macroInstruction =
 	'For every entry include a macrosPer100g object with numeric calories, protein, carbs, and fats for a 100 gram serving. Estimate values whenever possible and only set a field to null if there is absolutely no visual or textual information.'
+const portionInstruction =
+	'Always provide a positive numeric portion in grams for every entry. When the user omits measurements, infer realistic gram amounts using food knowledge (for example a medium apple is about 180g, a banana about 120g, a cup of liquid about 240g). Never leave the portion null or zero.'
 
-const textOnlySystemPrompt = `Generate an array of food consumption entries. Ensure data accuracy and adherence to the schema. Set food name to null if missing. Convert portions to grams. Adjust meal group based on time of day (morning: breakfast, afternoon: lunch, evening: dinner). ${macroInstruction}`
+const textOnlySystemPrompt = `Generate an array of food consumption entries. Ensure data accuracy and adherence to the schema. Set food name to null if missing. Convert portions to grams. Adjust meal group based on time of day (morning: breakfast, afternoon: lunch, evening: dinner). ${macroInstruction} ${portionInstruction}`
 
-const imageSystemPrompt = `Analyze each attached meal or nutrition label image. Identify every distinct food item or packaged product, extract macros and serving details from any tables, and estimate realistic gram portions using visual context and common serving probabilities. Return entries that follow the schema, convert all portions to grams, note uncertainties, and follow this requirement: ${macroInstruction}`
+const imageSystemPrompt = `Analyze each attached meal or nutrition label image. Identify every distinct food item or packaged product, extract macros and serving details from any tables, and estimate realistic gram portions using visual context and common serving probabilities. Return entries that follow the schema, convert all portions to grams, note uncertainties, and follow these requirements: ${macroInstruction} ${portionInstruction}`
 
 const AI_TIMEOUT_MS = 25000
 const IMAGE_TIMEOUT_MS = 15000
@@ -248,6 +250,97 @@ const ConsumptionSchema = z.object({
 		})
 	)
 })
+
+const defaultPortionInGrams = 150
+
+const quantityWordPatterns = [
+	{ match: /\bhalf\b/i, value: 0.5 },
+	{ match: /\bquarter\b/i, value: 0.25 },
+	{ match: /\btwo\b/i, value: 2 },
+	{ match: /\bthree\b/i, value: 3 },
+	{ match: /\bfour\b/i, value: 4 },
+	{ match: /\bfive\b/i, value: 5 }
+]
+
+const portionLookupTable = [
+	{ match: /\bapple\b/i, grams: 182 },
+	{ match: /\bbanana\b/i, grams: 118 },
+	{ match: /\borange\b/i, grams: 140 },
+	{ match: /\bpear\b/i, grams: 178 },
+	{ match: /\bpeach\b/i, grams: 150 },
+	{ match: /\bplum\b/i, grams: 66 },
+	{ match: /\bgrape\b/i, grams: 5 },
+	{ match: /\bberry\b/i, grams: 12 },
+	{ match: /\bblueberry\b/i, grams: 1 },
+	{ match: /\bstrawberry\b/i, grams: 12 },
+	{ match: /\bmango\b/i, grams: 200 },
+	{ match: /\bavocado\b/i, grams: 136 },
+	{ match: /\bkiwi\b/i, grams: 76 },
+	{ match: /\bmelon\b/i, grams: 180 },
+	{ match: /\bwatermelon\b/i, grams: 280 },
+	{ match: /\bcarrot\b/i, grams: 61 },
+	{ match: /\bpotato\b/i, grams: 173 },
+	{ match: /\bsweet potato\b/i, grams: 200 },
+	{ match: /\bbroccoli\b/i, grams: 90 },
+	{ match: /\bcauliflower\b/i, grams: 100 },
+	{ match: /\bspinach\b/i, grams: 30 },
+	{ match: /\bsalad\b/i, grams: 85 },
+	{ match: /\bsoup\b/i, grams: 240 },
+	{ match: /\brice\b/i, grams: 150 },
+	{ match: /\bpasta\b/i, grams: 140 },
+	{ match: /\boatmeal\b/i, grams: 40 },
+	{ match: /\bbread\b/i, grams: 30 },
+	{ match: /\btortilla\b/i, grams: 50 },
+	{ match: /\bchicken breast\b/i, grams: 120 },
+	{ match: /\bchicken thigh\b/i, grams: 100 },
+	{ match: /\bchicken wing\b/i, grams: 30 },
+	{ match: /\bchicken\b/i, grams: 120 },
+	{ match: /\bbeef\b/i, grams: 150 },
+	{ match: /\bpork\b/i, grams: 140 },
+	{ match: /\bsalmon\b/i, grams: 170 },
+	{ match: /\btuna\b/i, grams: 165 },
+	{ match: /\begg white\b/i, grams: 33 },
+	{ match: /\begg yolk\b/i, grams: 17 },
+	{ match: /\begg\b/i, grams: 50 },
+	{ match: /\byogurt\b/i, grams: 170 },
+	{ match: /\bprotein shake\b/i, grams: 350 },
+	{ match: /\bcoffee\b/i, grams: 240 },
+	{ match: /\btea\b/i, grams: 240 },
+	{ match: /\bjuice\b/i, grams: 240 },
+	{ match: /\bsmoothie\b/i, grams: 355 },
+	{ match: /\bwater\b/i, grams: 240 },
+	{ match: /\bwine\b/i, grams: 147 }
+]
+
+const detectQuantityMultiplier = (text: string) => {
+	const numeric = text.match(/(\d+(\.\d+)?)/)
+	if (numeric?.[1]) {
+		const value = parseFloat(numeric[1])
+		if (!Number.isNaN(value) && value > 0) return value
+	}
+	for (const word of quantityWordPatterns) {
+		if (word.match.test(text)) return word.value
+	}
+	return 1
+}
+
+const estimatePortionInGrams = (name?: string | null) => {
+	if (!name) return defaultPortionInGrams
+	const normalized = name.toLowerCase()
+	const multiplier = detectQuantityMultiplier(normalized)
+	for (const entry of portionLookupTable) {
+		if (entry.match.test(normalized)) {
+			return entry.grams * multiplier
+		}
+	}
+	if (/\bcup\b/.test(normalized)) return 240 * multiplier
+	if (/\bglass\b/.test(normalized)) return 240 * multiplier
+	if (/\bcan\b/.test(normalized)) return 355 * multiplier
+	if (/\btablespoon\b|\btbsp\b/.test(normalized)) return 15 * multiplier
+	if (/\bteaspoon\b|\btsp\b/.test(normalized)) return 5 * multiplier
+	if (/\bshot\b/.test(normalized)) return 44 * multiplier
+	return defaultPortionInGrams * multiplier
+}
 
 const selectFoodFields = {
 	id: food.id,
@@ -349,8 +442,19 @@ export async function logMealAI(messages: Message[]): Promise<Message[]> {
 		return errorResponse
 	}
 
+	const consumptionEntries = response.data.consumption.map(item => {
+		const resolvedPortion =
+			item.portion && item.portion > 0
+				? item.portion
+				: estimatePortionInGrams(item.foodName)
+		return {
+			...item,
+			portion: resolvedPortion
+		}
+	})
+
 	const missingInfoMessages: string[] = []
-	response.data.consumption.forEach(item => {
+	consumptionEntries.forEach(item => {
 		if (!item.foodName) {
 			missingInfoMessages.push('Please provide the name of the food.')
 		}
@@ -370,7 +474,7 @@ export async function logMealAI(messages: Message[]): Promise<Message[]> {
 	const errorMessages: string[] = []
 	try {
 		await db.transaction(async trx => {
-			for (const item of response.data.consumption) {
+			for (const item of consumptionEntries) {
 				const portion = item.portion ?? 0
 				const foodName = item.foodName?.trim()
 				if (!foodName || portion <= 0) {
