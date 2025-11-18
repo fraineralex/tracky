@@ -23,3 +23,20 @@ export function formatNumber(value: number): string {
 	}
 	return value.toFixed()
 }
+
+export function getMealCategoryFromTime(date: Date): 'breakfast' | 'lunch' | 'snack' | 'dinner' {
+	const hours = date.getHours()
+	const minutes = date.getMinutes()
+	const totalMinutes = hours * 60 + minutes
+
+	if (totalMinutes >= 5 * 60 && totalMinutes < 12 * 60) {
+		return 'breakfast'
+	}
+	if (totalMinutes >= 12 * 60 && totalMinutes <= 14 * 60) {
+		return 'lunch'
+	}
+	if (totalMinutes > 14 * 60 && totalMinutes < 17 * 60) {
+		return 'snack'
+	}
+	return 'dinner'
+}

@@ -1,6 +1,6 @@
 import ExerciseDialog from '~/app/dashboard/_components/exercise/exercise-dialog'
 import AIChatDialog from '~/app/food/_components/ai-chat-dialog'
-import { logExerciseAI } from '../_actions'
+import { logExerciseAI, describeExerciseImage } from '../_actions'
 import { AddExerciseButton } from '~/app/dashboard/_components/exercise/add-exercise-button'
 import { Suspense } from 'react'
 
@@ -25,7 +25,8 @@ export function Header() {
 					placeholder='Log 30 minutes of cardio in the morning'
 					title='Chat with AI'
 					description='Tell the AI about your exercises, and it will log them for you.'
-					instruction='Please specify the exercise, duration, intensity and diary group.'
+					instruction='Please specify the exercise, duration, intensity and diary group. You can also upload images from Apple Watch, treadmill displays, or fitness equipment.'
+					describeImage={describeExerciseImage}
 				/>
 			</div>
 		</div>

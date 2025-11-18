@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Button } from '~/components/ui/button'
 import { DialogFooter } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
@@ -33,6 +33,15 @@ export default function AIChatConversation({
 	const [loading, setLoading] = useState(false)
 	const cameraInputRef = useRef<HTMLInputElement>(null)
 	const galleryInputRef = useRef<HTMLInputElement>(null)
+	const inputRef = useRef<HTMLInputElement>(null)
+
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			inputRef.current?.focus()
+		}, 100)
+		return () => clearTimeout(timer)
+	}, [conversation.length])
+
 	if (!user) return null
 
 	const fileToDataUrl = (file: File) =>
@@ -49,7 +58,7 @@ export default function AIChatConversation({
 		setInput('')
 		const newConversation = [
 			...conversation,
-			{ role: 'user', content: input }
+			{ role: 'user', content: input, clientTime: new Date().toISOString() }
 		] satisfies Message[]
 		setConversation(newConversation)
 		try {
@@ -57,6 +66,7 @@ export default function AIChatConversation({
 			setConversation(response)
 		} finally {
 			setLoading(false)
+			inputRef.current?.focus()
 		}
 	}
 
@@ -95,7 +105,8 @@ export default function AIChatConversation({
 					image: {
 						dataUrl,
 						mimeType: file.type
-					}
+					},
+					clientTime: new Date().toISOString()
 				}
 			] satisfies Message[]
 			setConversation(newConversation)
@@ -117,7 +128,10 @@ export default function AIChatConversation({
 						<div key={index}>
 							{message.successLogData &&
 								message.successLogData.map((data, index) => (
-									<div key={index} className={`${index === (message.successLogData?.length || 0) - 1 ? 'border-b border-muted-foreground/60 mb-4' : ''}`}>
+									<div
+										key={index}
+										className={`${index === (message.successLogData?.length || 0) - 1 ? 'mb-4 border-b border-muted-foreground/60' : ''}`}
+									>
 										<SuccessLogCard {...data} />
 									</div>
 								))}
@@ -131,7 +145,7 @@ export default function AIChatConversation({
 									{message.role === 'assistant' && (
 										<Bot className='mt-1 h-6 w-6 text-green-500' />
 									)}
-									<div className='max-w-[80%] rounded-lg p-2 text-sm capitalize'>
+									<div className='max-w-[80%] rounded-lg p-2 text-sm first-letter:uppercase'>
 										{message.content}
 										{message.image && (
 											<Image
@@ -208,12 +222,14 @@ export default function AIChatConversation({
 							</Button>
 						</div>
 						<Input
+							ref={inputRef}
 							value={input}
 							onChange={e => setInput(e.target.value)}
 							placeholder={placeholder}
 							onKeyDown={e => e.key === 'Enter' && handleSend()}
 							className='h-12 flex-grow'
 							disabled={loading}
+							autoFocus
 						/>
 						<Button
 							type='button'

@@ -18,6 +18,7 @@ import { desc, ilike } from 'drizzle-orm'
 import { NewConsumption } from '../dashboard/_actions'
 import { SuccessLogData } from '~/types'
 import { Buffer } from 'node:buffer'
+import { getMealCategoryFromTime } from '~/lib/utils'
 
 type NewFood = typeof food.$inferInsert
 
@@ -145,6 +146,7 @@ export interface Message {
 		mimeType: string
 	}
 	successLogData?: SuccessLogData[]
+	clientTime?: string
 }
 
 const macroInstruction =
@@ -442,14 +444,23 @@ export async function logMealAI(messages: Message[]): Promise<Message[]> {
 		return errorResponse
 	}
 
+	const clientTime = latestUserMessage?.clientTime
+		? new Date(latestUserMessage.clientTime)
+		: new Date()
+
 	const consumptionEntries = response.data.consumption.map(item => {
 		const resolvedPortion =
 			item.portion && item.portion > 0
 				? item.portion
 				: estimatePortionInGrams(item.foodName)
+		const mealGroup =
+			item.mealGroup === 'uncategorized'
+				? getMealCategoryFromTime(clientTime)
+				: item.mealGroup
 		return {
 			...item,
-			portion: resolvedPortion
+			portion: resolvedPortion,
+			mealGroup
 		}
 	})
 
