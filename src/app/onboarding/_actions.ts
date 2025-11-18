@@ -84,7 +84,6 @@ export const completeOnboarding = async (formData: FormData) => {
 		validatedFields.data.weights = Math.floor(
 			validatedFields.data.weights * 0.45359237
 		)
-		console.log(validatedFields.data.weights)
 	}
 
 	try {

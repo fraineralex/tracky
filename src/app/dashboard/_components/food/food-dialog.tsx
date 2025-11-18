@@ -38,7 +38,6 @@ export default async function FoodDialog() {
 	const user = await currentUser()
 	if (!user) return <AddMealButton />
 	const foodData = await getFoodData(user.id)
-	console.log(foodData)
 
 	return (
 		<Dialog>

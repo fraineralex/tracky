@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { useUser } from '@clerk/nextjs'
 import { SuccessLogCard } from './success-log-card'
 import Image from 'next/image'
+import { flushSync } from 'react-dom'
 
 export const maxDuration = 30
 
@@ -80,37 +81,58 @@ export default function AIChatConversation({
 		try {
 			const dataUrl = await fileToDataUrl(file)
 			const typedDescription = input.trim()
-			let generatedDescription = ''
+			const placeholderContent = typedDescription || defaultMessage
+			setInput('')
+
+			const placeholderMessage: Message = {
+				role: 'user',
+				content: placeholderContent,
+				image: {
+					dataUrl,
+					mimeType: file.type
+				},
+				clientTime: new Date().toISOString()
+			}
+
+			const optimisticConversation = [...conversation, placeholderMessage]
+			let workingConversation = optimisticConversation
+			const placeholderIndex = optimisticConversation.length - 1
+
+			flushSync(() => {
+				setConversation(optimisticConversation)
+			})
+
+			const replacePlaceholderContent = (content: string) => {
+				if (
+					workingConversation[placeholderIndex]?.content === content ||
+					!content
+				) {
+					return
+				}
+				workingConversation = workingConversation.map((message, index) =>
+					index === placeholderIndex ? { ...message, content } : message
+				)
+				setConversation(workingConversation)
+			}
+
 			if (!typedDescription && describeImage) {
 				try {
-					generatedDescription = await Promise.race([
+					const caption = await Promise.race([
 						describeImage({
 							dataUrl,
 							mimeType: file.type
 						}),
 						new Promise<string>(resolve => setTimeout(() => resolve(''), 12000))
 					])
+					if (caption) {
+						replacePlaceholderContent(caption)
+					}
 				} catch (error) {
 					console.error('Error describing meal image:', error)
 				}
 			}
-			const description =
-				typedDescription || generatedDescription || defaultMessage
-			setInput('')
-			const newConversation = [
-				...conversation,
-				{
-					role: 'user',
-					content: description,
-					image: {
-						dataUrl,
-						mimeType: file.type
-					},
-					clientTime: new Date().toISOString()
-				}
-			] satisfies Message[]
-			setConversation(newConversation)
-			const response = await action(newConversation)
+
+			const response = await action(workingConversation)
 			setConversation(response)
 		} finally {
 			setLoading(false)

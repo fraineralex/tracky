@@ -344,6 +344,40 @@ const estimatePortionInGrams = (name?: string | null) => {
 	return defaultPortionInGrams * multiplier
 }
 
+type GenerationFailureReason = 'timeout' | 'unrecognized' | 'unknown'
+
+const classifyGenerationError = (error: unknown): GenerationFailureReason => {
+	if (error instanceof Error) {
+		const name = error.name?.toLowerCase() ?? ''
+		const message = error.message?.toLowerCase() ?? ''
+		if (message.includes('timed out')) return 'timeout'
+		if (
+			name.includes('json') ||
+			name.includes('parse') ||
+			name.includes('noobject') ||
+			message.includes('no object generated') ||
+			message.includes('json parsing failed')
+		) {
+			return 'unrecognized'
+		}
+	}
+	return 'unknown'
+}
+
+const retryNoticeForReason = (reason: GenerationFailureReason) => {
+	if (reason === 'timeout') {
+		return 'The AI request took too long. Retrying with a smarter model...'
+	}
+	return 'I could not interpret that meal yet. Retrying with a smarter model...'
+}
+
+const failureMessageForReason = (reason: GenerationFailureReason) => {
+	if (reason === 'timeout') {
+		return 'Meal logging failed because the AI request timed out. Please try again later.'
+	}
+	return 'I could not identify the foods from that image. Please try a clearer photo or another angle.'
+}
+
 const selectFoodFields = {
 	id: food.id,
 	name: food.name,
@@ -396,54 +430,75 @@ export async function logMealAI(messages: Message[]): Promise<Message[]> {
 		]
 	}
 
-	let object: typeof ConsumptionSchema._type
+	let object: typeof ConsumptionSchema._type | null = null
 	const latestUserMessage = [...messages]
 		.reverse()
 		.find(message => message.role === 'user')
 	const hasImageInput = Boolean(latestUserMessage?.image)
 	const formattedMessages = toCoreMessages(messages)
 	const systemPrompt = hasImageInput ? imageSystemPrompt : textOnlySystemPrompt
-	try {
-		const result = await withTimeout(
-			generateObject({
-				model: google('gemini-2.5-flash-lite', {
-					structuredOutputs: false
+	const responseMessages: Message[] = [...messages]
+	const retryModels = ['gemini-2.5-flash-lite', 'gemini-2.5-flash'] as const
+	let failureReason: GenerationFailureReason = 'unknown'
+	let generationSucceeded = false
+
+	for (const [index, modelId] of retryModels.entries()) {
+		try {
+			const result = await withTimeout(
+				generateObject({
+					model: google(modelId, {
+						structuredOutputs: false
+					}),
+					system: systemPrompt,
+					messages: formattedMessages,
+					schema: ConsumptionSchema
 				}),
-				system: systemPrompt,
-				messages: formattedMessages,
-				schema: ConsumptionSchema
-			}),
-			AI_TIMEOUT_MS,
-			'logMealAI generateObject'
-		)
-		object = result.object
-		console.log('Food consumption data generated:', object)
-	} catch (error) {
-		console.error('Error generating object:', error)
-		return [
-			...messages,
-			{
-				role: 'assistant',
-				content:
-					'Oops! There was an error generating the food consumption data.'
+				AI_TIMEOUT_MS,
+				'logMealAI generateObject'
+			)
+			object = result.object
+			generationSucceeded = true
+			break
+		} catch (error) {
+			console.error('Error generating object:', error)
+			failureReason = classifyGenerationError(error)
+			if (index === retryModels.length - 1) {
+				responseMessages.push({
+					role: 'assistant',
+					content: failureMessageForReason(failureReason)
+				})
+				return responseMessages
 			}
-		]
+			responseMessages.push({
+				role: 'assistant',
+				content: retryNoticeForReason(failureReason)
+			})
+		}
+	}
+
+	if (!generationSucceeded || !object) {
+		responseMessages.push({
+			role: 'assistant',
+			content: 'Oops! There was an error generating the food consumption data.'
+		})
+		return responseMessages
 	}
 
 	const response = ConsumptionSchema.safeParse(object)
-	const errorResponse = [
-		...messages,
-		{
+	const respondWithSubmissionError = () => {
+		responseMessages.push({
 			role: 'assistant',
 			content: 'Oops! There was an error with your submission.'
-		}
-	] satisfies Message[]
+		})
+		return responseMessages
+	}
 
 	if (!response.success) {
 		console.error('Schema validation failed:', response.error)
-		return errorResponse
+		return respondWithSubmissionError()
 	}
 
+	const baseResponseLength = responseMessages.length
 	const clientTime = latestUserMessage?.clientTime
 		? new Date(latestUserMessage.clientTime)
 		: new Date()
@@ -475,10 +530,11 @@ export async function logMealAI(messages: Message[]): Promise<Message[]> {
 	})
 
 	if (missingInfoMessages.length > 0) {
-		return [
-			...messages,
-			{ role: 'assistant', content: missingInfoMessages.join(' ') }
-		]
+		responseMessages.push({
+			role: 'assistant',
+			content: missingInfoMessages.join(' ')
+		})
+		return responseMessages
 	}
 
 	const successLogData: SuccessLogData[] = []
@@ -565,7 +621,7 @@ export async function logMealAI(messages: Message[]): Promise<Message[]> {
 		})
 	} catch (error) {
 		console.error('Error inserting consumption:', error)
-		return errorResponse
+		return respondWithSubmissionError()
 	}
 
 	if (successLogData.length > 0) {
@@ -576,8 +632,6 @@ export async function logMealAI(messages: Message[]): Promise<Message[]> {
 		revalidatePath('/dashboard')
 		revalidatePath('/diary')
 	}
-
-	const responseMessages: Message[] = [...messages]
 
 	if (errorMessages.length > 0) {
 		responseMessages.push({
@@ -594,15 +648,12 @@ export async function logMealAI(messages: Message[]): Promise<Message[]> {
 		})
 	}
 
-	if (responseMessages.length === messages.length) {
-		return [
-			...messages,
-			{
-				role: 'assistant',
-				content:
-					'No meals were logged. Please provide more details or clearer nutritional info so we can register them.'
-			}
-		]
+	if (responseMessages.length === baseResponseLength) {
+		responseMessages.push({
+			role: 'assistant',
+			content:
+				'No meals were logged. Please provide more details or clearer nutritional info so we can register them.'
+		})
 	}
 
 	return responseMessages
