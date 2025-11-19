@@ -9,7 +9,7 @@ import {
 	DialogTrigger
 } from '~/components/ui/dialog'
 import AIChatConversation from './ai-chat-conversation'
-import { DescribeImageInput, Message } from '../_actions'
+import type { DescribeImageInput, Message } from '~/app/ai/types'
 
 interface AIChatDialogProps {
 	action: (messages: Message[]) => Promise<Message[]>

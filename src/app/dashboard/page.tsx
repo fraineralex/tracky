@@ -7,6 +7,8 @@ import { DashboardDataSkeleton } from './_components/skeletons'
 import { AddMealButton } from './_components/food/add-meal-button'
 import { DashboardData } from './_components/dashboard-data'
 import { connection } from 'next/server'
+import AIChatDialog from '../food/_components/ai-chat-dialog'
+import { describeEntryImage, logHealthAI } from '../ai/_actions'
 
 export const metadata: Metadata = {
 	title: 'Dashboard'
@@ -27,6 +29,14 @@ export default async function DashboardPage() {
 					{today}
 				</h1>
 				<header className='contents md:float-end md:flex md:space-x-5'>
+					<AIChatDialog
+						action={logHealthAI}
+						placeholder='Log 2 eggs for breakfast or 30 min run'
+						title='Chat with AI'
+						description='Describe meals or workouts and the AI will log them.'
+						instruction='Specify portions for food or duration and effort for exercises. Images are supported.'
+						describeImage={describeEntryImage}
+					/>
 					<Suspense fallback={<AddMealButton />}>
 						<FoodDialog />
 					</Suspense>

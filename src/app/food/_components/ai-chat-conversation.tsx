@@ -6,7 +6,7 @@ import { DialogFooter } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
 import { ScrollArea } from '~/components/ui/scroll-area'
 import { Bot, Camera, Image as ImageIcon, Loader, Send } from 'lucide-react'
-import { DescribeImageInput, Message } from '../_actions'
+import type { DescribeImageInput, Message } from '~/app/ai/types'
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { useUser } from '@clerk/nextjs'
 import { SuccessLogCard } from './success-log-card'
@@ -71,12 +71,8 @@ export default function AIChatConversation({
 		}
 	}
 
-	const handleMediaSelection = async (
-		files: FileList | null,
-		defaultMessage: string
-	) => {
-		const file = files?.[0]
-		if (!file || loading) return
+	const handleFileUpload = async (file: File, defaultMessage: string) => {
+		if (loading) return
 		setLoading(true)
 		try {
 			const dataUrl = await fileToDataUrl(file)
@@ -137,6 +133,23 @@ export default function AIChatConversation({
 		} finally {
 			setLoading(false)
 		}
+	}
+
+	const handleMediaSelection = async (
+		files: FileList | null,
+		defaultMessage: string
+	) => {
+		const file = files?.[0]
+		if (!file) return
+		await handleFileUpload(file, defaultMessage)
+	}
+
+	const handlePastedFiles = async (items: DataTransferItemList) => {
+		const fileItem = Array.from(items).find(item => item.kind === 'file')
+		if (!fileItem) return
+		const file = fileItem.getAsFile()
+		if (!file || !file.type.startsWith('image/')) return
+		await handleFileUpload(file, 'Entry image')
 	}
 
 	const fullNameShort = `${user.firstName?.[0] ?? ''} ${user.lastName?.[0] ?? ''}.`
@@ -208,7 +221,7 @@ export default function AIChatConversation({
 						capture='environment'
 						className='hidden'
 						onChange={async event => {
-							await handleMediaSelection(event.target.files, 'Meal photo')
+							await handleMediaSelection(event.target.files, 'Entry photo')
 							if (event.target) event.target.value = ''
 						}}
 					/>
@@ -218,7 +231,7 @@ export default function AIChatConversation({
 						accept='image/*'
 						className='hidden'
 						onChange={async event => {
-							await handleMediaSelection(event.target.files, 'Meal image')
+							await handleMediaSelection(event.target.files, 'Entry image')
 							if (event.target) event.target.value = ''
 						}}
 					/>
@@ -248,6 +261,18 @@ export default function AIChatConversation({
 							value={input}
 							onChange={e => setInput(e.target.value)}
 							placeholder={placeholder}
+							onPaste={event => {
+								if (event.clipboardData?.items) {
+									const hasFile = Array.from(event.clipboardData.items).some(
+										item => item.kind === 'file'
+									)
+									if (hasFile) {
+										event.preventDefault()
+										void handlePastedFiles(event.clipboardData.items)
+										return
+									}
+								}
+							}}
 							onKeyDown={e => e.key === 'Enter' && handleSend()}
 							className='h-12 flex-grow'
 							disabled={loading}
