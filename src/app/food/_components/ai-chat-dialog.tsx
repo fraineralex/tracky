@@ -3,7 +3,6 @@ import { Button } from '~/components/ui/button'
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger
@@ -15,7 +14,6 @@ interface AIChatDialogProps {
 	action: (messages: Message[]) => Promise<Message[]>
 	placeholder: string
 	title: string
-	description: string
 	instruction: string
 	describeImage?: (payload: DescribeImageInput) => Promise<string>
 }
@@ -24,7 +22,6 @@ export default function AIChatDialog({
 	action,
 	placeholder,
 	title,
-	description,
 	instruction,
 	describeImage
 }: AIChatDialogProps) {

@@ -114,8 +114,13 @@ const sanitizeMessage = (
 	keepImage: boolean
 ): Message => {
 	const { id, createdAt, sizeBytes, ...rest } = message
+	void id
+	void createdAt
+	void sizeBytes
+
 	if (!keepImage && rest.image) {
 		const { image, ...withoutImage } = rest
+		void image
 		return withoutImage as Message
 	}
 	return rest as Message
@@ -412,9 +417,9 @@ export default function AIChatConversation({
 
 	return (
 		<>
-			<div className='mb-2 flex items-center justify-between -mt-4'>
+			<div className='-mt-4 mb-2 flex items-center justify-between'>
 				<small className='text-sm text-muted-foreground'>
-				Describe meals or workouts and the AI will log them.
+					Describe meals or workouts and the AI will log them.
 				</small>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
@@ -465,7 +470,7 @@ export default function AIChatConversation({
 								{showDivider && (
 									<div className='my-6 flex items-center justify-center gap-2'>
 										<div className='h-px flex-1 bg-border' />
-										<span className='px-6 block text-center text-xs uppercase tracking-wider text-muted-foreground whitespace-nowrap'>
+										<span className='block whitespace-nowrap px-6 text-center text-xs uppercase tracking-wider text-muted-foreground'>
 											{format(messageDate, 'EEEE, MMM d')}
 										</span>
 										<div className='h-px flex-1 bg-border' />

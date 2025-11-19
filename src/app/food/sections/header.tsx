@@ -24,7 +24,6 @@ export function Header() {
 					action={logHealthAI}
 					placeholder='Log 100 g of chicken breast for lunch'
 					title='Chat with AI'
-					description='Tell the AI about your meals, and it will log them for you.'
 					instruction='Please specify the food item, portion size, and meal group.'
 					describeImage={describeEntryImage}
 				/>

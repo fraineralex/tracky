@@ -1,4 +1,4 @@
-import { Message } from '~/app/food/_actions'
+import { Message } from '~/app/ai/types'
 
 export const fakeLogMealAI = async (conversation: Message[]) => {
 	const response = [

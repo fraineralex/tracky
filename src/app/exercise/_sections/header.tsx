@@ -24,7 +24,6 @@ export function Header() {
 					action={logHealthAI}
 					placeholder='Log 30 minutes of cardio in the morning'
 					title='Chat with AI'
-					description='Tell the AI about your exercises, and it will log them for you.'
 					instruction='Please specify the exercise, duration, intensity and diary group. You can also upload images from Apple Watch, treadmill displays, or fitness equipment.'
 					describeImage={describeEntryImage}
 				/>

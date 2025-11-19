@@ -33,7 +33,6 @@ export default async function DashboardPage() {
 						action={logHealthAI}
 						placeholder='Log 2 eggs for breakfast or 30 min run'
 						title='Chat with AI'
-						description='Describe meals or workouts and the AI will log them.'
 						instruction='Specify portions for food or duration and effort for exercises. Images are supported.'
 						describeImage={describeEntryImage}
 					/>
