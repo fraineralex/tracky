@@ -1,17 +1,44 @@
 'use client'
 
-import { useRef, useState, useEffect } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useUser } from '@clerk/nextjs'
+import Image from 'next/image'
+import { format, isSameDay } from 'date-fns'
+import { toast } from 'sonner'
+import {
+	Bot,
+	Camera,
+	Image as ImageIcon,
+	Loader,
+	MoreVertical,
+	Send
+} from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { Button } from '~/components/ui/button'
 import { DialogFooter } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
 import { ScrollArea } from '~/components/ui/scroll-area'
-import { Bot, Camera, Image as ImageIcon, Loader, Send } from 'lucide-react'
-import type { DescribeImageInput, Message } from '~/app/ai/types'
-import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
-import { useUser } from '@clerk/nextjs'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger
+} from '~/components/ui/dropdown-menu'
 import { SuccessLogCard } from './success-log-card'
-import Image from 'next/image'
-import { flushSync } from 'react-dom'
+import type {
+	DescribeImageInput,
+	Message,
+	PersistedMessage
+} from '~/app/ai/types'
+import {
+	ChatMessageRecord,
+	clearMessages,
+	loadMessages,
+	saveMessage,
+	updateMessage as updateStoredMessage
+} from '~/lib/chatDatabase'
 
 export const maxDuration = 30
 
@@ -22,6 +49,99 @@ interface AIChatConversationProps {
 	describeImage?: (payload: DescribeImageInput) => Promise<string>
 }
 
+const STORAGE_LIMIT_BYTES = 50 * 1024 * 1024
+const CONTEXT_WINDOW = 10
+const encoder = new TextEncoder()
+
+const getMimeTypeFromDataUrl = (dataUrl: string) => {
+	const match = /^data:(?<mime>[^;]+);/i.exec(dataUrl)
+	return match?.groups?.mime ?? 'image/png'
+}
+
+const calculateMessageSize = (message: Message) => {
+	let size = encoder.encode(message.content ?? '').length
+	if (message.image?.dataUrl)
+		size += encoder.encode(message.image.dataUrl).length
+	if (message.successLogData) {
+		size += encoder.encode(JSON.stringify(message.successLogData)).length
+	}
+	return size
+}
+
+const normalizeMessage = (message: Message): PersistedMessage => {
+	const createdAt =
+		message.createdAt ?? message.clientTime ?? new Date().toISOString()
+	const withMeta: PersistedMessage = {
+		...message,
+		id: message.id ?? crypto.randomUUID(),
+		createdAt
+	}
+	const sizeBytes = calculateMessageSize(withMeta)
+	return { ...withMeta, sizeBytes }
+}
+
+const recordToMessage = (record: ChatMessageRecord): PersistedMessage => {
+	const base: PersistedMessage = {
+		id: record.id,
+		createdAt: new Date(record.createdAt).toISOString(),
+		role: record.role,
+		content: record.content,
+		successLogData: record.successLogData,
+		sizeBytes: record.sizeBytes
+	}
+	if (record.imageDataUrl) {
+		base.image = {
+			dataUrl: record.imageDataUrl,
+			mimeType: getMimeTypeFromDataUrl(record.imageDataUrl)
+		}
+	}
+	const sizeBytes = record.sizeBytes ?? calculateMessageSize(base)
+	return { ...base, sizeBytes }
+}
+
+const messageToRecord = (message: PersistedMessage): ChatMessageRecord => ({
+	id: message.id,
+	createdAt: new Date(message.createdAt).getTime(),
+	role: message.role,
+	content: message.content,
+	imageDataUrl: message.image?.dataUrl,
+	successLogData: message.successLogData,
+	sizeBytes: message.sizeBytes ?? calculateMessageSize(message)
+})
+
+const sanitizeMessage = (
+	message: PersistedMessage,
+	keepImage: boolean
+): Message => {
+	const { id, createdAt, sizeBytes, ...rest } = message
+	if (!keepImage && rest.image) {
+		const { image, ...withoutImage } = rest
+		return withoutImage as Message
+	}
+	return rest as Message
+}
+
+const prepareMessagesForAction = (
+	messages: PersistedMessage[],
+	latestImageMessageId?: string
+) =>
+	messages
+		.slice(-CONTEXT_WINDOW)
+		.map(message =>
+			sanitizeMessage(message, latestImageMessageId === message.id)
+		)
+
+const getMessageDate = (message: Message) => {
+	const source = message.createdAt ?? message.clientTime
+	const date = source ? new Date(source) : new Date()
+	return Number.isNaN(date.getTime()) ? new Date() : date
+}
+
+const formatUsage = (bytes: number) => {
+	const limitMb = STORAGE_LIMIT_BYTES / (1024 * 1024)
+	return `${(bytes / (1024 * 1024)).toFixed(1)} MB / ${limitMb.toFixed(0)} MB`
+}
+
 export default function AIChatConversation({
 	action,
 	placeholder,
@@ -29,12 +149,101 @@ export default function AIChatConversation({
 	describeImage
 }: AIChatConversationProps) {
 	const { user } = useUser()
-	const [conversation, setConversation] = useState<Message[]>([])
+	const [conversation, setConversation] = useState<PersistedMessage[]>([])
 	const [input, setInput] = useState('')
 	const [loading, setLoading] = useState(false)
+	const [usageBytes, setUsageBytes] = useState(0)
+	const [prunedCount, setPrunedCount] = useState(0)
 	const cameraInputRef = useRef<HTMLInputElement>(null)
 	const galleryInputRef = useRef<HTMLInputElement>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
+	const conversationRef = useRef<PersistedMessage[]>([])
+	const scrollAnchorRef = useRef<HTMLDivElement>(null)
+	const scrolledInitiallyRef = useRef(false)
+
+	const updateConversationState = useCallback(
+		(updater: (previous: PersistedMessage[]) => PersistedMessage[]) => {
+			setConversation(previous => {
+				const next = updater(previous)
+				conversationRef.current = next
+				return next
+			})
+		},
+		[]
+	)
+
+	const applyPersistenceResult = useCallback(
+		(result: { prunedIds: string[]; usageBytes: number }) => {
+			setUsageBytes(result.usageBytes)
+			if (result.prunedIds.length > 0) {
+				updateConversationState(previous =>
+					previous.filter(message => !result.prunedIds.includes(message.id))
+				)
+				setPrunedCount(result.prunedIds.length)
+			}
+		},
+		[updateConversationState]
+	)
+
+	const persistMessage = useCallback(
+		async (message: PersistedMessage) => {
+			try {
+				const result = await saveMessage(messageToRecord(message))
+				applyPersistenceResult(result)
+			} catch (error) {
+				console.error('Error saving chat message', error)
+				toast.error('Unable to save chat message locally')
+			}
+		},
+		[applyPersistenceResult]
+	)
+
+	const appendMessages = useCallback(
+		async (messagesToAppend: PersistedMessage[]) => {
+			if (messagesToAppend.length === 0) return
+			updateConversationState(previous => [...previous, ...messagesToAppend])
+			for (const message of messagesToAppend) {
+				await persistMessage(message)
+			}
+		},
+		[persistMessage, updateConversationState]
+	)
+
+	const handleActionResponse = useCallback(
+		async (response: Message[], sentLength: number) => {
+			const appended = response
+				.slice(sentLength)
+				.filter(message => message.role === 'assistant')
+			if (appended.length === 0) return
+			const normalized = appended.map(normalizeMessage)
+			await appendMessages(normalized)
+		},
+		[appendMessages]
+	)
+
+	useEffect(() => {
+		let active = true
+		const hydrate = async () => {
+			try {
+				const records = await loadMessages()
+				if (!active) return
+				const mapped = records.map(recordToMessage)
+				updateConversationState(() => mapped)
+				const usage = records.reduce(
+					(total, record) => total + (record.sizeBytes ?? 0),
+					0
+				)
+				setUsageBytes(usage)
+			} catch (error) {
+				console.error('Error loading chat history', error)
+				toast.error('Unable to load chat history')
+			}
+		}
+		void hydrate()
+		return () => {
+			active = false
+		}
+	}, [updateConversationState])
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
@@ -42,6 +251,20 @@ export default function AIChatConversation({
 		}, 100)
 		return () => clearTimeout(timer)
 	}, [conversation.length])
+
+	useEffect(() => {
+		if (!scrollAnchorRef.current) return
+		scrollAnchorRef.current.scrollIntoView({
+			behavior: scrolledInitiallyRef.current ? 'smooth' : 'auto'
+		})
+		scrolledInitiallyRef.current = true
+	}, [conversation.length])
+
+	useEffect(() => {
+		if (prunedCount === 0) return
+		const timer = setTimeout(() => setPrunedCount(0), 4000)
+		return () => clearTimeout(timer)
+	}, [prunedCount])
 
 	if (!user) return null
 
@@ -53,21 +276,77 @@ export default function AIChatConversation({
 			reader.readAsDataURL(file)
 		})
 
+	const handleClearHistory = async () => {
+		try {
+			await clearMessages()
+			updateConversationState(() => [])
+			setUsageBytes(0)
+			setPrunedCount(0)
+			toast.success('History cleared')
+		} catch (error) {
+			console.error('Error clearing chat history', error)
+			toast.error('Unable to clear chat history')
+		}
+	}
+
 	const handleSend = async () => {
-		if (!input.trim() || loading) return
+		const pendingInput = input.trim()
+		if (!pendingInput || loading) return
 		setLoading(true)
 		setInput('')
-		const newConversation = [
-			...conversation,
-			{ role: 'user', content: input, clientTime: new Date().toISOString() }
-		] satisfies Message[]
-		setConversation(newConversation)
+		const userMessage = normalizeMessage({
+			role: 'user',
+			content: pendingInput,
+			clientTime: new Date().toISOString()
+		})
 		try {
-			const response = await action(newConversation)
-			setConversation(response)
+			await appendMessages([userMessage])
+			const context = prepareMessagesForAction(conversationRef.current)
+			const response = await action(context)
+			await handleActionResponse(response, context.length)
+		} catch (error) {
+			console.error('Error sending chat message', error)
+			toast.error('Unable to send message')
 		} finally {
 			setLoading(false)
 			inputRef.current?.focus()
+		}
+	}
+
+	const updateMessageContent = async (messageId: string, content: string) => {
+		const current = conversationRef.current.find(
+			message => message.id === messageId
+		)
+		if (!current || current.content === content) return
+		const updated = normalizeMessage({ ...current, content })
+		updateConversationState(previous =>
+			previous.map(message => (message.id === messageId ? updated : message))
+		)
+		try {
+			const result = await updateStoredMessage(messageId, {
+				content,
+				sizeBytes: updated.sizeBytes
+			})
+			setUsageBytes(result.usageBytes)
+		} catch (error) {
+			console.error('Error updating stored message', error)
+			toast.error('Unable to update message locally')
+		}
+	}
+
+	const describeImageWithTimeout = async (
+		dataUrl: string,
+		mimeType: string
+	) => {
+		if (!describeImage) return ''
+		try {
+			return await Promise.race([
+				describeImage({ dataUrl, mimeType }),
+				new Promise<string>(resolve => setTimeout(() => resolve(''), 12000))
+			])
+		} catch (error) {
+			console.error('Error describing meal image', error)
+			return ''
 		}
 	}
 
@@ -79,8 +358,7 @@ export default function AIChatConversation({
 			const typedDescription = input.trim()
 			const placeholderContent = typedDescription || defaultMessage
 			setInput('')
-
-			const placeholderMessage: Message = {
+			const placeholderMessage = normalizeMessage({
 				role: 'user',
 				content: placeholderContent,
 				image: {
@@ -88,48 +366,25 @@ export default function AIChatConversation({
 					mimeType: file.type
 				},
 				clientTime: new Date().toISOString()
-			}
-
-			const optimisticConversation = [...conversation, placeholderMessage]
-			let workingConversation = optimisticConversation
-			const placeholderIndex = optimisticConversation.length - 1
-
-			flushSync(() => {
-				setConversation(optimisticConversation)
 			})
+			await appendMessages([placeholderMessage])
 
-			const replacePlaceholderContent = (content: string) => {
-				if (
-					workingConversation[placeholderIndex]?.content === content ||
-					!content
-				) {
-					return
-				}
-				workingConversation = workingConversation.map((message, index) =>
-					index === placeholderIndex ? { ...message, content } : message
-				)
-				setConversation(workingConversation)
-			}
-
-			if (!typedDescription && describeImage) {
-				try {
-					const caption = await Promise.race([
-						describeImage({
-							dataUrl,
-							mimeType: file.type
-						}),
-						new Promise<string>(resolve => setTimeout(() => resolve(''), 12000))
-					])
-					if (caption) {
-						replacePlaceholderContent(caption)
-					}
-				} catch (error) {
-					console.error('Error describing meal image:', error)
+			if (!typedDescription) {
+				const caption = await describeImageWithTimeout(dataUrl, file.type)
+				if (caption) {
+					await updateMessageContent(placeholderMessage.id, caption)
 				}
 			}
 
-			const response = await action(workingConversation)
-			setConversation(response)
+			const context = prepareMessagesForAction(
+				conversationRef.current,
+				placeholderMessage.id
+			)
+			const response = await action(context)
+			await handleActionResponse(response, context.length)
+		} catch (error) {
+			console.error('Error processing image upload', error)
+			toast.error('Unable to process image')
 		} finally {
 			setLoading(false)
 		}
@@ -153,63 +408,123 @@ export default function AIChatConversation({
 	}
 
 	const fullNameShort = `${user.firstName?.[0] ?? ''} ${user.lastName?.[0] ?? ''}.`
+	const usageLabel = formatUsage(usageBytes)
+
 	return (
 		<>
+			<div className='mb-2 flex items-center justify-between -mt-4'>
+				<small className='text-sm text-muted-foreground'>
+				Describe meals or workouts and the AI will log them.
+				</small>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button type='button' variant='ghost' size='icon'>
+							<MoreVertical className='h-4 w-4' />
+							<span className='sr-only'>Chat options</span>
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align='end' className='w-48'>
+						<DropdownMenuItem
+							onSelect={() => {
+								void handleClearHistory()
+							}}
+						>
+							Clear history
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuLabel className='text-xs font-normal text-muted-foreground'>
+							Storage usage: {usageLabel}
+						</DropdownMenuLabel>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			</div>
+			{prunedCount > 0 && (
+				<div className='mb-2 inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-900 dark:bg-amber-900/30 dark:text-amber-100'>
+					Removed {prunedCount} old message{prunedCount === 1 ? '' : 's'}
+				</div>
+			)}
 			<ScrollArea
 				className={`${conversation.length > 0 ? 'h-[400px]' : 'h-[100px]'} pr-4`}
 			>
-				<>
-					{conversation.map((message, index) => (
-						<div key={index}>
-							{message.successLogData &&
-								message.successLogData.map((data, index) => (
-									<div
-										key={index}
-										className={`${index === (message.successLogData?.length || 0) - 1 ? 'mb-4 border-b border-muted-foreground/60' : ''}`}
-									>
-										<SuccessLogCard {...data} />
+				<div>
+					{conversation.map((message, index) => {
+						const messageDate = getMessageDate(message)
+						const previous = conversation[index - 1]
+						const showDivider =
+							index === 0 ||
+							!isSameDay(
+								messageDate,
+								previous ? getMessageDate(previous) : messageDate
+							)
+						const isUser = message.role === 'user'
+						const bubbleStyles = isUser
+							? 'bg-primary-foreground/50 dark:bg-primary-foreground/50 border-primary/40'
+							: 'bg-muted/60 text-foreground border-border/60'
+						return (
+							<div key={message.id} className='mb-4'>
+								{showDivider && (
+									<div className='my-6 flex items-center justify-center gap-2'>
+										<div className='h-px flex-1 bg-border' />
+										<span className='px-6 block text-center text-xs uppercase tracking-wider text-muted-foreground whitespace-nowrap'>
+											{format(messageDate, 'EEEE, MMM d')}
+										</span>
+										<div className='h-px flex-1 bg-border' />
 									</div>
-								))}
-							{!message.successLogData && (
-								<article
-									key={index}
-									className={`mb-4 flex items-start space-x-2 border-b border-muted-foreground/60 pb-4 ${
-										message.role === 'user' ? 'justify-end' : 'justify-start'
-									}`}
-								>
-									{message.role === 'assistant' && (
-										<Bot className='mt-1 h-6 w-6 text-green-500' />
-									)}
-									<div className='max-w-[80%] rounded-lg p-2 text-sm first-letter:uppercase'>
-										{message.content}
-										{message.image && (
-											<Image
-												width={300}
-												height={160}
-												src={message.image.dataUrl}
-												alt='Meal attachment'
-												className='mt-2 max-h-40 w-full rounded-md object-cover'
-											/>
+								)}
+								{message.successLogData ? (
+									<div className='space-y-3 rounded-2xl border border-muted-foreground/40 bg-muted/30 p-3'>
+										{message.successLogData.map((data, cardIndex) => (
+											<SuccessLogCard key={cardIndex} {...data} />
+										))}
+										<span className='block text-right text-[10px] uppercase tracking-wide text-muted-foreground'>
+											{format(messageDate, 'HH:mm')}
+										</span>
+									</div>
+								) : (
+									<div
+										className={`flex items-end gap-2 ${
+											isUser ? 'justify-end' : 'justify-start'
+										}`}
+									>
+										{!isUser && <Bot className='mb-1 h-5 w-5 text-green-500' />}
+										<div
+											className={`max-w-[80%] rounded-2xl border px-3 py-2 text-sm shadow-sm ${bubbleStyles}`}
+										>
+											<p className='whitespace-pre-wrap break-words'>
+												{message.content}
+											</p>
+											{message.image && (
+												<Image
+													width={300}
+													height={160}
+													src={message.image.dataUrl}
+													alt='Meal attachment'
+													className='mt-3 max-h-40 w-full rounded-xl object-cover'
+												/>
+											)}
+											<span className='mt-2 block text-right text-[10px] uppercase tracking-wide text-muted-foreground'>
+												{format(messageDate, 'HH:mm')}
+											</span>
+										</div>
+										{isUser && (
+											<Avatar className='h-7 w-7'>
+												<AvatarImage src={user.imageUrl} />
+												<AvatarFallback>{fullNameShort}</AvatarFallback>
+											</Avatar>
 										)}
 									</div>
-									{message.role === 'user' && (
-										<Avatar className='mt-1 h-7 w-7'>
-											<AvatarImage src={user.imageUrl} />
-											<AvatarFallback>{fullNameShort}</AvatarFallback>
-										</Avatar>
-									)}
-								</article>
-							)}
-						</div>
-					))}
-
+								)}
+							</div>
+						)
+					})}
+					<div ref={scrollAnchorRef} />
 					{loading && (
-						<div className='bg-red flex items-center justify-start space-x-2 py-2 text-muted-foreground'>
+						<div className='flex items-center justify-start space-x-2 py-2 text-muted-foreground'>
 							<Loader className='me-2 mt-1 animate-spin' />
 							Analyzing...
 						</div>
 					)}
-				</>
+				</div>
 			</ScrollArea>
 
 			<DialogFooter>
@@ -273,23 +588,30 @@ export default function AIChatConversation({
 									}
 								}
 							}}
-							onKeyDown={e => e.key === 'Enter' && handleSend()}
+							onKeyDown={event => {
+								if (event.key === 'Enter') {
+									event.preventDefault()
+									void handleSend()
+								}
+							}}
 							className='h-12 flex-grow'
 							disabled={loading}
 							autoFocus
 						/>
 						<Button
 							type='button'
-							onClick={handleSend}
+							onClick={() => {
+								void handleSend()
+							}}
 							size='icon'
 							disabled={loading}
 						>
 							<Send className='h-4 w-4' />
 						</Button>
 					</article>
-					<small className='text-xs leading-tight tracking-tight text-muted-foreground'>
+					<div className='mt-1 text-xs leading-tight tracking-tight text-muted-foreground'>
 						{instruction}
-					</small>
+					</div>
 				</div>
 			</DialogFooter>
 		</>

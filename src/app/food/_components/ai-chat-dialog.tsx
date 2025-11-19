@@ -38,7 +38,7 @@ export default function AIChatDialog({
 			<DialogContent className='max-w-[90%] rounded-lg sm:max-w-xl'>
 				<DialogHeader>
 					<DialogTitle>{title}</DialogTitle>
-					<DialogDescription>{description}</DialogDescription>
+					{/* <DialogDescription>{description}</DialogDescription> */}
 				</DialogHeader>
 				<AIChatConversation
 					action={action}

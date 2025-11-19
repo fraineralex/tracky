@@ -9,10 +9,18 @@ export interface Message {
 	}
 	successLogData?: SuccessLogData[]
 	clientTime?: string
+	id?: string
+	createdAt?: string
+	sizeBytes?: number
 }
 
 export type DescribeImageInput = {
 	dataUrl: string
 	mimeType: string
+}
+
+export type PersistedMessage = Message & {
+	id: string
+	createdAt: string
 }
 

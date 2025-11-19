@@ -45,6 +45,7 @@
 		"class-variance-authority": "0.7.0",
 		"clsx": "2.1.1",
 		"date-fns": "4.1.0",
+		"dexie": "^4.2.1",
 		"drizzle-orm": "0.30.10",
 		"drizzle-zod": "0.5.1",
 		"framer-motion": "11.3.28",
