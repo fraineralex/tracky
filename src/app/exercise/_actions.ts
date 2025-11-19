@@ -44,6 +44,44 @@ const ExerciseSchema = z.object({
 	)
 })
 
+type ExerciseGenerationFailureReason = 'timeout' | 'unrecognized' | 'unknown'
+
+const classifyExerciseError = (
+	error: unknown
+): ExerciseGenerationFailureReason => {
+	if (error instanceof Error) {
+		const name = error.name?.toLowerCase() ?? ''
+		const message = error.message?.toLowerCase() ?? ''
+		if (message.includes('timed out')) return 'timeout'
+		if (
+			name.includes('json') ||
+			name.includes('parse') ||
+			name.includes('noobject') ||
+			message.includes('no object generated') ||
+			message.includes('json parsing failed')
+		) {
+			return 'unrecognized'
+		}
+	}
+	return 'unknown'
+}
+
+const retryNoticeForExercise = (reason: ExerciseGenerationFailureReason) => {
+	if (reason === 'timeout') {
+		return 'The exercise request took too long. Retrying with a smarter model...'
+	}
+	return 'I could not interpret that exercise yet. Retrying with a smarter model...'
+}
+
+const failureMessageForExercise = (reason: ExerciseGenerationFailureReason) => {
+	if (reason === 'timeout') {
+		return 'Exercise logging failed because the AI request timed out. Please try again later.'
+	}
+	return 'I could not identify the exercise details from that input. Please try a clearer description or screenshot.'
+}
+
+const AI_TIMEOUT_MS = 25000
+
 export async function logExerciseAI(messages: Message[]): Promise<Message[]> {
 	const user = await currentUser()
 
@@ -63,40 +101,67 @@ export async function logExerciseAI(messages: Message[]): Promise<Message[]> {
 	const age = new Date().getFullYear() - new Date(born as string).getFullYear()
 	const currentHeight = height[height.length - 1] as TrakedField[number]
 
-	let object
-	try {
-		const result = await generateObject({
-			model: google('gemini-2.5-flash-lite', {
-				structuredOutputs: false
-			}),
-			system: `You are a fitness app assistant generating exercise data to log in the database. Analyze exercise images (Apple Watch screenshots, treadmill displays, fitness equipment screens, etc.) and extract exercise information including: exercise type/category, duration in minutes, effort level, and any visible metrics. For images, estimate values based on what you see (e.g., if you see "30 min" on a treadmill, use 30 minutes; if you see calories burned, use that to estimate effort level). Ensure the data follows the provided schema. Adjust unclear categories to the most applicable or set to null if not possible. Estimate duration in minutes if not provided. Adjust diary group based on time of day (e.g., morning to breakfast, afternoon to lunch, evening to dinner).`,
-			messages: toCoreMessages(messages),
-			schema: ExerciseSchema
-		})
-		object = result.object
-	} catch (error) {
-		console.error('Error generating object:', error)
-		return [
-			...messages,
-			{
-				role: 'assistant',
-				content: 'Oops! There was an error generating the exercise data.'
+	let object: typeof ExerciseSchema._type | null = null
+	const responseMessages: Message[] = [...messages]
+	const formattedMessages = toCoreMessages(messages)
+	const retryModels = ['gemini-2.5-flash-lite', 'gemini-2.5-flash'] as const
+	let failureReason: ExerciseGenerationFailureReason = 'unknown'
+
+	for (const [index, modelId] of retryModels.entries()) {
+		try {
+			const result = await withTimeout(
+				generateObject({
+					model: google(modelId, {
+						structuredOutputs: false
+					}),
+					system: `You are a fitness app assistant generating exercise data to log in the database. Analyze exercise images (Apple Watch screenshots, treadmill displays, fitness equipment screens, etc.) and extract exercise information including: exercise type/category, duration in minutes, effort level, and any visible metrics. For images, estimate values based on what you see (e.g., if you see "30 min" on a treadmill, use 30 minutes; if you see calories burned, use that to estimate effort level). Ensure the data follows the provided schema. Adjust unclear categories to the most applicable or set to null if not possible. Estimate duration in minutes if not provided. Adjust diary group based on time of day (e.g., morning to breakfast, afternoon to lunch, evening to dinner).`,
+					messages: formattedMessages,
+					schema: ExerciseSchema
+				}),
+				AI_TIMEOUT_MS,
+				'logExerciseAI generateObject'
+			)
+			object = result.object
+			break
+		} catch (error) {
+			console.error('Error generating object:', error)
+			failureReason = classifyExerciseError(error)
+			if (index === retryModels.length - 1) {
+				responseMessages.push({
+					role: 'assistant',
+					content: failureMessageForExercise(failureReason)
+				})
+				return responseMessages
 			}
-		]
+			responseMessages.push({
+				role: 'assistant',
+				content: retryNoticeForExercise(failureReason)
+			})
+		}
+	}
+
+	if (!object) {
+		responseMessages.push({
+			role: 'assistant',
+			content: 'Oops! There was an error generating the exercise data.'
+		})
+		return responseMessages
+	}
+
+	const respondWithSubmissionError = () => {
+		responseMessages.push({
+			role: 'assistant',
+			content: 'Oops! There was an error with your submission.'
+		})
+		return responseMessages
 	}
 
 	const response = ExerciseSchema.safeParse(object)
-	const errorResponse = [
-		...messages,
-		{
-			role: 'assistant',
-			content: 'Oops! There was an error with your submission.'
-		}
-	] satisfies Message[]
+	const baseResponseLength = responseMessages.length
 
 	if (!response.success) {
 		console.error('Schema validation failed:', response.error)
-		return errorResponse
+		return respondWithSubmissionError()
 	}
 
 	const latestUserMessage = [...messages]
@@ -117,13 +182,15 @@ export async function logExerciseAI(messages: Message[]): Promise<Message[]> {
 	})
 
 	if (missingInfoMessages.length > 0) {
-		return [
-			...messages,
-			{ role: 'assistant', content: missingInfoMessages.join(' ') }
-		]
+		responseMessages.push({
+			role: 'assistant',
+			content: missingInfoMessages.join(' ')
+		})
+		return responseMessages
 	}
 
 	const successLogData: SuccessLogData[] = []
+	const errorMessages: string[] = []
 	try {
 		await db.transaction(async trx => {
 			for (const item of response.data.exercise) {
@@ -139,13 +206,10 @@ export async function logExerciseAI(messages: Message[]): Promise<Message[]> {
 					.execute()
 
 				if (result.length === 0) {
-					return [
-						...messages,
-						{
-							role: 'assistant',
-							content: `Sorry, the exercise with name ${item.category} not found, please register it first or try another exercise name.`
-						}
-					]
+					errorMessages.push(
+						`Unable to register ${item.category ?? 'that exercise'} because it is not in your catalog yet. Please add it first or try a different name.`
+					)
+					continue
 				}
 
 				const categoryId = result[0]?.id
@@ -194,21 +258,40 @@ export async function logExerciseAI(messages: Message[]): Promise<Message[]> {
 		})
 	} catch (error) {
 		console.error('Error inserting exercise:', error)
-		return errorResponse
+		return respondWithSubmissionError()
 	}
 
-	revalidateTag('resume-streak')
-	revalidatePath('/exercise')
-	revalidatePath('/dashboard')
-	revalidatePath('/diary')
-	return [
-		...messages,
-		{
+	if (successLogData.length > 0) {
+		revalidateTag('resume-streak')
+		revalidatePath('/exercise')
+		revalidatePath('/dashboard')
+		revalidatePath('/diary')
+	}
+
+	if (errorMessages.length > 0) {
+		responseMessages.push({
+			role: 'assistant',
+			content: errorMessages.join(' ')
+		})
+	}
+
+	if (successLogData.length > 0) {
+		responseMessages.push({
 			role: 'assistant',
 			content: 'Exercise logged successfully',
 			successLogData
-		}
-	]
+		})
+	}
+
+	if (responseMessages.length === baseResponseLength) {
+		responseMessages.push({
+			role: 'assistant',
+			content:
+				'No exercises were logged. Please provide clearer details or screenshots so we can register them.'
+		})
+	}
+
+	return responseMessages
 }
 
 const imageUrlPattern = /^data:(?<mime>[^;]+);base64,(?<data>.+)$/
