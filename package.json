@@ -12,6 +12,9 @@
 		"db:seed": "env $(grep -v '#' .env | xargs) bun tsx src/server/db/seed/index.ts",
 		"dev": "next dev",
 		"lint": "eslint .",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run",
+		"test:watch": "vitest",
 		"start": "next start",
 		"format": "prettier --write .",
 		"scan": "next dev && bunx react-scan@latest localhost:3000"
@@ -89,7 +92,8 @@
 		"tailwindcss": "3.4.3",
 		"tsx": "4.19.1",
 		"typescript": "5.4.2",
-		"typescript-eslint": "^8.51.0"
+		"typescript-eslint": "^8.51.0",
+		"vitest": "^5.0.1"
 	},
 	"ct3aMetadata": {
 		"initVersion": "7.35.0"
