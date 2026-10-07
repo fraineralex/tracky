@@ -17,6 +17,7 @@ import {
 } from '~/lib/calculations'
 import { currentUser } from '@clerk/nextjs/server'
 import { SettingItemsSkeletonUI } from '../_components/skeletons'
+import { resolveUserProfile } from '~/server/user-profile'
 import type { Dictionary } from '~/get-dictionary'
 
 interface SettingItemsProps {
@@ -26,7 +27,8 @@ interface SettingItemsProps {
 export async function SettingItems({ dictionary }: SettingItemsProps) {
 	const user = await currentUser()
 	if (!user) return <SettingItemsSkeletonUI />
-	const userMetadata = user?.publicMetadata
+	const userMetadata = await resolveUserProfile(user.id, user.publicMetadata)
+	if (!userMetadata) return <SettingItemsSkeletonUI />
 	const currentWeight =
 		userMetadata.weights[userMetadata.weights.length - 1]?.value ?? 0
 	const goalProgress = calculateGoalProgress(userMetadata)

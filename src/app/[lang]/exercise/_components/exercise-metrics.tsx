@@ -3,6 +3,7 @@ import { db } from '~/server/db'
 import { exercise, exerciseCategory } from '~/server/db/schema'
 import { asc, eq } from 'drizzle-orm'
 import { currentUser } from '@clerk/nextjs/server'
+import { resolveUserProfile } from '~/server/user-profile'
 import { Suspense } from 'react'
 import {
 	ExerciseCardSkeleton,
@@ -16,6 +17,8 @@ import { type Locale } from '~/i18n-config'
 export async function ExerciseMetrics({ lang }: { lang: Locale }) {
 	const user = await currentUser()
 	if (!user) return <ExerciseMetricsSkeleton />
+	const userMetadata = await resolveUserProfile(user.id, user.publicMetadata)
+	if (!userMetadata) return <ExerciseMetricsSkeleton />
 
 	const [exercises, dictionary] = await Promise.all([
 		db
@@ -53,7 +56,7 @@ export async function ExerciseMetrics({ lang }: { lang: Locale }) {
 			<Suspense fallback={<ExerciseGraphicsSkeleton />}>
 				<ExerciseGraphicsData
 					exercises={Promise.resolve(exercises)}
-					userMetadata={user.publicMetadata}
+					userMetadata={userMetadata}
 				/>
 			</Suspense>
 		</>

@@ -1,6 +1,7 @@
 import { NutritionCard } from '../_components/nutrition-card'
 import { type User } from '@clerk/nextjs/server'
 import { getTodayNutritionMetrics } from '~/server/utils/nutrition'
+import { resolveUserProfile } from '~/server/user-profile'
 import { NutritionCardsSkeleton } from '../_components/skeletons'
 import { getDictionary } from '~/get-dictionary'
 import { type Locale } from '~/i18n-config'
@@ -14,8 +15,10 @@ export async function NutritionCards({
 }) {
 	const user = await currentUser
 	if (!user) return <NutritionCardsSkeleton />
+	const profile = await resolveUserProfile(user.id, user.publicMetadata)
+	if (!profile) return <NutritionCardsSkeleton />
 	const [nutrition, dictionary] = await Promise.all([
-		getTodayNutritionMetrics(user.id, user?.publicMetadata),
+		getTodayNutritionMetrics(user.id, profile),
 		getDictionary(lang)
 	])
 

@@ -10,6 +10,7 @@ import { formatDistance } from 'date-fns'
 import { es, enUS } from 'date-fns/locale'
 import { getDictionary } from '~/get-dictionary'
 import { type Locale, i18n, pathWithLocale } from '~/i18n-config'
+import { resolveUserProfile } from '~/server/user-profile'
 
 export default async function InsightsAndAnalitics({
 	user: currentUser,
@@ -20,7 +21,9 @@ export default async function InsightsAndAnalitics({
 }) {
 	const user = await currentUser
 	if (!user) return <InsightsAndAnaliticsSkeleton />
-	const { goal, goalWeight, weights } = user.publicMetadata
+	const profile = await resolveUserProfile(user.id, user.publicMetadata)
+	if (!profile) return <InsightsAndAnaliticsSkeleton />
+	const { goal, goalWeight, weights } = profile
 	const currentWeight = weights[weights.length - 1]?.value ?? 0
 	const currentGoalWeight = goalWeight[goalWeight.length - 1]?.value ?? 0
 	const currentGoal = goal[goal.length - 1]?.value ?? 'maintain'

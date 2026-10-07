@@ -14,7 +14,7 @@ import { DialogClose, DialogFooter } from '~/components/ui/dialog'
 import { Button } from '~/components/ui/button'
 import { type ExerciseState, addExercise } from '../../_actions'
 import { type ExerciseCategories } from '~/types'
-import { useUser } from '@clerk/nextjs'
+import { type ExerciseBody } from '~/types/profile'
 import { EFFORT_LEVELS } from '~/constants'
 import { ShowErrors } from '~/components/forms/show-errors'
 import { calculateEnergyBurned } from '~/lib/calculations'
@@ -30,11 +30,13 @@ const initialState: ExerciseState = {
 export default function ExerciseForm({
 	selectedCategory,
 	handleFormClose,
-	handleCategorySelect
+	handleCategorySelect,
+	body
 }: {
 	selectedCategory: ExerciseCategories[number] | null
 	handleFormClose: (message: string) => void
 	handleCategorySelect: (category: ExerciseCategories[number] | null) => void
+	body: ExerciseBody | null
 }) {
 	const { dictionary } = useDictionary()
 	const [state, formAction, isPending] = React.useActionState(
@@ -44,7 +46,6 @@ export default function ExerciseForm({
 	const [duration, setDuration] = React.useState(60)
 	const [energyBurned, setEnergyBurned] = React.useState<string | null>(null)
 	const [effort, setEffort] = React.useState<keyof typeof EFFORT_LEVELS>('easy')
-	const { user } = useUser()
 
 	React.useEffect(() => {
 		if (state.success && state.message) {
@@ -65,12 +66,8 @@ export default function ExerciseForm({
 		}
 	}, [state, handleFormClose, isPending, dictionary])
 
-	if (!user) return null
-	const { weights, height, born, sex } = user.publicMetadata
-
-	const currentWeight = weights[weights.length - 1]!
-	const age = new Date().getFullYear() - new Date(born).getFullYear()
-	const currentHeight = height[height.length - 1]!
+	if (!body) return null
+	const age = new Date().getFullYear() - new Date(body.born).getFullYear()
 
 	function CancelButton() {
 		return (
@@ -93,10 +90,10 @@ export default function ExerciseForm({
 	const energyBurnedValue = calculateEnergyBurned({
 		duration,
 		effort,
-		currentWeight: currentWeight.value,
-		height: currentHeight.value,
+		currentWeight: body.weight,
+		height: body.height,
 		age,
-		sex,
+		sex: body.sex,
 		categoryMultiplier: Number(selectedCategory?.energyBurnedPerMinute)
 	})
 
@@ -202,7 +199,7 @@ export default function ExerciseForm({
 							<p className='col-span-5 text-nowrap text-xs font-light text-foreground/80'>
 								{dictionary.exercise.form.basedOnWeight.replace(
 									'{weight}',
-									String(currentWeight.value)
+									String(body.weight)
 								)}
 							</p>
 						</div>

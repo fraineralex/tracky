@@ -15,13 +15,16 @@ import {
 import { SlashIcon } from '@radix-ui/react-icons'
 import ExerciseForm from './exercise-form'
 import { type ExerciseCategories as ExerciseCategoryList } from '~/types'
+import { type ExerciseBody } from '~/types/profile'
 import { toast } from 'sonner'
 import { Gym } from '~/components/ui/icons'
 
 export default function ExerciseCategories({
-	categories
+	categories,
+	body
 }: {
 	categories: ExerciseCategoryList
+	body: ExerciseBody | null
 }) {
 	const [selectedCategory, setSelectedCategory] = React.useState<
 		ExerciseCategoryList[number] | null
@@ -79,6 +82,7 @@ export default function ExerciseCategories({
 				selectedCategory={selectedCategory}
 				handleFormClose={handleFormClose}
 				handleCategorySelect={setSelectedCategory}
+				body={body}
 			/>
 		</section>
 	)

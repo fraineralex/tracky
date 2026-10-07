@@ -10,6 +10,7 @@ import { Suspense } from 'react'
 import { Skeleton } from '~/components/ui/skeleton'
 import { getDictionary } from '~/get-dictionary'
 import { type Locale, i18n, pathWithLocale } from '~/i18n-config'
+import { resolveUserProfile } from '~/server/user-profile'
 
 export default async function DataAndHabits({
 	user: currentUser,
@@ -20,7 +21,8 @@ export default async function DataAndHabits({
 }) {
 	const user = await currentUser
 	if (!user) return <DataAndHabitsSkeleton />
-	const userMetadata = user.publicMetadata
+	const userMetadata = await resolveUserProfile(user.id, user.publicMetadata)
+	if (!userMetadata) return <DataAndHabitsSkeleton />
 
 	const locale = lang && i18n.locales.includes(lang) ? lang : i18n.defaultLocale
 	const dictionary = await getDictionary(locale)
