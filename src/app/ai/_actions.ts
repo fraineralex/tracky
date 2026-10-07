@@ -25,6 +25,7 @@ import { calculateEnergyBurned } from '~/lib/calculations'
 import { desc, ilike } from 'drizzle-orm'
 import { revalidatePath, updateTag } from 'next/cache'
 import { type SuccessLogData, type TrakedField } from '~/types'
+import { resolveUserProfile } from '~/server/user-profile'
 import { EXERCISE_ICONS } from '~/constants'
 import type { DescribeImageInput, Message } from './types'
 import { getDictionary } from '~/get-dictionary'
@@ -570,11 +571,11 @@ export async function logHealthAI(
 	const clientTime = latestUserMessage?.clientTime
 		? new Date(latestUserMessage.clientTime)
 		: new Date()
-	const profileMetadata = user.publicMetadata as Record<string, unknown>
-	const weightsHistory = profileMetadata.weights as TrakedField | undefined
-	const heightHistory = profileMetadata.height as TrakedField | undefined
-	const born = profileMetadata.born as string | undefined
-	const sex = (profileMetadata.sex as string | undefined) ?? null
+	const profile = await resolveUserProfile(user.id, user.publicMetadata)
+	const weightsHistory = profile?.weights
+	const heightHistory = profile?.height
+	const born = profile?.born
+	const sex = profile?.sex ?? null
 
 	const latestWeight = getLatestTrackedField(weightsHistory)
 	const latestHeight = getLatestTrackedField(heightHistory)

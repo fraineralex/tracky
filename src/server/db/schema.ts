@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm'
 import {
 	index,
+	jsonb,
 	pgTableCreator,
 	timestamp,
 	varchar,
@@ -8,6 +9,7 @@ import {
 	uuid,
 	pgEnum
 } from 'drizzle-orm/pg-core'
+import { type UserProfile } from '~/types/profile'
 
 export const unitEnum = pgEnum('unit', ['g', 'ml', 'oz', 'cup'])
 export const diaryGroupEnum = pgEnum('diary_group', [
@@ -136,3 +138,16 @@ export const exercise = createTable(
 		createAtExerciseIndex: index('created_at_idx').on(exercise.createdAt)
 	})
 )
+
+export const userProfile = createTable('user_profile', {
+	userId: varchar('user_id', { length: 50 }).primaryKey(),
+	sex: varchar('sex', { length: 16 }).notNull(),
+	born: varchar('born', { length: 32 }).notNull(),
+	goal: jsonb('goal').$type<UserProfile['goal']>().notNull(),
+	height: jsonb('height').$type<UserProfile['height']>().notNull(),
+	weights: jsonb('weights').$type<UserProfile['weights']>().notNull(),
+	activity: jsonb('activity').$type<UserProfile['activity']>().notNull(),
+	goalWeight: jsonb('goal_weight').$type<UserProfile['goalWeight']>().notNull(),
+	fat: jsonb('fat').$type<UserProfile['fat']>().notNull(),
+	updatedAt: varchar('updated_at', { length: 32 }).notNull()
+})

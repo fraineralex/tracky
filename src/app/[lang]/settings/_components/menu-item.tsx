@@ -8,7 +8,12 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '~/components/ui/dialog'
-import { type AboutMenuItem, type Sex } from '~/types'
+import {
+	type AboutMenuItem,
+	type ActivityLevel,
+	type Goal,
+	type Sex
+} from '~/types'
 import { SettingsField } from './settings-field'
 import React from 'react'
 import { format } from 'date-fns'
@@ -22,7 +27,7 @@ import {
 	Weight,
 	Calendar
 } from 'lucide-react'
-import { updatePublicMetadata } from '../_actions'
+import { updateUserProfile } from '../_actions'
 import { loadingToast } from '~/lib/loading-toast'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
@@ -70,22 +75,52 @@ export function MenuItem({ name, label, attr }: AboutMenuItem) {
 		setValue(newValue)
 		const dismiss = loadingToast(dictionary.common.loading, 'update-metadata')
 
+		const date = new Date().toISOString().split('T')[0]!
 		let result
-		if (attr.name === 'sex') {
-			result = await updatePublicMetadata({ sex: newValue as Sex })
-		} else if (attr.name === 'born') {
-			result = await updatePublicMetadata({
-				born: format(newValue as Date, 'yyyy-MM-dd')
-			})
-		} else {
-			result = await updatePublicMetadata({
-				[attr.name]: [
-					{
-						value: newValue,
-						date: new Date().toISOString().split('T')[0]!
-					}
-				]
-			})
+		switch (attr.name) {
+			case 'sex':
+				result = await updateUserProfile({ sex: newValue as Sex })
+				break
+			case 'born':
+				result = await updateUserProfile({
+					born: format(newValue as Date, 'yyyy-MM-dd')
+				})
+				break
+			case 'height':
+				result = await updateUserProfile({
+					height: [{ value: Number(newValue), date }]
+				})
+				break
+			case 'weights':
+				result = await updateUserProfile({
+					weights: [{ value: Number(newValue), date }]
+				})
+				break
+			case 'activity':
+				result = await updateUserProfile({
+					activity: [{ value: newValue as ActivityLevel, date }]
+				})
+				break
+			case 'goal':
+				result = await updateUserProfile({
+					goal: [{ value: newValue as Goal, date }]
+				})
+				break
+			case 'goalWeight':
+				result = await updateUserProfile({
+					goalWeight: [{ value: Number(newValue), date }]
+				})
+				break
+			case 'fat':
+				result = await updateUserProfile({
+					fat: [{ value: Number(newValue), date }]
+				})
+				break
+			default:
+				result = {
+					success: false,
+					message: 'Unsupported setting'
+				}
 		}
 
 		dismiss()

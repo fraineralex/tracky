@@ -1,5 +1,5 @@
 import FoodDialog from './_components/food/food-dialog'
-import ExerciseDialog from './_components/exercise/exercise-dialog'
+import { ExerciseDialogGate } from './_components/exercise/exercise-dialog-gate'
 import { type Metadata } from 'next'
 import Footer from '~/components/layout/footer'
 import { Suspense } from 'react'
@@ -53,7 +53,7 @@ export default async function DashboardPage({
 						<FoodDialog lang={locale} />
 					</Suspense>
 					<Suspense fallback={<AddMealButton />}>
-						<ExerciseDialog lang={locale} />
+						<ExerciseDialogGate lang={locale} />
 					</Suspense>
 				</header>
 			</div>

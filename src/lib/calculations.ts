@@ -5,13 +5,9 @@ import {
 	MACRO_DISTRIBUTION
 } from '~/constants'
 import { type DailyUserStats, type NutritionMetrics } from '~/types'
+import { type UserProfile } from '~/types/profile'
 
-export function calculateBodyFat({
-	sex,
-	born,
-	height,
-	weights
-}: UserPublicMetadata) {
+export function calculateBodyFat({ sex, born, height, weights }: UserProfile) {
 	const weightInKg = weights[weights.length - 1]?.value ?? 0
 	const [heightFt, heightIn] = (height[height.length - 1]?.value ?? 0.0)
 		.toString()
@@ -31,10 +27,7 @@ export function calculateBodyFat({
 	return bodyFatPercentage
 }
 
-export function calculateGoalProgress({
-	weights,
-	goalWeight
-}: UserPublicMetadata) {
+export function calculateGoalProgress({ weights, goalWeight }: UserProfile) {
 	const initialWeight = weights[0]?.value ?? 0
 	const currentWeight = weights[weights.length - 1]?.value ?? 0
 	const currentGoalWeight = goalWeight[goalWeight.length - 1]?.value ?? 0
@@ -150,7 +143,7 @@ export function calculateNutritionalNeeds({
 	sex,
 	activity,
 	goal
-}: UserPublicMetadata): NutritionMetrics {
+}: UserProfile): NutritionMetrics {
 	const currentWeight = weights[weights.length - 1]?.value ?? 0
 	const age = new Date().getFullYear() - new Date(born).getFullYear()
 	const [heightFt, heightIn] = (height[height.length - 1]?.value ?? 0.0)
@@ -196,7 +189,7 @@ export function calculateNutritionalNeeds({
 }
 
 export function calculateNeededCalories(
-	{ weights, height, born, sex, activity, goal }: UserPublicMetadata,
+	{ weights, height, born, sex, activity, goal }: UserProfile,
 	{ isExpenditure }: { isExpenditure: boolean } = { isExpenditure: false }
 ): number {
 	const currentWeight = weights[weights.length - 1]?.value ?? 0
@@ -218,7 +211,7 @@ export function calculateNeededCalories(
 	)
 }
 
-interface UserData extends UserPublicMetadata {
+interface UserData extends UserProfile {
 	date: Date
 }
 

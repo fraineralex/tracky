@@ -1,28 +1,15 @@
 export {}
 
-import {
-	type TrakedField,
-	type Goal,
-	type ActivityLevel,
-	type Sex
-} from './index'
-
 declare global {
+	// Only the onboarding flag belongs in the session token. Clerk copies
+	// public metadata into the `__session` cookie, and profile history would
+	// push that cookie over the browser's 4KB limit.
 	interface CustomJwtSessionClaims {
 		metadata: {
 			onboardingCompleted?: boolean
 		}
 	}
 	interface UserPublicMetadata {
-		onboardingCompleted: boolean
-		sex: Sex
-		born: string
-		goal: { value: Goal; date: string }[]
-		height: TrakedField
-		weights: TrakedField
-		activity: { value: ActivityLevel; date: string }[]
-		goalWeight: TrakedField
-		fat: { value: number; date: string }[]
-		updatedAt: string
+		onboardingCompleted?: boolean
 	}
 }

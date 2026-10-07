@@ -9,7 +9,7 @@ import { ExerciseMetrics } from './_components/exercise-metrics'
 import { connection } from 'next/server'
 import Footer from '~/components/layout/footer'
 import { i18n, type Locale } from '~/i18n-config'
-import ExerciseDialog from '~/app/[lang]/dashboard/_components/exercise/exercise-dialog'
+import { ExerciseDialogGate } from '~/app/[lang]/dashboard/_components/exercise/exercise-dialog-gate'
 import { AddExerciseButton } from '~/app/[lang]/dashboard/_components/exercise/add-exercise-button'
 
 export const metadata: Metadata = {
@@ -31,7 +31,7 @@ export default async function ExercisePage({
 				<Header
 					exerciseDialog={
 						<Suspense fallback={<AddExerciseButton />}>
-							<ExerciseDialog lang={locale} />
+							<ExerciseDialogGate lang={locale} />
 						</Suspense>
 					}
 				/>

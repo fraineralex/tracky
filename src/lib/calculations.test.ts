@@ -11,9 +11,9 @@ import {
 	computeDailyUserStats,
 	round
 } from './calculations'
+import { type UserProfile } from '~/types/profile'
 
-const baseUser: UserPublicMetadata = {
-	onboardingCompleted: true,
+const baseUser: UserProfile = {
 	sex: 'male',
 	born: '1990-06-15',
 	goal: [{ value: 'maintain', date: '2024-01-01' }],
@@ -169,8 +169,10 @@ describe('calculateDuration', () => {
 
 describe('calculateAdjustedDay', () => {
 	it('maps Sunday to index 6 and Monday to index 0', () => {
-		expect(calculateAdjustedDay(new Date('2024-01-01'))).toBe(0)
-		expect(calculateAdjustedDay(new Date('2024-01-07'))).toBe(6)
+		// Local calendar dates. Date-only ISO strings are UTC and shift the weekday
+		// in timezones behind UTC.
+		expect(calculateAdjustedDay(new Date(2024, 0, 1))).toBe(0)
+		expect(calculateAdjustedDay(new Date(2024, 0, 7))).toBe(6)
 	})
 })
 

@@ -5,6 +5,7 @@ import { daysOfWeek } from '~/constants'
 import { calculateAdjustedDay } from '~/lib/calculations'
 import { diaryGroupEnum } from '~/server/db/schema'
 import { type ExerciseCall, type ExerciseGraphicsData as Data } from '~/types'
+import { type UserProfile } from '~/types/profile'
 import { ExerciseGraphics } from '../_sections/exercise-graphics'
 
 export async function ExerciseGraphicsData({
@@ -12,7 +13,7 @@ export async function ExerciseGraphicsData({
 	userMetadata
 }: {
 	exercises: Promise<ExerciseCall>
-	userMetadata: UserPublicMetadata
+	userMetadata: UserProfile
 }) {
 	const exercises = await exercisesPromise
 

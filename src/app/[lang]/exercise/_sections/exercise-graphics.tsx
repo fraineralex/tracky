@@ -29,6 +29,7 @@ import {
 	ChartTooltipContent
 } from '~/components/ui/chart'
 import { type ExerciseGraphicsData } from '~/types'
+import { type UserProfile } from '~/types/profile'
 import { DAILY_MEAL_ICONS } from '~/constants'
 import { calculateNeededCalories } from '~/lib/calculations'
 import { useDictionary } from '~/components/providers/dictionary-provider'
@@ -38,7 +39,7 @@ export function ExerciseGraphics({
 	userMetadata
 }: {
 	exerciseData: ExerciseGraphicsData
-	userMetadata: UserPublicMetadata
+	userMetadata: UserProfile
 }) {
 	const { dictionary, locale } = useDictionary()
 	const t = dictionary.exercise.graphics

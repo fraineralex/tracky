@@ -8,6 +8,7 @@ import {
 } from '~/server/db/schema'
 import { eq, and, desc } from 'drizzle-orm'
 import { currentUser } from '@clerk/nextjs/server'
+import { resolveUserProfile } from '~/server/user-profile'
 import { type DiaryEntry } from '~/types/diary'
 import { DiaryTimelineSkeletonUI } from './skeletons'
 import { format } from 'date-fns'
@@ -20,7 +21,8 @@ import { type Locale, i18n } from '~/i18n-config'
 export async function DiaryTimelineData({ lang }: { lang?: Locale }) {
 	const user = await currentUser()
 	if (!user) return <DiaryTimelineSkeletonUI />
-	const userMetadata = user.publicMetadata
+	const userMetadata = await resolveUserProfile(user.id, user.publicMetadata)
+	if (!userMetadata) return <DiaryTimelineSkeletonUI />
 
 	const locale = lang && i18n.locales.includes(lang) ? lang : i18n.defaultLocale
 	const dictionary = await getDictionary(locale)
