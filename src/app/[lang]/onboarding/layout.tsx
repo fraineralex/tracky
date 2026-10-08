@@ -4,6 +4,7 @@ import { type Metadata } from 'next'
 import Footer from '~/components/layout/footer'
 import { env } from '~/env'
 import { i18n, pathWithLocale, type Locale } from '~/i18n-config'
+import { hasCompletedOnboarding } from '~/server/onboarding'
 
 export const metadata: Metadata = {
 	title: 'Onboarding'
@@ -22,8 +23,9 @@ export default async function OnboardingLayout({
 		lang && i18n.locales.includes(lang as Locale) ? (lang as Locale) : i18n.defaultLocale
 
 	if (
-		authResult.sessionClaims?.metadata?.onboardingCompleted === true &&
-		env.VERCEL_ENV === 'production'
+		env.VERCEL_ENV === 'production' &&
+		authResult.userId != null &&
+		(await hasCompletedOnboarding(authResult.userId, authResult.sessionClaims))
 	) {
 		redirect(pathWithLocale('/dashboard', locale))
 	}
