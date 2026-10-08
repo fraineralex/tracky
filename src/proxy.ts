@@ -4,6 +4,7 @@ import type { NextRequest } from 'next/server'
 import { match as matchLocale } from '@formatjs/intl-localematcher'
 import Negotiator from 'negotiator'
 import { i18n } from './i18n-config'
+import { hasCompletedOnboarding } from './server/onboarding'
 
 function getLocale(request: NextRequest): string {
 	const negotiatorHeaders: Record<string, string> = {}
@@ -117,7 +118,7 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
 		return redirectToSignIn({ returnBackUrl: req.url })
 	}
 
-	if (userId && !sessionClaims?.metadata?.onboardingCompleted) {
+	if (userId && !(await hasCompletedOnboarding(userId, sessionClaims))) {
 		const onboardingUrl =
 			locale === i18n.defaultLocale ? '/onboarding' : `/${locale}/onboarding`
 		return NextResponse.redirect(new URL(onboardingUrl, req.url))
